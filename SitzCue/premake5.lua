@@ -13,13 +13,16 @@ project "SitzCue"
     includedirs {
         "vendor",
         "vendor/glfw/include",
+        "vendor/imgui",
+        "vendor/imgui/backends",
 
         "src"
     }
 
     links {
         "GLFW",
-        "GLAD"
+        "GLAD",
+        "ImGui"
     }
 
     filter "system:macosx"
@@ -63,3 +66,4 @@ project "SitzCue"
 
 include "vendor/glfw/premake5.lua"
 include "vendor/glad/premake5.lua"
+include "vendor/imgui/premake5.lua"
