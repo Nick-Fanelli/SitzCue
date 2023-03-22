@@ -1,0 +1,3 @@
+[submodule "SitzCue/vendor/glfw"]
+	path = SitzCue/vendor/glfw
+	url = https://github.com/Nick-Fanelli/glfw.git
