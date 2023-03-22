@@ -12,8 +12,14 @@ project "SitzCue"
 
     includedirs {
         "vendor",
+        "vendor/glfw/include",
 
         "src"
+    }
+
+    links {
+        "GLFW",
+        "GLAD"
     }
 
     filter "system:macosx"
@@ -54,3 +60,6 @@ project "SitzCue"
         defines {
             "NDEBUG"
         }
+
+include "vendor/glfw/premake5.lua"
+include "vendor/glad/premake5.lua"
