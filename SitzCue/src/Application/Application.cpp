@@ -13,7 +13,7 @@ void Application::StartApplication() {
 
 void Application::CreateWindow() {
     if(!glfwInit()) {
-        // TODO: ERROR
+        Log::Error("Failed to initialize GLFW!\n\tStatus: Returning");
         return;
     }
 
@@ -42,8 +42,7 @@ void Application::CreateWindow() {
 
     if(m_Window == nullptr) {
         glfwTerminate();
-        // TODO: LOG
-        // Log::Error("Could not create the GLFW Window");
+        Log::Error("Could not create the GLFW Window");
         return;
     }
 
@@ -57,9 +56,8 @@ void Application::CreateWindow() {
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        // TODO
         std::cout << "GLAD FAILED" << std::endl;
-        // Log::Error("Failed to initialize GLAD");
+        Log::Error("Failed to initialize GLAD");
         return;
     }
 
@@ -73,7 +71,7 @@ void Application::CreateWindow() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Log::Success("Created the GLFW Display!");
+    Log::Success("Created the GLFW Display!");
 
     glfwFocusWindow(m_Window);
 }
@@ -115,6 +113,9 @@ void Application::LaunchApplicationLoop() {
 }
 
 void Application::CleanUp() {
+
+    Log::Info("Closing Application");
+
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
