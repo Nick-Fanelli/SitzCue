@@ -1,5 +1,8 @@
 #include "ImGuiLayer.h"
 
+#include "Window/Window.h"
+#include "Window/CueListWindow.h"
+
 using namespace SitzCue;
 
 static const ImVec4 BrandAccentColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
@@ -52,14 +55,15 @@ void ImGuiLayer::OnCreate() {
     ApplyColorTheme();
 }
 
+static CueListWindow s_CueListWindow;
+
 void ImGuiLayer::Begin() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("Test");
-    ImGui::Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum");
-    ImGui::End();
+    s_CueListWindow.OnUpdate();
+
 }
 
 void ImGuiLayer::End() {

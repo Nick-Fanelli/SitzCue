@@ -64,9 +64,6 @@ project "SitzCue"
             "NDEBUG"
         }
         
-    filter "files:resources/**"
-        buildaction ("Copy")
-
 include "vendor/glfw/premake5.lua"
 include "vendor/glad/premake5.lua"
 include "vendor/imgui/premake5.lua"
