@@ -1,5 +1,7 @@
-#include "sitzcuepch.h"
+#include "Application.h"
 
-int main() {
-    std::cout << "Hello World" << std::endl;
+using namespace SitzCue;
+
+void Application::StartApplication() {
+    std::cout << "Test" << std::endl;
 }
