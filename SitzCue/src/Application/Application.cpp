@@ -1,14 +1,29 @@
 #include "Application.h"
 
+#include "ImGuiLayer.h"
+
 using namespace SitzCue;
 
 static constexpr int s_DisplayWidth = 1600;
 static constexpr int s_DisplayHeight = 900;
 
+static ImGuiLayer s_ImGuiLayer;
+
 void Application::StartApplication() {
     this->CreateWindow();
+
+    s_ImGuiLayer = ImGuiLayer(this);
+
     this->LaunchApplicationLoop();
     this->CleanUp();
+}
+
+void Application::GetImGuiSize(ImVec2* outVec2) {
+    int x, y;
+    glfwGetWindowSize(m_Window, &x, &y);
+
+    outVec2->x = (float) x;
+    outVec2->y = (float) y;
 }
 
 void Application::CreateWindow() {
@@ -77,6 +92,10 @@ void Application::CreateWindow() {
 }
 
 void Application::LaunchApplicationLoop() {
+
+    // Initialize
+    s_ImGuiLayer.OnCreate();
+
     float endTime, startTime = (float) glfwGetTime();
     float deltaTime = -1.0f;
     float accumulativeDeltaTime = 0.0f;
@@ -89,9 +108,8 @@ void Application::LaunchApplicationLoop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if(deltaTime >= 0) {
-            // SceneManager::Update(deltaTime);
-
-            // Input::Update();
+            s_ImGuiLayer.Begin();
+            s_ImGuiLayer.End();
         }
 
         glfwSwapBuffers(m_Window);
@@ -110,6 +128,8 @@ void Application::LaunchApplicationLoop() {
 
         frameCount++;
     }
+
+    s_ImGuiLayer.OnDestroy();
 }
 
 void Application::CleanUp() {
