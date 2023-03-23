@@ -1,5 +1,12 @@
 {
     "files.associations": {
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "ios": "cpp",
+        "regex": "cpp",
+        "iosfwd": "cpp",
+        "vector": "cpp",
+        "__split_buffer": "cpp",
+        "deque": "cpp",
+        "type_traits": "cpp"
     }
 }

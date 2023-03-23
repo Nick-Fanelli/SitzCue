@@ -1,11 +1,13 @@
 #include "ImGuiLayer.h"
 
+#include "StatusBar.h"
+
 #include "Window/Window.h"
 #include "Window/CueListWindow.h"
 
 using namespace SitzCue;
 
-static const ImVec4 BrandAccentColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
+static const ImVec4 StatusBarColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
 
 ImGuiLayer::ImGuiLayer(Application* application) {
     m_Application = application;
@@ -35,11 +37,11 @@ void ImGuiLayer::OnCreate() {
     io.FontDefault = io.Fonts->AddFontFromFileTTF("resources/fonts/Inter-Regular.ttf", 16.0f, &config);
 
     // Font Awesome
-    // ImFontConfig faConfig;
-    // faConfig.MergeMode = true;
-    // faConfig.GlyphMinAdvanceX = 13.0f;
-    // static constexpr ImWchar iconRanges[] = { 0xe005, 0xf8ff, 0 };
-    // io.Fonts->AddFontFromFileTTF("assets/fonts/font-awesome/Font-Awesome-Solid-900.otf", 16.0f, &faConfig, iconRanges);
+    ImFontConfig faConfig;
+    faConfig.MergeMode = true;
+    faConfig.GlyphMinAdvanceX = 13.0f;
+    static constexpr ImWchar iconRanges[] = { 0xe005, 0xf8ff, 0 };
+    io.Fonts->AddFontFromFileTTF("resources/fonts/font-awesome/Font-Awesome-Solid-900.otf", 16.0f, &faConfig, iconRanges);
 
     ImGuiStyle& style = ImGui::GetStyle();
     if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -55,6 +57,43 @@ void ImGuiLayer::OnCreate() {
     ApplyColorTheme();
 }
 
+static void DrawDockspace() {
+
+    static bool isDockingEnabled = true;
+    static constexpr bool optFullscreen = true;
+    static constexpr ImGuiDockNodeFlags dockingFlags = ImGuiDockNodeFlags_None;
+
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+
+    if(optFullscreen) {
+        static ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - StatusBar::StatusBarHeight));
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+        windowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    }
+
+    if(dockingFlags * ImGuiDockNodeFlags_PassthruCentralNode)
+        windowFlags |= ImGuiWindowFlags_NoBackground;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+    ImGui::Begin("Dockspace", &isDockingEnabled, windowFlags);
+    ImGui::PopStyleVar(optFullscreen ? 3 : 1);
+
+    // Draw Dockspace
+    static ImGuiIO& io = ImGui::GetIO();
+    ImGuiID dockspaceID = ImGui::GetID("Dockspace");
+    ImGui::DockSpace(dockspaceID, { 0.0f, 0.0f }, dockingFlags);
+    ImGui::End();
+}
+
+static StatusBar s_StatusBar;
 static CueListWindow s_CueListWindow;
 
 void ImGuiLayer::Begin() {
@@ -62,6 +101,14 @@ void ImGuiLayer::Begin() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    static ImGuiStyle& style = ImGui::GetStyle();
+
+    // Draw Dockspace
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, { 370.0f, style.WindowMinSize.y }); // Set minimum window size for dockspace windows
+    DrawDockspace(); // Draw the dockspace environment
+    ImGui::PopStyleVar(); // Pop dockspace window min size
+
+    s_StatusBar.OnUpdate();
     s_CueListWindow.OnUpdate();
 
 }
@@ -90,10 +137,10 @@ void ImGuiLayer::OnDestroy() {
 void ImGuiLayer::ApplyColorTheme() {
     static auto& colors = ImGui::GetStyle().Colors;
 
-    colors[ImGuiCol_DockingPreview] = BrandAccentColor;
-    colors[ImGuiCol_DragDropTarget] = BrandAccentColor;
-    colors[ImGuiCol_NavHighlight] = BrandAccentColor;
-    colors[ImGuiCol_ResizeGripActive] = BrandAccentColor;
+    colors[ImGuiCol_DockingPreview] = StatusBarColor;
+    colors[ImGuiCol_DragDropTarget] = StatusBarColor;
+    colors[ImGuiCol_NavHighlight] = StatusBarColor;
+    colors[ImGuiCol_ResizeGripActive] = StatusBarColor;
 
     colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
