@@ -12,6 +12,9 @@ CueListWindow::CueListWindow() {
 }
 
 void CueListWindow::DrawCue(Cue& cue) {
+    
+    SITZCUE_PROFILE_FUNCTION();
+
     ImGui::TableNextRow();
 
     ImGui::TableSetColumnIndex(0);
@@ -38,6 +41,8 @@ void CueListWindow::DrawCue(Cue& cue) {
 }
 
 void CueListWindow::OnUpdate() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     ImGui::Begin("Cue List");
 

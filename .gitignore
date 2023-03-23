@@ -4,3 +4,4 @@ build/
 build-int/
 *.make
 Makefile
+SitzCueProfilingResults.json

@@ -15,6 +15,8 @@ ImGuiLayer::ImGuiLayer(Application* application) {
 
 void ImGuiLayer::OnCreate() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     const char* glslVersion = "#version 410 core";
 
     IMGUI_CHECKVERSION();
@@ -59,6 +61,8 @@ void ImGuiLayer::OnCreate() {
 
 static void DrawDockspace() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     static bool isDockingEnabled = true;
     static constexpr bool optFullscreen = true;
     static constexpr ImGuiDockNodeFlags dockingFlags = ImGuiDockNodeFlags_None;
@@ -96,7 +100,17 @@ static void DrawDockspace() {
 static StatusBar s_StatusBar;
 static CueListWindow s_CueListWindow;
 
+static void DrawImGuiWindows() {
+    SITZCUE_PROFILE_FUNCTION();
+
+    s_StatusBar.OnUpdate();
+    s_CueListWindow.OnUpdate();
+}
+
 void ImGuiLayer::Begin() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -108,12 +122,13 @@ void ImGuiLayer::Begin() {
     DrawDockspace(); // Draw the dockspace environment
     ImGui::PopStyleVar(); // Pop dockspace window min size
 
-    s_StatusBar.OnUpdate();
-    s_CueListWindow.OnUpdate();
-
+    DrawImGuiWindows();
 }
 
 void ImGuiLayer::End() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     static ImGuiIO& io = ImGui::GetIO();
     m_Application->GetImGuiSize(&io.DisplaySize);
 

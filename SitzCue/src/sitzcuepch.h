@@ -25,6 +25,9 @@
 // Internal
 #include "Log.h"
 
+#include "Debug/Assert.h"
+#include "Debug/Profile.h"
+
 // Vendor
 #define GLFW_INCLUDE_NONE
 #include <glad/glad.h>

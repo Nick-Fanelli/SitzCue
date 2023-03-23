@@ -17,6 +17,8 @@ static bool s_IsVisible = true;
 
 void StatusBar::OnUpdate() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     static auto& colors = ImGui::GetStyle().Colors;
     static ImGuiViewport* viewport = ImGui::GetMainViewport();
 
