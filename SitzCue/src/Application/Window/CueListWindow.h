@@ -15,7 +15,12 @@ namespace SitzCue {
 
         void OnUpdate() override;
 
+        const std::vector<Cue*>& GetSelectedCues() const { return m_SelectedCues; }
+        std::vector<Cue*>& GetSelectedCues() { return m_SelectedCues; }
+
     private:
+        void HandleOnCueClick(Cue& cue);
+
         void DrawCue(Cue& cue);
 
         CueList m_CueList;

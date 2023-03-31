@@ -3,9 +3,10 @@
 #include "StatusBar.h"
 
 #include "Window/Window.h"
-#include "Window/CueListWindow.h"
 
 using namespace SitzCue;
+
+static WindowManager s_WindowManager;
 
 static const ImVec4 StatusBarColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
 
@@ -36,7 +37,7 @@ void ImGuiLayer::OnCreate() {
     config.OversampleV = 3;
 
     // Default Font
-    io.FontDefault = io.Fonts->AddFontFromFileTTF("resources/fonts/Inter-Regular.ttf", 16.0f, &config);
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("resources/fonts/Inter-Regular.ttf", 17.0f, &config);
 
     // Font Awesome
     ImFontConfig faConfig;
@@ -57,6 +58,8 @@ void ImGuiLayer::OnCreate() {
     ImGui_ImplOpenGL3_Init(glslVersion);
 
     ApplyColorTheme();
+
+    s_WindowManager.OnCreate();
 }
 
 static void DrawDockspace() {
@@ -97,16 +100,6 @@ static void DrawDockspace() {
     ImGui::End();
 }
 
-static StatusBar s_StatusBar;
-static CueListWindow s_CueListWindow;
-
-static void DrawImGuiWindows() {
-    SITZCUE_PROFILE_FUNCTION();
-
-    s_StatusBar.OnUpdate();
-    s_CueListWindow.OnUpdate();
-}
-
 void ImGuiLayer::Begin() {
 
     SITZCUE_PROFILE_FUNCTION();
@@ -122,7 +115,7 @@ void ImGuiLayer::Begin() {
     DrawDockspace(); // Draw the dockspace environment
     ImGui::PopStyleVar(); // Pop dockspace window min size
 
-    DrawImGuiWindows();
+    s_WindowManager.OnUpdate();
 }
 
 void ImGuiLayer::End() {
@@ -147,6 +140,7 @@ void ImGuiLayer::OnDestroy() {
     // TODO: IMPLEMENT
     // ImGui::SaveIniSettingsToDisk(s_SaveFileLocation.c_str());
     ImGui::SaveIniSettingsToDisk("imgui.ini");
+    s_WindowManager.OnDestroy();
 }
 
 void ImGuiLayer::ApplyColorTheme() {
@@ -185,4 +179,8 @@ void ImGuiLayer::ApplyColorTheme() {
     colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
     colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
     colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+    static auto& style = ImGui::GetStyle();
+    style.FrameRounding = 5.0f;
+    style.WindowRounding = 5.0f;
 }

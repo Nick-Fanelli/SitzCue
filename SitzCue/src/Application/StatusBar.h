@@ -11,7 +11,7 @@ namespace SitzCue {
 
         void OnUpdate();
 
-        static constexpr float StatusBarHeight = 30;
+        static constexpr float StatusBarHeight = 100;
     
     };
 
