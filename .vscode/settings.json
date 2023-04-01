@@ -70,6 +70,9 @@
         "unordered_map": "cpp",
         "unordered_set": "cpp",
         "variant": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "list": "cpp",
+        "numeric": "cpp",
+        "random": "cpp"
     }
 }

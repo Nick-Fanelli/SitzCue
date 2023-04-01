@@ -4,46 +4,103 @@
 
 using namespace SitzCue;
 
+static constexpr ImVec4 SelectedCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 
 CueListWindow::CueListWindow() {
     m_CueList = CueList();
 
-    m_CueList.CreateCue(CueType::CueTypeEmpty, 1, "Some Cue");
-    m_CueList.CreateCue(CueType::CueTypeEmpty, 2, "Some Cue");
-    m_CueList.CreateCue(CueType::CueTypeEmpty, 3, "Some Cue");
-    m_CueList.CreateCue(CueType::CueTypeEmpty, 4, "Some Cue");
+    m_CueList.CreateCue("House Open (Pre-Show)", 1.0f);
+    m_CueList.CreateCue();
+    m_CueList.CreateCue();
+    m_CueList.CreateCue("Pre-Show Announcement", 2.0f);
+    m_CueList.CreateCue();
+    m_CueList.CreateCue("Show Mode", 3.0f);
+    m_CueList.CreateCue("House Open (Post-Show)", 4.0f);
 }
 
-void CueListWindow::HandleOnCueClick(Cue& cue) {
+void CueListWindow::HandleOnCueClick(UUID uuid) {
     static auto& io = ImGui::GetIO();
 
-    if(!io.KeyMods)
-            m_SelectedCues.clear();
-        m_SelectedCues.push_back(&cue);
+    if(io.KeyShift) {
+
+        UUID lastSelectedUUID = m_SelectedCues[m_SelectedCues.size() - 1];
+
+        if(lastSelectedUUID == uuid) {
+            auto it = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), uuid);
+            m_SelectedCues.erase(it);
+            return;
+        }
+
+        int lastSelectedIndex = -1;
+        int currentSelectedIndex = -1;
+
+        const auto& cueCache = m_CueList.GetCueCache();
+
+        // Find Indices of the Selections
+        for(int i = 0; i < cueCache.size(); i++) {
+            if(cueCache[i]->UUID == lastSelectedUUID) {
+                lastSelectedIndex = i;
+            }
+
+            if(cueCache[i]->UUID == uuid) {
+                currentSelectedIndex = i;
+            }
+
+            if(currentSelectedIndex != -1 && lastSelectedIndex != -1)
+                break;
+        }
+
+        int firstIndex = (lastSelectedIndex < currentSelectedIndex) ? lastSelectedIndex : currentSelectedIndex;
+        int lastIndex = (lastSelectedIndex > currentSelectedIndex) ? lastSelectedIndex : currentSelectedIndex;
+
+        for(int i = firstIndex; i <= lastIndex; i++) {
+            m_SelectedCues.push_back(cueCache[i]->UUID);
+        }
+
+        return;
+
+    } else if(io.KeySuper) {
+        Log::Info("Hey");
+    }
+
+    m_SelectedCues.clear();
+    m_SelectedCues.push_back(uuid);
 }
 
-void CueListWindow::DrawCue(Cue& cue) {
+void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
     
     SITZCUE_PROFILE_FUNCTION();
 
-    bool isSelected = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), &cue) != m_SelectedCues.end();
+    Cue& cue = *cues[n];
+
+    bool isSelected = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), cue.UUID) != m_SelectedCues.end();
 
     ImGui::TableNextColumn();
     ImGui::AlignTextToFramePadding();
-    ImGui::Text("%s", CueTypeStrings[(int) cue.CueType].c_str());
+    // ImGui::Text("%s", CueTypeStrings[(int) cue.CueType].c_str());
 
     ImGui::TableNextColumn();
 
-    if(isSelected) 
-        ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
+    if(isSelected) {
+        if(cue.CueNumber.IsAssigned()) {
+            ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
+        } else {
+            ImGui::Text("");
+        }
+    }
     else {
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("%g", cue.CueNumber);
+        if(cue.CueNumber.IsAssigned())
+            ImGui::Text("%g", (double) cue.CueNumber);
+        else
+            ImGui::Text("");
     }
     
+    // Element Targets
     if(ImGui::IsItemClicked()) 
-        HandleOnCueClick(cue);
+        HandleOnCueClick(cue.UUID);
+    // HandleOnCueDrag(cue);
 
     ImGui::TableNextColumn();
     if(isSelected)
@@ -52,21 +109,28 @@ void CueListWindow::DrawCue(Cue& cue) {
         ImGui::AlignTextToFramePadding();
         ImGui::Text("%s", cue.CueName.c_str());
     }
+
+    // Element Targets
     if(ImGui::IsItemClicked()) 
-        HandleOnCueClick(cue);
+        HandleOnCueClick(cue.UUID);
+    // HandleOnCueDrag(cue);
 
     ImGui::SameLine();
 
-    ImGui::PushStyleColor(ImGuiCol_Header, ActiveCueColor);
 
-    if(isSelected)
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ActiveCueColor);
-
-    if(ImGui::Selectable("", isSelected, ImGuiSelectableFlags_SpanAllColumns)) {
-        HandleOnCueClick(cue);
+    if(isSelected) {
+        ImGui::PushStyleColor(ImGuiCol_Header, SelectedCueColor);
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, SelectedCueColor);
     }
 
-    ImGui::PopStyleColor(isSelected ? 2 : 1);
+    // Element Targets
+    if(ImGui::Selectable("", isSelected, ImGuiSelectableFlags_SpanAllColumns)) {
+        HandleOnCueClick(cue.UUID);
+    }
+
+    // ImGui::PopStyleColor(isSelected ? 2 : 1);
+    if(isSelected)
+        ImGui::PopStyleColor(2);
 }
 
 static bool s_IsNewCueDropdownVisible = false;
@@ -83,32 +147,28 @@ void CueListWindow::OnUpdate() {
     ImGui::InputText("###search_buffer", s_SearchBuffer, sizeof(s_SearchBuffer));
     
     ImGui::SameLine();
-    // if(ImGui::Button("+###add_cue")) {
-    //     s_IsNewCueDropdownVisible = true;
-    // }
 
     if(ImGui::BeginCombo("###add_cue", "+", ImGuiComboFlags_NoPreview)) {
         ImGui::EndCombo();
     } 
 
-    // if (ImGui::BeginComboPreview())
-    // {
-    //     ImGui::Text("Hello World");
-    //     ImGui::EndComboPreview();
-    // }
-
-    if(ImGui::BeginTable("CueTable", 3, ImGuiTableFlags_Resizable | ImGuiTableFlags_RowBg)) {
+    if(ImGui::BeginTable("CueTable", 3, ImGuiTableFlags_Resizable)) {
 
         ImGui::TableSetupColumn("Type");
         ImGui::TableSetupColumn("Number");
         ImGui::TableSetupColumn("Name");
         ImGui::TableHeadersRow();
 
-        for(Cue& cue : m_CueList.GetCues()) {
+        const auto& cache = m_CueList.GetCueCache();
+
+        for(int n = 0; n < cache.size(); n++) {
+
             ImGui::TableNextRow();
-            ImGui::PushID(&cue);
-            DrawCue(cue);
+
+            ImGui::PushID(cache[n]);
+            DrawCue(cache, n);
             ImGui::PopID();
+
         }
 
         ImGui::EndTable();
@@ -116,4 +176,6 @@ void CueListWindow::OnUpdate() {
     }
 
     ImGui::End();
+
+    // ImGui::ShowDemoWindow();
 }

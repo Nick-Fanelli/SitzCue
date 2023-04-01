@@ -14,6 +14,8 @@ namespace SitzCue {
 
         void OnUpdate() override;
 
+        void DrawCue(Cue& cue);
+
     private:
         CueListWindow* m_CueListWindowPtr;
 
