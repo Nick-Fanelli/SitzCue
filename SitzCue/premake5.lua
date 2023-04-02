@@ -32,7 +32,8 @@ project "SitzCue"
             "Cocoa.framework",
             "OpenGL.framework",
             "IOKit.framework",
-            "CoreVideo.framework"
+            "CoreVideo.framework",
+            "UniformTypeIdentifiers.framework"
         }
 
     filter "system:linux"

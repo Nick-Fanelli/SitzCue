@@ -7,6 +7,7 @@ namespace SitzCue {
     class Application {
 
     public:
+
         void StartApplication();
 
         void GetImGuiSize(ImVec2* outVec2);
