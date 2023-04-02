@@ -25,24 +25,21 @@ namespace SitzCue {
     struct CueNumber {
 
         CueNumber() = default;
-        CueNumber(float value) {
-            m_RawValue = value;
-            m_IsAssigned = true;
-        }
-
-        operator float() const { return m_RawValue; }
-        operator float&() { return m_RawValue; }
+        CueNumber(float initialValue) : m_Data(initialValue), m_IsAssigned(true) {}
 
         CueNumber& operator=(float value) {
-            this->m_RawValue = value;
+            m_Data = value;
             m_IsAssigned = true;
             return *this;
         }
 
-        bool IsAssigned() { return m_IsAssigned; }
+        operator float() const { return m_Data; }
+
+        void Unassign() { m_IsAssigned = false; }
+        bool IsAssigned() const { return m_IsAssigned; }
 
     private:
-        float m_RawValue = -1.0f;
+        float m_Data = 0.0f;
         bool m_IsAssigned = false;
 
     };

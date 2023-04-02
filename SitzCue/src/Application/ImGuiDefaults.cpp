@@ -44,7 +44,6 @@ void ImGuiDefaults::DrawFloat(const std::string& label, float& value, float step
     ImGui::PopID();
 }
 
-
 void ImGuiDefaults::DrawFloatHidden(float& value, float step, float stepFast, const char* format) {
     ImGui::PushID(&value);
 
@@ -59,4 +58,41 @@ void ImGuiDefaults::DrawFloatHidden(float& value, float step, float stepFast, co
     ImGui::PopStyleVar();
 
     ImGui::PopID();
+}
+
+static float s_DrawCueNumberFloatPlaceholder;
+static std::string s_DrawCueNumberStringPlaceholder;
+
+void ImGuiDefaults::DrawCueNumber(const std::string& label, CueNumber& cueNumber) {
+
+    ImGui::PushID(&cueNumber);
+
+    ImGui::Columns(2, nullptr, false);
+    ImGui::SetColumnWidth(0, ImGuiDefaults::ColumnWidth * 3.0f);
+    ImGui::Text("%s", label.c_str());
+    ImGui::NextColumn(); 
+    
+    if(cueNumber.IsAssigned()) {
+        s_DrawCueNumberFloatPlaceholder = cueNumber;
+        ImGui::InputFloat("", &s_DrawCueNumberFloatPlaceholder, 1.0f, 10.0f, "%g", ImGuiInputTextFlags_None);
+        ImGui::SameLine();
+        cueNumber = s_DrawCueNumberFloatPlaceholder;
+
+        if(ImGui::Button("Remove")) {
+            cueNumber.Unassign();
+        }
+
+    } else {        
+        s_DrawCueNumberStringPlaceholder.clear();
+
+        ImGui::InputText("", &s_DrawCueNumberStringPlaceholder);
+        if(ImGui::IsItemClicked()) {        
+            cueNumber = 0.0f;
+        }   
+    }
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+
 }

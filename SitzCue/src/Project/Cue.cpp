@@ -6,6 +6,8 @@ static std::random_device randomDevice;
 
 Cue& CueList::CreateCue(const std::string& name, float cueNumber) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     UUID uuid = GenerateUUID();
 
     Cue& cue = m_Registry.emplace_back(uuid, name, cueNumber);
@@ -18,6 +20,9 @@ Cue& CueList::CreateCue(const std::string& name, float cueNumber) {
 }
 
 Cue& CueList::CreateCue() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     UUID uuid = GenerateUUID();
 
     Cue& cue = m_Registry.emplace_back(uuid);
@@ -28,7 +33,23 @@ Cue& CueList::CreateCue() {
     return cue;
 }
 
+Cue& CueList::GetCue(UUID uuid) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    for(auto& cue : m_Registry) {
+        if(cue.UUID == uuid) {
+            return cue;
+        }
+    }
+
+    SITZCUE_ASSERT_MESSAGE(false, "Could not identify cue!");
+
+}
+
 UUID CueList::GenerateUUID() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     bool isUnique = false;
     uint32_t rand = 0;
@@ -57,6 +78,8 @@ UUID CueList::GenerateUUID() {
 }
 
 void CueList::UpdateCueCache() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     m_SortedCuesCache.clear();
 

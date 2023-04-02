@@ -10,21 +10,28 @@ CuePropertiesWindow::CuePropertiesWindow(CueListWindow* cueListWindowPtr) {
 
 void CuePropertiesWindow::OnUpdate() {
 
-    // std::vector<Cue*>& selectedCues = m_CueListWindowPtr->GetSelectedCues();
+    SITZCUE_PROFILE_FUNCTION();
 
     ImGui::Begin("Cue Properties");
 
-    // if(selectedCues.size() <= 0) {
-    //     ImGui::Text("No Cue Selected");
-    // } else {
-    //     DrawCue(*selectedCues[0]);
-    // }
+    auto& selectedCues = m_CueListWindowPtr->GetSelectedCues();
+
+    if(selectedCues.size() <= 0) {
+        ImGui::Text("No Cue Selected");
+    } else if(selectedCues.size() > 1) {
+        ImGui::Text("Please Select Just One Cue");
+    } else {
+        DrawCue(m_CueListWindowPtr->GetCueList().GetCue(selectedCues[0]));
+    }
 
     ImGui::End();
 
 }
 
 void CuePropertiesWindow::DrawCue(Cue& cue) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     ImGui::Text("Controls");
     ImGui::AlignTextToFramePadding();
     ImGui::SameLine();
@@ -38,5 +45,5 @@ void CuePropertiesWindow::DrawCue(Cue& cue) {
     ImGui::NewLine();
 
     ImGuiDefaults::DrawTextInput("Cue Name", cue.CueName);
-    ImGuiDefaults::DrawFloat("Cue Number", cue.CueNumber);
+    ImGuiDefaults::DrawCueNumber("Cue Number", cue.CueNumber);
 }

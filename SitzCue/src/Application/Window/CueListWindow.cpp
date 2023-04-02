@@ -20,6 +20,9 @@ CueListWindow::CueListWindow() {
 }
 
 void CueListWindow::HandleOnCueClick(UUID uuid) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     static auto& io = ImGui::GetIO();
 
     if(io.KeyShift) {
@@ -61,6 +64,7 @@ void CueListWindow::HandleOnCueClick(UUID uuid) {
         return;
 
     } else if(io.KeySuper) {
+        // Platform Detection
         Log::Info("Hey");
     }
 
@@ -84,7 +88,8 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
 
     if(isSelected) {
         if(cue.CueNumber.IsAssigned()) {
-            ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
+            // FIXME
+            // ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
         } else {
             ImGui::Text("");
         }

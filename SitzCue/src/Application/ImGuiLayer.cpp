@@ -137,6 +137,9 @@ void ImGuiLayer::End() {
 }
 
 void ImGuiLayer::OnDestroy() {
+    
+    SITZCUE_PROFILE_FUNCTION();
+
     // TODO: IMPLEMENT
     // ImGui::SaveIniSettingsToDisk(s_SaveFileLocation.c_str());
     ImGui::SaveIniSettingsToDisk("imgui.ini");
@@ -144,6 +147,9 @@ void ImGuiLayer::OnDestroy() {
 }
 
 void ImGuiLayer::ApplyColorTheme() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     static auto& colors = ImGui::GetStyle().Colors;
 
     colors[ImGuiCol_DockingPreview] = StatusBarColor;
