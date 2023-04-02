@@ -15,6 +15,7 @@ project "SitzCue"
         "vendor/glfw/include",
         "vendor/imgui",
         "vendor/imgui/backends",
+        "vendor/nativefiledialog/src/include",
 
         "src"
     }
@@ -22,7 +23,8 @@ project "SitzCue"
     links {
         "GLFW",
         "GLAD",
-        "ImGui"
+        "ImGui",
+        "NFD"
     }
 
     filter "system:macosx"
@@ -67,3 +69,4 @@ project "SitzCue"
 include "vendor/glfw/premake5.lua"
 include "vendor/glad/premake5.lua"
 include "vendor/imgui/premake5.lua"
+include "vendor/nativefiledialog/premake5.lua"

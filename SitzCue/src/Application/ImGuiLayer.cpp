@@ -1,12 +1,14 @@
 #include "ImGuiLayer.h"
 
 #include "StatusBar.h"
+#include "MenuBar.h"
 
 #include "Window/Window.h"
 
 using namespace SitzCue;
 
 static WindowManager s_WindowManager;
+static MenuBar s_MenuBar;
 
 static const ImVec4 StatusBarColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
 
@@ -70,7 +72,7 @@ static void DrawDockspace() {
     static constexpr bool optFullscreen = true;
     static constexpr ImGuiDockNodeFlags dockingFlags = ImGuiDockNodeFlags_None;
 
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking;
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 
     if(optFullscreen) {
         static ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -91,6 +93,9 @@ static void DrawDockspace() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
     ImGui::Begin("Dockspace", &isDockingEnabled, windowFlags);
+
+    s_MenuBar.OnUpdate();
+
     ImGui::PopStyleVar(optFullscreen ? 3 : 1);
     {
         // Draw Dockspace

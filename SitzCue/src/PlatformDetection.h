@@ -36,10 +36,13 @@ namespace SitzCue::Platform {
 
 #ifdef SITZCUE_PLATFORM_WINDOWS
     inline Platform ActivePlatform = Platform::PlatformWindows;
+
 #elif defined(SITZCUE_PLATFORM_MACOS)
     inline Platform ActivePlatform = Platform::PlatformMacOS;
+
 #elif defined(SITZCUE_PLATFORM_LINUX)
     inline Platform ActivePlatform = Platform::PlatformLinux;
+    
 #endif
 
 }

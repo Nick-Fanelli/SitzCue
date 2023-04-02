@@ -4,3 +4,6 @@
 [submodule "SitzCue/vendor/imgui"]
 	path = SitzCue/vendor/imgui
 	url = https://github.com/Nick-Fanelli/imgui
+[submodule "SitzCue/vendor/nativefiledialog"]
+	path = SitzCue/vendor/nativefiledialog
+	url = https://github.com/Nick-Fanelli/nativefiledialog.git
