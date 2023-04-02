@@ -4,6 +4,8 @@
 
 namespace SitzCue {
 
+    class Application;
+
     class Display {
 
     public:
@@ -11,7 +13,7 @@ namespace SitzCue {
         Display(const Display&) = delete;
 
         void CreateDisplay();
-        void StartApplicationLoop(const std::function<void(float)>& updateLoop);
+        void StartApplicationLoop(Application* application);
 
         void GetImGuiSize(ImVec2* outVec2);
 

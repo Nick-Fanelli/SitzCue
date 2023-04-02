@@ -1,5 +1,6 @@
 #include "ImGuiLayer.h"
 
+#include "Application.h"
 #include "StatusBar.h"
 #include "MenuBar.h"
 
@@ -61,7 +62,7 @@ void ImGuiLayer::OnCreate() {
 
     ApplyColorTheme();
 
-    s_WindowManager.OnCreate();
+    s_WindowManager.SetScene<LanderScene>();
 }
 
 static void DrawDockspace() {
@@ -146,10 +147,11 @@ void ImGuiLayer::OnDestroy() {
     
     SITZCUE_PROFILE_FUNCTION();
 
+    s_WindowManager.OnDestroy();
+
     // TODO: IMPLEMENT
     // ImGui::SaveIniSettingsToDisk(s_SaveFileLocation.c_str());
     ImGui::SaveIniSettingsToDisk("imgui.ini");
-    s_WindowManager.OnDestroy();
 }
 
 void ImGuiLayer::ApplyColorTheme() {

@@ -1,5 +1,7 @@
 #include "Display.h"
 
+#include "Application.h"
+
 using namespace SitzCue;
 
 static constexpr int s_DisplayWidth = 1600;
@@ -78,7 +80,10 @@ void Display::GetImGuiSize(ImVec2* outVec2) {
     outVec2->y = (float) y;
 }
 
-void Display::StartApplicationLoop(const std::function<void(float)>& updateLoop) {
+void Display::StartApplicationLoop(Application* application) {
+
+    application->OnCreate();
+
     float endTime, startTime = (float) glfwGetTime();
     float deltaTime = -1.0f;
     float accumulativeDeltaTime = 0.0f;
@@ -91,7 +96,7 @@ void Display::StartApplicationLoop(const std::function<void(float)>& updateLoop)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if(deltaTime >= 0) {
-            updateLoop(deltaTime);
+            application->OnUpdate(deltaTime);
         }
 
         glfwSwapBuffers(m_Window);
@@ -110,6 +115,8 @@ void Display::StartApplicationLoop(const std::function<void(float)>& updateLoop)
 
         frameCount++;
     }
+
+    application->OnDestroy();
 
     CleanUp();
 }

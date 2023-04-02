@@ -2,9 +2,9 @@
 
 #include "sitzcuepch.h"
 
-#include "Application/Application.h"
-
 namespace SitzCue {
+
+    class Application;
 
     class ImGuiLayer {
 
