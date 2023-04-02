@@ -2,6 +2,8 @@
 
 #include "sitzcuepch.h"
 
+#include "Display.h"
+
 namespace SitzCue {
 
     class Application {
@@ -10,18 +12,13 @@ namespace SitzCue {
 
         void StartApplication();
 
-        void GetImGuiSize(ImVec2* outVec2);
+        void OnUpdate(float deltaTime);
 
-        GLFWwindow* GetWindowPtr() { return m_Window; }
+        const Display& GetDisplay() const { return m_Display; }
+        Display& GetDisplay() { return m_Display; }
 
     private:
-        GLFWwindow* m_Window;
-
-        int m_CurrentFps = 0;
-
-        void CreateWindow();
-        void LaunchApplicationLoop();
-        void CleanUp();
+        Display m_Display;
 
     };
 

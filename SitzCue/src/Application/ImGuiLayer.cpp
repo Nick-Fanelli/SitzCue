@@ -54,9 +54,9 @@ void ImGuiLayer::OnCreate() {
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
-    m_Application->GetImGuiSize(&io.DisplaySize);
+    m_Application->GetDisplay().GetImGuiSize(&io.DisplaySize);
 
-    ImGui_ImplGlfw_InitForOpenGL(m_Application->GetWindowPtr(), true);
+    ImGui_ImplGlfw_InitForOpenGL(m_Application->GetDisplay().GetWindowPtr(), true);
     ImGui_ImplOpenGL3_Init(glslVersion);
 
     ApplyColorTheme();
@@ -129,7 +129,7 @@ void ImGuiLayer::End() {
     SITZCUE_PROFILE_FUNCTION();
 
     static ImGuiIO& io = ImGui::GetIO();
-    m_Application->GetImGuiSize(&io.DisplaySize);
+    m_Application->GetDisplay().GetImGuiSize(&io.DisplaySize);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
