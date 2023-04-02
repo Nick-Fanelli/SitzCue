@@ -24,6 +24,7 @@
 #include <filesystem>
 
 // Internal
+#include "PlatformDetection.h"
 #include "Log.h"
 
 #include "Debug/Assert.h"
