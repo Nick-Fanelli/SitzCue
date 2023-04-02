@@ -36,11 +36,11 @@ void CuePropertiesWindow::DrawCue(Cue& cue) {
     ImGui::AlignTextToFramePadding();
     ImGui::SameLine();
 
-    // if(ImGui::Button("Go Up")) {    }
+    if(ImGui::Button("Move Cue Up")) {    }
 
-    // ImGui::SameLine();
+    ImGui::SameLine();
 
-    // if(ImGui::Button("Go Down"));
+    if(ImGui::Button("Move Cue Down"));
 
     ImGui::NewLine();
 

@@ -70,7 +70,7 @@ static void DrawDockspace() {
     static constexpr bool optFullscreen = true;
     static constexpr ImGuiDockNodeFlags dockingFlags = ImGuiDockNodeFlags_None;
 
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking;
 
     if(optFullscreen) {
         static ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -92,11 +92,12 @@ static void DrawDockspace() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
     ImGui::Begin("Dockspace", &isDockingEnabled, windowFlags);
     ImGui::PopStyleVar(optFullscreen ? 3 : 1);
-
-    // Draw Dockspace
-    static ImGuiIO& io = ImGui::GetIO();
-    ImGuiID dockspaceID = ImGui::GetID("Dockspace");
-    ImGui::DockSpace(dockspaceID, { 0.0f, 0.0f }, dockingFlags);
+    {
+        // Draw Dockspace
+        static ImGuiIO& io = ImGui::GetIO();
+        ImGuiID dockspaceID = ImGui::GetID("Dockspace");
+        ImGui::DockSpace(dockspaceID, { 0.0f, 0.0f }, dockingFlags);
+    }
     ImGui::End();
 }
 

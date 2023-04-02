@@ -96,3 +96,32 @@ void ImGuiDefaults::DrawCueNumber(const std::string& label, CueNumber& cueNumber
     ImGui::PopID();
 
 }
+
+static float s_DrawCueNumberHiddenFloatPlaceholder;
+static std::string s_DrawCueNumberHiddenStringPlaceholder;
+
+void ImGuiDefaults::DrawCueNumberHidden(CueNumber& cueNumber) {
+    ImGui::PushID(&cueNumber);
+
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
+
+    auto previousPadding = ImGui::GetStyle().FramePadding.y;
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, previousPadding});
+
+    if(cueNumber.IsAssigned()) {
+        s_DrawCueNumberHiddenFloatPlaceholder = cueNumber;
+        ImGui::InputFloat("", &s_DrawCueNumberHiddenFloatPlaceholder, 0, 0, "%g", ImGuiInputTextFlags_None);
+        cueNumber = s_DrawCueNumberHiddenFloatPlaceholder;
+    } else {
+        s_DrawCueNumberHiddenStringPlaceholder.clear();
+        ImGui::InputText("", &s_DrawCueNumberHiddenStringPlaceholder);
+        if(!s_DrawCueNumberHiddenStringPlaceholder.empty()) {
+            cueNumber = 0.0f;
+        }
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar();
+
+    ImGui::PopID();
+}

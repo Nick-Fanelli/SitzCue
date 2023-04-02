@@ -18,6 +18,7 @@ namespace SitzCue::ImGuiDefaults {
     void DrawFloatHidden(float& value, float step = 1.0f, float stepFast = 10.0f, const char* format = "%g");
 
     void DrawCueNumber(const std::string& label, CueNumber& cueNumber);
+    void DrawCueNumberHidden(CueNumber& cueNumber);
 
 
 }

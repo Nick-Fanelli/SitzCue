@@ -87,12 +87,7 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
     ImGui::TableNextColumn();
 
     if(isSelected) {
-        if(cue.CueNumber.IsAssigned()) {
-            // FIXME
-            // ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
-        } else {
-            ImGui::Text("");
-        }
+        ImGuiDefaults::DrawCueNumberHidden(cue.CueNumber);
     }
     else {
         ImGui::AlignTextToFramePadding();
