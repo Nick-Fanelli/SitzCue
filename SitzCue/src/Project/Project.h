@@ -6,6 +6,8 @@
 
 namespace SitzCue {
 
+    class Application;
+
     class Project {
 
     public:
@@ -14,9 +16,13 @@ namespace SitzCue {
         static const inline std::string CueListFileExtension = ".sitzqlist";
 
         static void CreateNewProject();
+        static void OpenProjectDialog(Application* application);
 
     public:
         Project(const std::filesystem::path& projectDirectoryPath) : m_ProjectDirectoryPath(projectDirectoryPath) {
+
+            m_ProjectDirectoryPath = std::filesystem::canonical(m_ProjectDirectoryPath);
+
             m_ShowFilePath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" +  m_ProjectDirectoryPath.stem().string() + std::string(Project::ShowFileExtension));
             m_CueListFilePath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" + m_ProjectDirectoryPath.stem().string() + std::string(Project::CueListFileExtension));
             m_ResourcesDirectoryPath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" + "Resources");

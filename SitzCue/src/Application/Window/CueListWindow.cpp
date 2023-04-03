@@ -7,17 +7,15 @@ using namespace SitzCue;
 static constexpr ImVec4 SelectedCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 
-CueListWindow::CueListWindow() {
-    m_CueList = CueList();
-
-    m_CueList.CreateCue("House Open (Pre-Show)", 1.0f);
-    m_CueList.CreateCue();
-    m_CueList.CreateCue();
-    m_CueList.CreateCue("Pre-Show Announcement", 2.0f);
-    m_CueList.CreateCue();
-    m_CueList.CreateCue("Show Mode", 3.0f);
-    m_CueList.CreateCue("House Open (Post-Show)", 4.0f);
-}
+// CueListWindow::CueListWindow() {
+//     m_CueList.CreateCue("House Open (Pre-Show)", 1.0f);
+//     m_CueList.CreateCue();
+//     m_CueList.CreateCue();
+//     m_CueList.CreateCue("Pre-Show Announcement", 2.0f);
+//     m_CueList.CreateCue();
+//     m_CueList.CreateCue("Show Mode", 3.0f);
+//     m_CueList.CreateCue("House Open (Post-Show)", 4.0f);
+// }
 
 void CueListWindow::HandleOnCueClick(UUID uuid) {
 

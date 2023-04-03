@@ -8,7 +8,6 @@
 
 using namespace SitzCue;
 
-static WindowManager s_WindowManager;
 static MenuBar s_MenuBar;
 
 static const ImVec4 StatusBarColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
@@ -62,7 +61,8 @@ void ImGuiLayer::OnCreate() {
 
     ApplyColorTheme();
 
-    s_WindowManager.SetScene<LanderScene>();
+    m_WindowManager = WindowManager(m_Application);
+    m_WindowManager.SetScene<LanderScene>();
 }
 
 static void DrawDockspace() {
@@ -122,7 +122,7 @@ void ImGuiLayer::Begin() {
     DrawDockspace(); // Draw the dockspace environment
     ImGui::PopStyleVar(); // Pop dockspace window min size
 
-    s_WindowManager.OnUpdate();
+    m_WindowManager.OnUpdate();
 }
 
 void ImGuiLayer::End() {
@@ -147,7 +147,7 @@ void ImGuiLayer::OnDestroy() {
     
     SITZCUE_PROFILE_FUNCTION();
 
-    s_WindowManager.OnDestroy();
+    m_WindowManager.OnDestroy();
 
     // TODO: IMPLEMENT
     // ImGui::SaveIniSettingsToDisk(s_SaveFileLocation.c_str());

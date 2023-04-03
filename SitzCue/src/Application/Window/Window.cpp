@@ -3,6 +3,9 @@
 #include "CueListWindow.h"
 #include "CuePropertiesWindow.h"
 
+#include "Application/Application.h"
+#include "Project/Project.h"
+
 using namespace SitzCue;
 
 
@@ -47,8 +50,12 @@ void LanderScene::OnUpdate() {
 
     ImGui::Begin("Lander", &shouldDisplay, windowFlags);
 
-    ImGui::Button("Create Project");
-    ImGui::Button("Open Project");
+    if(ImGui::Button("Create Project"))
+        Project::CreateNewProject();
+
+    if(ImGui::Button("Open Project")) {
+        Project::OpenProjectDialog(m_WindowManagerPtr->GetApplicationPtr());
+    }
 
     ImGui::End();
 
@@ -66,8 +73,13 @@ void LanderScene::OnDestroy() {
 void EditorScene::OnCreate() {
     SITZCUE_PROFILE_FUNCTION();
 
+    if(m_WindowManagerPtr->GetApplicationPtr()->GetActiveProject() == nullptr) {
+        Log::Error("No Project Found");
+        m_WindowManagerPtr->SetScene<LanderScene>();
+    }
+
     m_StatusBarPtr = new StatusBar();
-    m_CueListWindowPtr = new CueListWindow();
+    m_CueListWindowPtr = new CueListWindow(m_WindowManagerPtr->GetApplicationPtr());
     m_CuePropertiesWindowPtr = new CuePropertiesWindow(m_CueListWindowPtr);
 }
 

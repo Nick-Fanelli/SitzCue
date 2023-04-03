@@ -18,6 +18,7 @@ namespace SitzCue {
         virtual void OnUpdate();
     };
 
+    class Application;
     class WindowManager;
     class CueListWindow;
     class CuePropertiesWindow; 
@@ -83,6 +84,9 @@ namespace SitzCue {
 
     public:
 
+        WindowManager() = default;
+        WindowManager(Application* applicationPtr) : m_ApplicationPtr(applicationPtr) {}
+
         template<typename T>
         void SetScene() {
             if(m_ActiveScene != nullptr) {
@@ -100,8 +104,10 @@ namespace SitzCue {
         void OnUpdate();
         void OnDestroy();
 
-    private:
+        Application* GetApplicationPtr() { return m_ApplicationPtr; }
 
+    private:
+        Application* m_ApplicationPtr = nullptr;
         Scene* m_ActiveScene = nullptr;
 
     };

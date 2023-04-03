@@ -19,6 +19,8 @@ namespace SitzCue {
         void OnUpdate(float deltaTime);
         void OnDestroy();
 
+        void SetProject(const Project& project);
+
         const Display& GetDisplay() const { return m_Display; }
         Display& GetDisplay() { return m_Display; }
 
@@ -29,7 +31,7 @@ namespace SitzCue {
         Display m_Display;
         ImGuiLayer m_ImGuiLayer;
 
-        Project* m_ActiveProject = nullptr;
+        Project* m_ActiveProject;
 
     };
 
