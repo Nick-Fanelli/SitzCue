@@ -144,12 +144,6 @@ void CueListWindow::OnUpdate() {
     ImGui::SameLine();
     ImGui::InputText("###search_buffer", s_SearchBuffer, sizeof(s_SearchBuffer));
     
-    ImGui::SameLine();
-
-    if(ImGui::BeginCombo("###add_cue", "+", ImGuiComboFlags_NoPreview)) {
-        ImGui::EndCombo();
-    } 
-
     if(ImGui::BeginTable("CueTable", 3, ImGuiTableFlags_Resizable)) {
 
         ImGui::TableSetupColumn("Type");

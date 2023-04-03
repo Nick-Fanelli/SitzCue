@@ -1,5 +1,7 @@
 #include "StatusBar.h"
 
+#include "Application/Application.h"
+
 using namespace SitzCue;
 
 static constexpr ImVec4 StatusBarColor = { 0.06f, 0.06f, 0.06f, 1.0f };
@@ -31,7 +33,9 @@ void StatusBar::OnUpdate() {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, StatusBarColor);
 
     ImGui::Begin("Status Bar", &s_IsVisible, s_WindowFlags);
-    ImGui::Text("Hello World");
+
+    ImGui::Text("%s", m_ApplicationPtr->GetActiveProject()->GetProjectName().c_str());
+
     ImGui::End();
 
     ImGui::PopStyleVar(2);

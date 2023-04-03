@@ -4,7 +4,7 @@
 
 using namespace SitzCue;
 
-static inline void FileMenu() {
+static inline void FileMenu(Application* application) {
 
     if(ImGui::BeginMenu("File")) {
 
@@ -13,7 +13,7 @@ static inline void FileMenu() {
         if(ImGui::MenuItem("Open Project")) {}
 
         if(ImGui::MenuItem("New Project"))
-            Project::CreateNewProject();
+            Project::CreateNewProject(application);
 
         ImGui::EndMenu();
     }
@@ -26,7 +26,7 @@ void MenuBar::OnUpdate() {
 
     if(ImGui::BeginMenuBar()) {
 
-        FileMenu();
+        FileMenu(m_ApplicationPtr);
 
         ImGui::EndMenuBar();
 

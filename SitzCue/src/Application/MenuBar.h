@@ -2,15 +2,21 @@
 
 #include "sitzcuepch.h"
 
+#include "Application/Application.h"
+
 namespace SitzCue {
 
     class MenuBar {
 
     public:
         MenuBar() = default;
+        MenuBar(Application* applicationPtr) : m_ApplicationPtr(applicationPtr) {}
         MenuBar(const MenuBar&) = delete;
     
         void OnUpdate();
+    
+    private:
+        Application* m_ApplicationPtr;
 
     };
 

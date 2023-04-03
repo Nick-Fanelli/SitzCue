@@ -51,7 +51,7 @@ void LanderScene::OnUpdate() {
     ImGui::Begin("Lander", &shouldDisplay, windowFlags);
 
     if(ImGui::Button("Create Project"))
-        Project::CreateNewProject();
+        Project::CreateNewProject(m_WindowManagerPtr->GetApplicationPtr());
 
     if(ImGui::Button("Open Project")) {
         Project::OpenProjectDialog(m_WindowManagerPtr->GetApplicationPtr());
@@ -78,7 +78,7 @@ void EditorScene::OnCreate() {
         m_WindowManagerPtr->SetScene<LanderScene>();
     }
 
-    m_StatusBarPtr = new StatusBar();
+    m_StatusBarPtr = new StatusBar(m_WindowManagerPtr->GetApplicationPtr());
     m_CueListWindowPtr = new CueListWindow(m_WindowManagerPtr->GetApplicationPtr());
     m_CuePropertiesWindowPtr = new CuePropertiesWindow(m_CueListWindowPtr);
 }

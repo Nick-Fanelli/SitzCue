@@ -61,6 +61,8 @@ void ImGuiLayer::OnCreate() {
 
     ApplyColorTheme();
 
+    s_MenuBar = MenuBar(m_Application);
+
     m_WindowManager = WindowManager(m_Application);
     m_WindowManager.SetScene<LanderScene>();
 }

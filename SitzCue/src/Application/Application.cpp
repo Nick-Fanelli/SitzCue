@@ -22,6 +22,10 @@ void Application::StartApplication() {
 void Application::OnCreate() {
     m_ImGuiLayer = ImGuiLayer(this);
     m_ImGuiLayer.OnCreate();
+
+    // TODO: REMOVE DEMO CODE
+    Project project("/Users/nickfanelli/Desktop/Example Project.sitzqprj");
+    SetProject(project);
 }
 
 void Application::OnUpdate(float deltaTime) {

@@ -7,7 +7,7 @@
 
 using namespace SitzCue;
 
-void Project::CreateNewProject() {
+void Project::CreateNewProject(Application* application) {
 
     nfdchar_t* outPath = nullptr;
     nfdresult_t result = NFD_PickFolder(&outPath, nullptr);
@@ -29,8 +29,9 @@ void Project::CreateNewProject() {
     Project project(projectPath);
 
     FileUtils::CreateFile(project.GetShowFilePath());
-    FileUtils::CreateFile(project.GetCueListFilePath());
     FileUtils::CreateDirectory(project.GetResourcesDirectoryPath());
+
+    application->SetProject(project);
 }
 
 void Project::OpenProjectDialog(Application* application) {
@@ -46,6 +47,8 @@ void Project::OpenProjectDialog(Application* application) {
     NFD_FreePath(outPath);
 
     std::filesystem::path projectPath =  std::filesystem::canonical(std::filesystem::path(openPath).remove_filename());
+
+    Log::Info("Opening Project at: " + projectPath.string());
 
     Project project(projectPath);
 
