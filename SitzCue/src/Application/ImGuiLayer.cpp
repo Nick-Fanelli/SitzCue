@@ -46,7 +46,7 @@ void ImGuiLayer::OnCreate() {
     faConfig.MergeMode = true;
     faConfig.GlyphMinAdvanceX = 13.0f;
     static constexpr ImWchar iconRanges[] = { 0xe005, 0xf8ff, 0 };
-    io.Fonts->AddFontFromFileTTF("resources/fonts/font-awesome/Font-Awesome-Solid-900.otf", 16.0f, &faConfig, iconRanges);
+    io.Fonts->AddFontFromFileTTF("resources/fonts/font-awesome/Font-Awesome-Solid-900.otf", 17.0f, &faConfig, iconRanges);
 
     ImGuiStyle& style = ImGui::GetStyle();
     if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {

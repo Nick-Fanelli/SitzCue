@@ -26,10 +26,10 @@ void Project::CreateNewProject(Application* application) {
     std::filesystem::path projectPath = std::filesystem::path(directoryPath).replace_extension(Project::ProjectDirectoryExtension);
     FileUtils::MoveFile(directoryPath, projectPath);
 
-    Project project(projectPath);
+    Project* project = new Project(projectPath);
 
-    FileUtils::CreateFile(project.GetShowFilePath());
-    FileUtils::CreateDirectory(project.GetResourcesDirectoryPath());
+    FileUtils::CreateFile(project->GetShowFilePath());
+    FileUtils::CreateDirectory(project->GetResourcesDirectoryPath());
 
     application->SetProject(project);
 }
@@ -50,9 +50,9 @@ void Project::OpenProjectDialog(Application* application) {
 
     Log::Info("Opening Project at: " + projectPath.string());
 
-    Project project(projectPath);
+    Project* project = new Project(projectPath);
 
-    if(project.GetShowFilePath() != openPath) {
+    if(project->GetShowFilePath() != openPath) {
         Log::Warn("Show file and predicted show file do not match...\n\tStatus: Continuing");
     }
 

@@ -19,7 +19,7 @@ namespace SitzCue {
         void OnUpdate(float deltaTime);
         void OnDestroy();
 
-        void SetProject(const Project& project);
+        void SetProject(Project* project);
 
         const Display& GetDisplay() const { return m_Display; }
         Display& GetDisplay() { return m_Display; }

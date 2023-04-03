@@ -4,6 +4,10 @@ using namespace SitzCue;
 
 static std::random_device randomDevice;
 
+void Cue::Execute() {
+    
+}
+
 Cue& CueList::CreateCue(const std::string& name, float cueNumber) {
 
     SITZCUE_PROFILE_FUNCTION();

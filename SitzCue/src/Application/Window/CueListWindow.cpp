@@ -7,15 +7,7 @@ using namespace SitzCue;
 static constexpr ImVec4 SelectedCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 
-// CueListWindow::CueListWindow() {
-//     m_CueList.CreateCue("House Open (Pre-Show)", 1.0f);
-//     m_CueList.CreateCue();
-//     m_CueList.CreateCue();
-//     m_CueList.CreateCue("Pre-Show Announcement", 2.0f);
-//     m_CueList.CreateCue();
-//     m_CueList.CreateCue("Show Mode", 3.0f);
-//     m_CueList.CreateCue("House Open (Post-Show)", 4.0f);
-// }
+static constexpr int EmptyCueTemplate = 0;
 
 void CueListWindow::HandleOnCueClick(UUID uuid) {
 
@@ -132,18 +124,45 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
 }
 
 static bool s_IsNewCueDropdownVisible = false;
-static char s_SearchBuffer[128];
 
 void CueListWindow::OnUpdate() {
 
     SITZCUE_PROFILE_FUNCTION();
 
+    static constexpr float cueTemplateButtonScale = 2.0f;
+
     ImGui::Begin("Cue List");
 
-    ImGui::Text("Search...");
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 1.0f);
+    ImGui::GetStyle().ScaleAllSizes(cueTemplateButtonScale);
+    ImGui::Button("\uf49e");
+    ImGui::GetStyle().ScaleAllSizes(1.0f / cueTemplateButtonScale);
+    ImGui::PopStyleVar();
+
+    if(ImGui::BeginDragDropSource()) {
+        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::Text("Empty Cue");
+        ImGui::EndDragDropSource();
+    }
+
     ImGui::SameLine();
-    ImGui::InputText("###search_buffer", s_SearchBuffer, sizeof(s_SearchBuffer));
     
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 1.0f);
+    ImGui::GetStyle().ScaleAllSizes(cueTemplateButtonScale);
+    ImGui::Button("\uf028");
+    ImGui::GetStyle().ScaleAllSizes(1.0f / cueTemplateButtonScale);
+    ImGui::PopStyleVar();
+
+    if(ImGui::BeginDragDropSource()) {
+        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::Text("Empty Cue");
+        ImGui::EndDragDropSource();
+    }
+
+    ImGui::PopStyleColor();
+
     if(ImGui::BeginTable("CueTable", 3, ImGuiTableFlags_Resizable)) {
 
         ImGui::TableSetupColumn("Type");
@@ -162,9 +181,31 @@ void CueListWindow::OnUpdate() {
             ImGui::PopID();
 
         }
-
         ImGui::EndTable();
+    }
 
+    ImGui::BeginChild("CueDropSection", ImGui::GetContentRegionAvail());
+    ImGui::EndChild();
+
+    if(ImGui::BeginDragDropTarget()) {
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TYPE")) {
+            int cueTemplate = *(int*) payload->Data;
+
+            switch(cueTemplate) {
+
+            case EmptyCueTemplate:
+                m_CueList.CreateCue();
+                break;
+            default:
+                break;
+
+            }
+
+        }
+
+
+        ImGui::EndDragDropTarget();
     }
 
     ImGui::End();

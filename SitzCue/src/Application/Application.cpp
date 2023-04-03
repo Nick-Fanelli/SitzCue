@@ -2,14 +2,14 @@
 
 using namespace SitzCue;
 
-void Application::SetProject(const Project& project) {
+void Application::SetProject(Project* project) {
 
     if(m_ActiveProject != nullptr) {
         // TODO: Handle Saving The Project
         delete m_ActiveProject;
     }
 
-    m_ActiveProject = new Project(project);
+    m_ActiveProject = project;
 
     m_ImGuiLayer.GetWindowManager().SetScene<EditorScene>();
 }
@@ -24,7 +24,16 @@ void Application::OnCreate() {
     m_ImGuiLayer.OnCreate();
 
     // TODO: REMOVE DEMO CODE
-    Project project("/Users/nickfanelli/Desktop/Example Project.sitzqprj");
+    Project* project = new Project("/Users/nickfanelli/Desktop/Example Project.sitzqprj");
+
+    project->GetCueList().CreateCue("House Open (Pre-Show)", 1.0f);
+    project->GetCueList().CreateCue();
+    project->GetCueList().CreateCue();
+    project->GetCueList().CreateCue("Pre-Show Announcement", 2.0f);
+    project->GetCueList().CreateCue();
+    project->GetCueList().CreateCue("Show Mode", 3.0f);
+    project->GetCueList().CreateCue("House Open (Post-Show)", 4.0f);
+
     SetProject(project);
 }
 

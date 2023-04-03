@@ -24,9 +24,9 @@ namespace SitzCue {
  
     private:
         void HandleOnCueClick(UUID cue);
-
         void DrawCue(const std::vector<Cue*>& cues, int n);
 
+    private:
         Application* m_ApplicationPtr = nullptr;
         CueList& m_CueList;
         std::vector<UUID> m_SelectedCues;

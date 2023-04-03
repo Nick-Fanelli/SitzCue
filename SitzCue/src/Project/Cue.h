@@ -54,11 +54,16 @@ namespace SitzCue {
         Cue(struct UUID uuid) : UUID(uuid), CueName(""), CueNumber() {}
         Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(cueName), CueNumber(cueNumber) {}
 
+        virtual void Execute();
+
+        bool operator==(Cue& other) const { return UUID == other.UUID; }
+
+    public:
+
         struct UUID UUID;
         std::string CueName = "";
         struct CueNumber CueNumber;
 
-        bool operator==(Cue& other) const { return UUID == other.UUID; }
     };
 
     class CueList {
