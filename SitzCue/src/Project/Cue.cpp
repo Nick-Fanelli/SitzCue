@@ -62,9 +62,9 @@ void CueList::DeleteCue(const Cue& cue) {
     }
 
     // Delete from Registry
-    // auto it = std::remove(m_Registry.begin(), m_Registry.end(), cue);
-    // if(it != m_Registry.end())
-    //     m_Registry.erase(it);
+    auto it = std::remove(m_Registry.begin(), m_Registry.end(), cue);
+    if(it != m_Registry.end())
+        m_Registry.erase(it);
 
 
     // Update the Cue-Cache
