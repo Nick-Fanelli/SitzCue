@@ -88,8 +88,8 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
     }
     
     // Element Targets
-    if(ImGui::IsItemClicked()) 
-        HandleOnCueClick(cue.UUID);
+    // if(ImGui::IsItemClicked()) 
+    //     HandleOnCueClick(cue.UUID);
     // HandleOnCueDrag(cue);
 
     ImGui::TableNextColumn();
@@ -101,12 +101,10 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
     }
 
     // Element Targets
-    if(ImGui::IsItemClicked()) 
-        HandleOnCueClick(cue.UUID);
-    // HandleOnCueDrag(cue);
+    // if(ImGui::IsItemClicked()) 
+    //     HandleOnCueClick(cue.UUID);
 
     ImGui::SameLine();
-
 
     if(isSelected) {
         ImGui::PushStyleColor(ImGuiCol_Header, SelectedCueColor);
@@ -118,7 +116,19 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
         HandleOnCueClick(cue.UUID);
     }
 
-    // ImGui::PopStyleColor(isSelected ? 2 : 1);
+    if(ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+        ImGui::OpenPopup("Cue Right Click Menu");
+    }
+
+    // Right Click Menu
+    if(ImGui::BeginPopup("Cue Right Click Menu")) {
+        if(ImGui::MenuItem("Delete")) {
+            m_CueList.DeleteCue(cue);
+        }   
+
+        ImGui::EndPopup();
+    }
+
     if(isSelected)
         ImGui::PopStyleColor(2);
 }

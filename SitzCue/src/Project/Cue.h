@@ -56,7 +56,7 @@ namespace SitzCue {
 
         virtual void Execute();
 
-        bool operator==(Cue& other) const { return UUID == other.UUID; }
+        bool operator==(const Cue& other) const { return UUID == other.UUID; }
 
     public:
 
@@ -74,7 +74,9 @@ namespace SitzCue {
         Cue& CreateCue(const std::string& cueName, float cueNumber);
         Cue& CreateCue();
 
-        Cue& GetCue(UUID uuid);
+        Cue* GetCue(UUID uuid);
+
+        void DeleteCue(const Cue& cue);
 
         const std::vector<Cue*>& GetCueCache() const { return m_SortedCuesCache; }
 

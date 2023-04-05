@@ -21,7 +21,10 @@ void CuePropertiesWindow::OnUpdate() {
     } else if(selectedCues.size() > 1) {
         ImGui::Text("Please Select Just One Cue");
     } else {
-        DrawCue(m_CueListWindowPtr->GetCueList().GetCue(selectedCues[0]));
+        Cue* cue = m_CueListWindowPtr->GetCueList().GetCue(selectedCues[0]);
+
+        if(cue != nullptr)
+            DrawCue(*cue);
     }
 
     ImGui::End();
