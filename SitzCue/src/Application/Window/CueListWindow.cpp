@@ -1,7 +1,6 @@
 #include "CueListWindow.h"
 
 #include "Application/ImGuiDefaults.h"
-#include "Application/VersionControl/UndoSystem.h"
 
 using namespace SitzCue;
 
