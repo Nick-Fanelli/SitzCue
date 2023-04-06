@@ -79,16 +79,14 @@ void EditorScene::OnCreate() {
     }
 
     m_StatusBarPtr = new StatusBar(m_WindowManagerPtr->GetApplicationPtr());
-    m_CueListWindowPtr = new CueListWindow(m_WindowManagerPtr->GetApplicationPtr());
-    m_CuePropertiesWindowPtr = new CuePropertiesWindow(m_CueListWindowPtr);
+    m_CueListWindowPtr = new CueListWindow();
 }
 
 void EditorScene::OnUpdate() {
     SITZCUE_PROFILE_FUNCTION();
 
     m_StatusBarPtr->OnUpdate();
-    m_CueListWindowPtr->OnUpdate();
-    m_CuePropertiesWindowPtr->OnUpdate();
+    m_CueListWindowPtr->OnUpdate(m_WindowManagerPtr->GetApplicationPtr()->GetActiveProject()->GetCueList());
 }
 
 void EditorScene::OnDestroy() {
@@ -96,7 +94,6 @@ void EditorScene::OnDestroy() {
 
     delete m_StatusBarPtr;
     delete m_CueListWindowPtr;
-    delete m_CuePropertiesWindowPtr;
 }
 
 // ===================================================================================================================

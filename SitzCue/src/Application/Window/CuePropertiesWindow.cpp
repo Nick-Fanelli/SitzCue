@@ -4,24 +4,19 @@
 
 using namespace SitzCue;
 
-CuePropertiesWindow::CuePropertiesWindow(CueListWindow* cueListWindowPtr) {
-    m_CueListWindowPtr = cueListWindowPtr;
-}
-
-void CuePropertiesWindow::OnUpdate() {
+void CuePropertiesWindow::OnUpdate(CueList& cueList, const std::vector<UUID>& selectedCues) {
 
     SITZCUE_PROFILE_FUNCTION();
 
     ImGui::Begin("Cue Properties");
-
-    auto& selectedCues = m_CueListWindowPtr->GetSelectedCues();
 
     if(selectedCues.size() <= 0) {
         ImGui::Text("No Cue Selected");
     } else if(selectedCues.size() > 1) {
         ImGui::Text("Please Select Just One Cue");
     } else {
-        Cue* cue = m_CueListWindowPtr->GetCueList().GetCue(selectedCues[0]);
+
+        Cue* cue = cueList.GetCue(selectedCues[0]);
 
         if(cue != nullptr)
             DrawCue(*cue);

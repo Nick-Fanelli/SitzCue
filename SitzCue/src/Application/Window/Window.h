@@ -72,7 +72,6 @@ namespace SitzCue {
     private:
         StatusBar* m_StatusBarPtr = nullptr;
         CueListWindow* m_CueListWindowPtr = nullptr;
-        CuePropertiesWindow* m_CuePropertiesWindowPtr = nullptr;
 
     };
 

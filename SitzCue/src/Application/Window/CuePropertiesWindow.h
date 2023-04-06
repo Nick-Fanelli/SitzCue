@@ -3,21 +3,18 @@
 #include "sitzcuepch.h"
 
 #include "Window.h"
-#include "CueListWindow.h"
+
+#include "Project/Cue.h"
 
 namespace SitzCue {
 
-    class CuePropertiesWindow : public Window {
+    class CuePropertiesWindow {
 
     public:
-        CuePropertiesWindow(CueListWindow* cueListWindowPtr);
+        CuePropertiesWindow() = default;
 
-        void OnUpdate() override;
-
+        void OnUpdate(CueList& cueList, const std::vector<UUID>& selectedCues);
         void DrawCue(Cue& cue);
-
-    private:
-        CueListWindow* m_CueListWindowPtr;
 
     };
 

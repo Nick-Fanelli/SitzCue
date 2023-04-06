@@ -9,7 +9,7 @@ static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f
 
 static constexpr int EmptyCueTemplate = 0;
 
-void CueListWindow::HandleOnCueClick(UUID uuid) {
+void CueListWindow::HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID uuid) {
 
     SITZCUE_PROFILE_FUNCTION();
 
@@ -27,8 +27,6 @@ void CueListWindow::HandleOnCueClick(UUID uuid) {
 
         int lastSelectedIndex = -1;
         int currentSelectedIndex = -1;
-
-        const auto& cueCache = m_CueList.GetCueCache();
 
         // Find Indices of the Selections
         for(int i = 0; i < cueCache.size(); i++) {
@@ -62,11 +60,12 @@ void CueListWindow::HandleOnCueClick(UUID uuid) {
     m_SelectedCues.push_back(uuid);
 }
 
-void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
+void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
     
     SITZCUE_PROFILE_FUNCTION();
 
-    Cue& cue = *cues[n];
+    // Getting Active Cue
+    Cue& cue = *cueCache[n];
 
     bool isSelected = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), cue.UUID) != m_SelectedCues.end();
 
@@ -87,11 +86,6 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
             ImGui::Text("");
     }
     
-    // Element Targets
-    // if(ImGui::IsItemClicked()) 
-    //     HandleOnCueClick(cue.UUID);
-    // HandleOnCueDrag(cue);
-
     ImGui::TableNextColumn();
     if(isSelected)
         ImGuiDefaults::DrawHiddenTextInput(cue.CueName);
@@ -99,10 +93,6 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
         ImGui::AlignTextToFramePadding();
         ImGui::Text("%s", cue.CueName.c_str());
     }
-
-    // Element Targets
-    // if(ImGui::IsItemClicked()) 
-    //     HandleOnCueClick(cue.UUID);
 
     ImGui::SameLine();
 
@@ -113,7 +103,7 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
 
     // Element Targets
     if(ImGui::Selectable("", isSelected, ImGuiSelectableFlags_SpanAllColumns)) {
-        HandleOnCueClick(cue.UUID);
+        HandleOnCueClick(cueCache, cue.UUID);
     }
 
     if(ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
@@ -136,7 +126,7 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
 
 static bool s_IsNewCueDropdownVisible = false;
 
-void CueListWindow::OnUpdate() {
+void CueListWindow::OnUpdate(CueList& cueList) {
 
     SITZCUE_PROFILE_FUNCTION();
 
@@ -181,7 +171,7 @@ void CueListWindow::OnUpdate() {
         ImGui::TableSetupColumn("Name");
         ImGui::TableHeadersRow();
 
-        const auto& cache = m_CueList.GetCueCache();
+        const auto& cache = cueList.GetCueCache();
 
         for(int n = 0; n < cache.size(); n++) {
 
@@ -221,6 +211,8 @@ void CueListWindow::OnUpdate() {
     }
 
     ImGui::End();
+
+    m_CuePropertiesWindow.OnUpdate(cueList, m_SelectedCues);
 
     // ImGui::ShowDemoWindow();
 }
