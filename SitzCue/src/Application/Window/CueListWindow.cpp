@@ -1,6 +1,7 @@
 #include "CueListWindow.h"
 
 #include "Application/ImGuiDefaults.h"
+#include "Application/VersionControl/UndoSystem.h"
 
 using namespace SitzCue;
 
@@ -123,7 +124,8 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cues, int n) {
     // Right Click Menu
     if(ImGui::BeginPopup("Cue Right Click Menu")) {
         if(ImGui::MenuItem("Delete")) {
-            m_CueList.DeleteCue(cue);
+            // TODO: Delete Cue
+            // EditorActions::DeleteCueAction::Register(m_CueList, cue);
         }   
 
         ImGui::EndPopup();
@@ -205,7 +207,8 @@ void CueListWindow::OnUpdate() {
             switch(cueTemplate) {
 
             case EmptyCueTemplate:
-                m_CueList.CreateCue();
+                // TODO Create Cue
+                // EditorActions::CreateCueAction::Register(m_CueList);
                 break;
             default:
                 break;
