@@ -14,11 +14,8 @@ namespace SitzCue::ImGuiDefaults {
     void DrawTextInput(const std::string& label, Ref<std::string> data);
     void DrawHiddenTextInput(Ref<std::string> data);
 
-    void DrawFloat(const std::string& label, float& value, float step = 1.0f, float stepFast = 10.0f, const char* format = "%g");
-    void DrawFloatHidden(float& value, float step = 1.0f, float stepFast = 10.0f, const char* format = "%g");
-
-    void DrawCueNumber(const std::string& label, CueNumber& cueNumber);
-    void DrawCueNumberHidden(CueNumber& cueNumber);
+    void DrawFloat(const std::string& label, Ref<float> data);
+    void DrawFloatHidden(Ref<float> data);
 
 
 }

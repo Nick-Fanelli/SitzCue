@@ -76,12 +76,12 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
     ImGui::TableNextColumn();
 
     if(isSelected) {
-        ImGuiDefaults::DrawCueNumberHidden(cue.CueNumber);
+        ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
     }
     else {
         ImGui::AlignTextToFramePadding();
-        if(cue.CueNumber.IsAssigned())
-            ImGui::Text("%g", (double) cue.CueNumber);
+        if(!cue.CueNumber.IsNull())
+            ImGui::Text("%g", (double) *cue.CueNumber);
         else
             ImGui::Text("");
     }

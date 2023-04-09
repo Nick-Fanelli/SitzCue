@@ -22,28 +22,6 @@ namespace SitzCue {
 
     class CueList;
 
-    struct CueNumber {
-
-        CueNumber() = default;
-        CueNumber(float initialValue) : m_Data(initialValue), m_IsAssigned(true) {}
-
-        CueNumber& operator=(float value) {
-            m_Data = value;
-            m_IsAssigned = true;
-            return *this;
-        }
-
-        operator float() const { return m_Data; }
-
-        void Unassign() { m_IsAssigned = false; }
-        bool IsAssigned() const { return m_IsAssigned; }
-
-    private:
-        float m_Data = 0.0f;
-        bool m_IsAssigned = false;
-
-    };
-
     class Cue {
 
         friend class CueList;
@@ -52,7 +30,7 @@ namespace SitzCue {
 
         Cue() = default;
         Cue(struct UUID uuid) : UUID(uuid), CueName(CreateRef<std::string>("")), CueNumber() {}
-        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(CreateRef<std::string>(cueName)), CueNumber(cueNumber) {}
+        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(CreateRef<std::string>(cueName)), CueNumber(CreateRef<float>(cueNumber)) {}
 
         virtual void Execute();
 
@@ -62,7 +40,7 @@ namespace SitzCue {
 
         struct UUID UUID;
         Ref<std::string> CueName = CreateRef<std::string>("");
-        struct CueNumber CueNumber;
+        Ref<float> CueNumber;
 
     };
 
