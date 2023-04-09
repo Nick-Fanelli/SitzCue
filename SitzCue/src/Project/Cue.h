@@ -51,8 +51,8 @@ namespace SitzCue {
     public:
 
         Cue() = default;
-        Cue(struct UUID uuid) : UUID(uuid), CueName(""), CueNumber() {}
-        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(cueName), CueNumber(cueNumber) {}
+        Cue(struct UUID uuid) : UUID(uuid), CueName(CreateRef<std::string>("")), CueNumber() {}
+        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(CreateRef<std::string>(cueName)), CueNumber(cueNumber) {}
 
         virtual void Execute();
 
@@ -61,7 +61,7 @@ namespace SitzCue {
     public:
 
         struct UUID UUID;
-        std::string CueName = "";
+        Ref<std::string> CueName = CreateRef<std::string>("");
         struct CueNumber CueNumber;
 
     };

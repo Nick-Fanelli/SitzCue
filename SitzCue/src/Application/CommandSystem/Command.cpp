@@ -18,12 +18,12 @@ void CreateCueCommand::Undo() {
 // ================================================================================================
 void ChangeCueNameCommand::Execute() {
     
-    m_Target = m_NewValue;
+    m_Target.SetValueIfSafe(m_NewValue);
 
 }
 
 void ChangeCueNameCommand::Undo() {
     
-    m_Target = m_PreviousValue;
+    m_Target.SetValueIfSafe(m_PreviousValue);
 
 }

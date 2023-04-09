@@ -91,7 +91,7 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
         ImGuiDefaults::DrawHiddenTextInput(cue.CueName);
     else {
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("%s", cue.CueName.c_str());
+        ImGui::Text("%s", (*cue.CueName).c_str());
     }
 
     ImGui::SameLine();

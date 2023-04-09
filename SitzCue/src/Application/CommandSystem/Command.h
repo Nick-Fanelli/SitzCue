@@ -45,14 +45,14 @@ namespace SitzCue {
 
     public:
 
-        ChangeCueNameCommand(std::string& target, const std::string& previousValue, const std::string& newValue) : m_Target(target), m_PreviousValue(previousValue), m_NewValue(newValue) {}
+        ChangeCueNameCommand(Ref<std::string> target, const std::string& previousValue, const std::string& newValue) : m_Target(target), m_PreviousValue(previousValue), m_NewValue(newValue) {}
         ~ChangeCueNameCommand() = default;
 
         void Execute() override;
         void Undo() override;
 
     private:
-        std::string& m_Target;
+        Ref<std::string> m_Target;
         std::string m_PreviousValue;
         std::string m_NewValue;
 

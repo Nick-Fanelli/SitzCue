@@ -11,8 +11,8 @@ namespace SitzCue::ImGuiDefaults {
 
     static constexpr float ColumnWidth = 75.0f;
 
-    void DrawTextInput(const std::string& label, std::string& data);
-    void DrawHiddenTextInput(std::string& data);
+    void DrawTextInput(const std::string& label, Ref<std::string> data);
+    void DrawHiddenTextInput(Ref<std::string> data);
 
     void DrawFloat(const std::string& label, float& value, float step = 1.0f, float stepFast = 10.0f, const char* format = "%g");
     void DrawFloatHidden(float& value, float step = 1.0f, float stepFast = 10.0f, const char* format = "%g");

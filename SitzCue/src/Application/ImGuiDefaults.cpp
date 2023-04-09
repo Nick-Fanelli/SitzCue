@@ -6,33 +6,33 @@
 
 using namespace SitzCue;
 
-void ImGuiDefaults::DrawTextInput(const std::string& label, std::string& data) {
+void ImGuiDefaults::DrawTextInput(const std::string& label, Ref<std::string> data) {
 
     static std::string dataCache = std::string();
-    dataCache = data;
+    dataCache = *data;
 
-    ImGui::PushID(&data);
+    ImGui::PushID(&*data);
 
     ImGui::Text("%s", label.c_str());
     ImGui::SameLine();
     ImGui::InputText("", &dataCache);
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
-        CommandStack::ExecuteCommand<ChangeCueNameCommand>(data, data, dataCache);
+        CommandStack::ExecuteCommand<ChangeCueNameCommand>(data, *data, dataCache);
     }
 
     ImGui::PopID();
 }
 
-void ImGuiDefaults::DrawHiddenTextInput(std::string& data) {
-    ImGui::PushID(&data);
+void ImGuiDefaults::DrawHiddenTextInput(Ref<std::string> data) {
+    ImGui::PushID(&*data);
 
     auto previousPadding = ImGui::GetStyle().FramePadding.y;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, previousPadding});
 
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
 
-    ImGui::InputText("", &data);
+    ImGui::InputText("", &*data);
 
     ImGui::PopStyleColor();
     ImGui::PopStyleVar();
