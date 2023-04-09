@@ -5,6 +5,7 @@
 #include "MenuBar.h"
 
 #include "Window/Window.h"
+#include "CommandSystem/CommandStack.h"
 
 using namespace SitzCue;
 
@@ -118,11 +119,24 @@ void ImGuiLayer::Begin() {
     ImGui::NewFrame();
 
     static ImGuiStyle& style = ImGui::GetStyle();
+    static ImGuiIO& io = ImGui::GetIO();
 
     // Draw Dockspace
     ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, { 370.0f, style.WindowMinSize.y }); // Set minimum window size for dockspace windows
     DrawDockspace(); // Draw the dockspace environment
     ImGui::PopStyleVar(); // Pop dockspace window min size
+
+    if(PlatformDetection::IsNativeCommandKey() && !io.WantTextInput) {
+        if(!io.WantTextInput) {
+            // Undo Pressed
+            if(ImGui::IsKeyPressed(ImGuiKey_Z)) {
+                CommandStack::Undo();
+            } else if(ImGui::IsKeyPressed(ImGuiKey_Y)) { // Redo
+                CommandStack::Redo();
+            }
+        }
+
+    }
 
     m_WindowManager.OnUpdate();
 }

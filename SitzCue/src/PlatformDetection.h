@@ -1,5 +1,10 @@
 #pragma once
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_internal.h>
+
 #ifdef _WIN32
     #ifdef _WIN64
         #define SITZCUE_PLATFORM_WINDOWS
@@ -28,7 +33,7 @@
     #error "Unknown Platform is Not Supported"
 #endif
 
-namespace SitzCue::Platform {
+namespace SitzCue::PlatformDetection {
 
     enum Platform {
         PlatformMacOS, PlatformWindows, PlatformLinux
@@ -37,12 +42,26 @@ namespace SitzCue::Platform {
 #ifdef SITZCUE_PLATFORM_WINDOWS
     inline Platform ActivePlatform = Platform::PlatformWindows;
 
+    inline bool IsNativeCommandKey() {
+        static const auto& io = ImGui::GetIO();
+        return io.KeyCtrl;
+    }
+
 #elif defined(SITZCUE_PLATFORM_MACOS)
     inline Platform ActivePlatform = Platform::PlatformMacOS;
 
+    inline bool IsNativeCommandKey() {
+        static const auto& io = ImGui::GetIO();
+        return io.KeySuper;
+    }
+
 #elif defined(SITZCUE_PLATFORM_LINUX)
     inline Platform ActivePlatform = Platform::PlatformLinux;
-    
+
+    inline bool IsNativeCommandKey() {
+        static const auto& io = ImGui::GetIO();
+        return io.KeyCtrl;
+    }
 #endif
 
 }
