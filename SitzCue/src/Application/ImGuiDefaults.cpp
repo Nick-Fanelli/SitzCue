@@ -1,15 +1,25 @@
 #include "ImGuiDefaults.h"
 
+#include "CommandSystem/CommandStack.h"
+
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
 using namespace SitzCue;
 
 void ImGuiDefaults::DrawTextInput(const std::string& label, std::string& data) {
-    ImGui::PushID(label.c_str());
+
+    static std::string dataCache = std::string();
+    dataCache = data;
+
+    ImGui::PushID(&data);
 
     ImGui::Text("%s", label.c_str());
     ImGui::SameLine();
-    ImGui::InputText("", &data);
+    ImGui::InputText("", &dataCache);
+
+    if(ImGui::IsItemDeactivatedAfterEdit()) {
+        CommandStack::ExecuteCommand<ChangeCueNameCommand>(data, data, dataCache);
+    }
 
     ImGui::PopID();
 }
