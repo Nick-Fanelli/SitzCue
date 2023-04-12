@@ -26,7 +26,6 @@
 // Internal
 #include "PlatformDetection.h"
 #include "Log.h"
-#include "Utils/Ref.h"
 
 #include "Debug/Assert.h"
 #include "Debug/Profile.h"

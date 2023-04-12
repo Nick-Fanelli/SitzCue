@@ -16,7 +16,7 @@ void CuePropertiesWindow::OnUpdate(CueList& cueList, const std::vector<UUID>& se
         ImGui::Text("Please Select Just One Cue");
     } else {
 
-        Cue* cue = cueList.GetCue(selectedCues[0]);
+        auto cue = cueList.GetCue(selectedCues[0]);
 
         if(cue != nullptr)
             DrawCue(*cue);
@@ -43,5 +43,5 @@ void CuePropertiesWindow::DrawCue(Cue& cue) {
     ImGui::NewLine();
 
     ImGuiDefaults::DrawTextInput("Cue Name", cue.CueName);
-    ImGuiDefaults::DrawFloat("Cue Number", cue.CueNumber);
+    ImGuiDefaults::DrawOptionalFloat("Cue Number", cue.CueNumber);
 }

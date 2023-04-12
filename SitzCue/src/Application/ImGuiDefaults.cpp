@@ -6,30 +6,34 @@
 
 using namespace SitzCue;
 
-void ImGuiDefaults::DrawTextInput(const std::string& label, Ref<std::string> data) {
+void ImGuiDefaults::DrawTextInput(const std::string& label, std::string& data) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     static std::string dataCache = std::string();
-    dataCache = *data;
+    dataCache = data;
 
-    ImGui::PushID(&*data);
+    ImGui::PushID(&data);
 
     ImGui::Text("%s", label.c_str());
     ImGui::SameLine();
     ImGui::InputText("", &dataCache);
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
-        CommandStack::ExecuteCommand<UpdateStringCommand>(data, *data, dataCache);
+        CommandStack::ExecuteCommand<UpdateStringCommand>(data, data, dataCache);
     }
 
     ImGui::PopID();
 }
 
-void ImGuiDefaults::DrawHiddenTextInput(Ref<std::string> data) {
+void ImGuiDefaults::DrawHiddenTextInput(std::string& data) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     static std::string dataCache = std::string();
-    dataCache = *data;
+    dataCache = data;
 
-    ImGui::PushID(&*data);
+    ImGui::PushID(&data);
 
     auto previousPadding = ImGui::GetStyle().FramePadding.y;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, previousPadding});
@@ -39,7 +43,7 @@ void ImGuiDefaults::DrawHiddenTextInput(Ref<std::string> data) {
     ImGui::InputText("", &dataCache);
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
-        CommandStack::ExecuteCommand<UpdateStringCommand>(data, *data, dataCache);
+        CommandStack::ExecuteCommand<UpdateStringCommand>(data, data, dataCache);
     }
  
     ImGui::PopStyleColor();
@@ -48,75 +52,85 @@ void ImGuiDefaults::DrawHiddenTextInput(Ref<std::string> data) {
     ImGui::PopID();
 }
 
-static std::string s_DrawCueNumberStringPlaceholder;
+void ImGuiDefaults::DrawOptionalFloat(const std::string& label, std::optional<float>& data) {
 
-void ImGuiDefaults::DrawFloat(const std::string& label, Ref<float> data) {
+    SITZCUE_PROFILE_FUNCTION();
 
-    static float dataCache = 0.0f;
-    dataCache = *data;
+    ImGui::PushID(&data);
 
-    ImGui::PushID(&*data);
-
-    ImGui::Columns(2, nullptr, false);
-    ImGui::SetColumnWidth(0, ImGuiDefaults::ColumnWidth * 3.0f);
     ImGui::Text("%s", label.c_str());
-    ImGui::NextColumn(); 
+    ImGui::SameLine();
 
-    if(!data.IsNull()) {
-        ImGui::InputFloat("", &dataCache, 1.0f, 10.0f, "%g", ImGuiInputTextFlags_None);
+    if(data.has_value()) {
+        static float dataCache = 0.0f;
+        dataCache = *data;
+
+        ImGui::InputFloat("", &dataCache, 1.0f, 10.0f, "%g");
 
         if(ImGui::IsItemDeactivatedAfterEdit()) {
-            CommandStack::ExecuteCommand<UpdateFloatCommand>(data, *data, dataCache);
+            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, dataCache);
         }
 
         ImGui::SameLine();
 
         if(ImGui::Button("Remove")) {
-            data.DeleteData();
+            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, std::nullopt);
         }
 
     } else {
+        static std::string dataCache = "";
+        dataCache.clear();
 
-        s_DrawCueNumberStringPlaceholder.clear();
+        ImGui::InputText("", &dataCache);
 
-        ImGui::InputText("", &s_DrawCueNumberStringPlaceholder);
-        if(ImGui::IsItemClicked()) {        
-            CommandStack::ExecuteCommand<UpdateFloatCommand>(data, 0.0f, 0.0f);
-        }   
+        if(ImGui::IsItemDeactivatedAfterEdit()) {
+
+            float value = 0.0f;
+
+            try {
+                value = std::stof(dataCache);
+            } catch(...) {}
+
+            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, value);
+        }
     }
-
-    ImGui::Columns(1);
 
     ImGui::PopID();
 
 }
 
-static std::string s_DrawCueNumberHiddenStringPlaceholder;
 
-void ImGuiDefaults::DrawFloatHidden(Ref<float> data) {
+void ImGuiDefaults::DrawHiddenOptionalFloat(std::optional<float>& data) {
 
-    static float dataCache = 0.0f;
-    dataCache = *data;
+    SITZCUE_PROFILE_FUNCTION();
 
-    ImGui::PushID(&*data);
-
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
+    ImGui::PushID(&data);
 
     auto previousPadding = ImGui::GetStyle().FramePadding.y;
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, previousPadding});
 
-    if(!data.IsNull()) {
-        ImGui::InputFloat("", &dataCache, 0, 0, "%g", ImGuiInputTextFlags_None);
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
 
-        if(ImGui::IsItemDeactivatedAfterEdit()) {
-            CommandStack::ExecuteCommand<UpdateFloatCommand>(data, *data, dataCache);
-        }
+    static std::string dataCache = "";
+    dataCache = data.has_value() ? std::to_string(*data) : "";
+    dataCache.erase(dataCache.find_last_not_of('0') + 1, std::string::npos);
+    if(dataCache.back() == '.')
+        dataCache.pop_back();
 
-    } else {
-        s_DrawCueNumberHiddenStringPlaceholder.clear();
-        ImGui::InputText("", &s_DrawCueNumberHiddenStringPlaceholder);
-        if(!s_DrawCueNumberHiddenStringPlaceholder.empty()) {
-            CommandStack::ExecuteCommand<UpdateFloatCommand>(data, 0.0f, 0.0f);
+    ImGui::InputText("", &dataCache, ImGuiInputTextFlags_CharsDecimal);
+
+    if(ImGui::IsItemDeactivatedAfterEdit()) {
+
+        if(dataCache.empty()) {
+            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, std::nullopt);
+        } else {
+            float value = 0.0f;
+
+            try {
+                value = std::stof(dataCache);
+            } catch(...) {}
+
+            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, value);
         }
     }
 
@@ -124,4 +138,6 @@ void ImGuiDefaults::DrawFloatHidden(Ref<float> data) {
     ImGui::PopStyleVar();
 
     ImGui::PopID();
+
 }
+

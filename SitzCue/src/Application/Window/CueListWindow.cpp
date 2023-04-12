@@ -1,6 +1,7 @@
 #include "CueListWindow.h"
 
 #include "Application/ImGuiDefaults.h"
+#include "Application/CommandSystem/CommandStack.h"
 
 using namespace SitzCue;
 
@@ -71,16 +72,15 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
 
     ImGui::TableNextColumn();
     ImGui::AlignTextToFramePadding();
-    // ImGui::Text("%s", CueTypeStrings[(int) cue.CueType].c_str());
 
     ImGui::TableNextColumn();
 
     if(isSelected) {
-        ImGuiDefaults::DrawFloatHidden(cue.CueNumber);
+        ImGuiDefaults::DrawHiddenOptionalFloat(cue.CueNumber);
     }
     else {
         ImGui::AlignTextToFramePadding();
-        if(!cue.CueNumber.IsNull())
+        if(cue.CueNumber.has_value())
             ImGui::Text("%g", (double) *cue.CueNumber);
         else
             ImGui::Text("");
@@ -91,7 +91,7 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
         ImGuiDefaults::DrawHiddenTextInput(cue.CueName);
     else {
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("%s", (*cue.CueName).c_str());
+        ImGui::Text("%s", cue.CueName.c_str());
     }
 
     ImGui::SameLine();
@@ -198,6 +198,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
             case EmptyCueTemplate:
                 // TODO Create Cue
                 // EditorActions::CreateCueAction::Register(m_CueList);
+                // CommandStack::ExecuteCommand<CreateNewCueCommand>(cueList);
                 break;
             default:
                 break;
@@ -213,6 +214,4 @@ void CueListWindow::OnUpdate(CueList& cueList) {
     ImGui::End();
 
     m_CuePropertiesWindow.OnUpdate(cueList, m_SelectedCues);
-
-    // ImGui::ShowDemoWindow();
 }

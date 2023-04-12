@@ -29,8 +29,8 @@ namespace SitzCue {
     public:
 
         Cue() = default;
-        Cue(struct UUID uuid) : UUID(uuid), CueName(CreateRef<std::string>("")), CueNumber() {}
-        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(CreateRef<std::string>(cueName)), CueNumber(CreateRef<float>(cueNumber)) {}
+        Cue(struct UUID uuid) : UUID(uuid), CueName(""), CueNumber(std::nullopt) {}
+        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(cueName), CueNumber(cueNumber) {}
 
         virtual void Execute();
 
@@ -39,8 +39,8 @@ namespace SitzCue {
     public:
 
         struct UUID UUID;
-        Ref<std::string> CueName = CreateRef<std::string>("");
-        Ref<float> CueNumber;
+        std::string CueName = "";
+        std::optional<float> CueNumber = std::nullopt;
 
     };
 
@@ -49,12 +49,13 @@ namespace SitzCue {
     public: 
         CueList() = default;
 
-        Cue& CreateCue(const std::string& cueName, float cueNumber);
-        Cue& CreateCue();
+        std::shared_ptr<Cue> CreateCue(const std::string& cueName, float cueNumber);
+        std::shared_ptr<Cue> CreateCue();
 
-        Cue* GetCue(UUID uuid);
+        std::shared_ptr<Cue> GetCue(UUID uuid);
 
-        void DeleteCue(const Cue& cue);
+        void DeleteCue(const std::shared_ptr<Cue>& cue);
+        void DeleteCue(UUID uuid);
 
         const std::vector<Cue*>& GetCueCache() const { return m_SortedCuesCache; }
 
@@ -63,7 +64,7 @@ namespace SitzCue {
 
         void UpdateCueCache();
 
-        std::vector<Cue> m_Registry;
+        std::vector<std::shared_ptr<Cue>> m_Registry;
         std::vector<uint32_t> m_CueListOrder;
 
         std::vector<Cue*> m_SortedCuesCache;

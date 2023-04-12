@@ -27,7 +27,7 @@ void Application::OnCreate() {
     Project* project = new Project("/Users/nickfanelli/Desktop/Example Project.sitzqprj");
 
     project->GetCueList().CreateCue("House Open (Pre-Show)", 1.0f);
-    // project->GetCueList().CreateCue();
+    project->GetCueList().CreateCue();
     // project->GetCueList().CreateCue();
     project->GetCueList().CreateCue("Pre-Show Announcement", 2.0f);
     // project->GetCueList().CreateCue();

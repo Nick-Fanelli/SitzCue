@@ -8,13 +8,13 @@ void Cue::Execute() {
     
 }
 
-Cue& CueList::CreateCue(const std::string& name, float cueNumber) {
+std::shared_ptr<Cue> CueList::CreateCue(const std::string& name, float cueNumber) {
 
     SITZCUE_PROFILE_FUNCTION();
 
     UUID uuid = GenerateUUID();
 
-    Cue& cue = m_Registry.emplace_back(uuid, name, cueNumber);
+    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid, name, cueNumber));
     m_CueListOrder.push_back(uuid);
 
     UpdateCueCache();
@@ -23,13 +23,13 @@ Cue& CueList::CreateCue(const std::string& name, float cueNumber) {
 
 }
 
-Cue& CueList::CreateCue() {
+std::shared_ptr<Cue> CueList::CreateCue() {
 
     SITZCUE_PROFILE_FUNCTION();
 
     UUID uuid = GenerateUUID();
 
-    Cue& cue = m_Registry.emplace_back(uuid);
+    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid));
     m_CueListOrder.push_back(uuid);
 
     UpdateCueCache();
@@ -37,13 +37,13 @@ Cue& CueList::CreateCue() {
     return cue;
 }
 
-Cue* CueList::GetCue(UUID uuid) {
+std::shared_ptr<Cue> CueList::GetCue(UUID uuid) {
 
     SITZCUE_PROFILE_FUNCTION();
 
     for(auto& cue : m_Registry) {
-        if(cue.UUID == uuid) {
-            return &cue;
+        if(cue->UUID == uuid) {
+            return cue;
         }
     }
 
@@ -51,12 +51,12 @@ Cue* CueList::GetCue(UUID uuid) {
 
 }
 
-void CueList::DeleteCue(const Cue& cue) {
+void CueList::DeleteCue(const std::shared_ptr<Cue>& cue) {
 
     SITZCUE_PROFILE_FUNCTION();
 
     // Remove from Cue List Order
-    auto uuidIterator = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), cue.UUID);
+    auto uuidIterator = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), cue->UUID);
     if(uuidIterator != m_CueListOrder.end()) {
         m_CueListOrder.erase(uuidIterator);
     }
@@ -68,6 +68,19 @@ void CueList::DeleteCue(const Cue& cue) {
 
 
     // Update the Cue-Cache
+    UpdateCueCache();
+}
+
+void CueList::DeleteCue(UUID uuid) {
+
+    // Remove from Cue List Order
+    auto uuidIterator = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), uuid);
+    if(uuidIterator != m_CueListOrder.end()) {
+        m_CueListOrder.erase(uuidIterator);
+    }
+    
+    // TODO: Remove from Registry
+
     UpdateCueCache();
 }
 
@@ -87,8 +100,8 @@ UUID CueList::GenerateUUID() {
         bool isDuplicate = false;
 
         // Ensure no duplicate UUIDs
-        for(Cue& cue : m_Registry) {
-            if(cue.UUID == rand) {
+        for(auto& cue : m_Registry) {
+            if(cue->UUID == rand) {
                 Log::Info("Duplicate UUID Found!");
                 isDuplicate = true;
                 break;
@@ -110,9 +123,9 @@ void CueList::UpdateCueCache() {
     for(uint32_t uuid : m_CueListOrder) {
         bool isFound = false;
 
-        for(Cue& cue : m_Registry) {
-            if(cue.UUID == uuid) {
-                m_SortedCuesCache.push_back(&cue);
+        for(auto& cue : m_Registry) {
+            if(cue->UUID == uuid) {
+                m_SortedCuesCache.push_back(&*cue);
                 isFound = true;
                 break;
             }
@@ -130,12 +143,12 @@ void CueList::UpdateCueCache() {
     }
 
     // Safety Check for Un-targeted cues in Registry
-    for(Cue& cue : m_Registry) {
+    for(auto& cue : m_Registry) {
 
         bool isFound = false;
 
         for(uint32_t uuid : m_CueListOrder) {
-            if(cue.UUID == uuid) {
+            if(cue->UUID == uuid) {
                 isFound = true;
                 break;
             }

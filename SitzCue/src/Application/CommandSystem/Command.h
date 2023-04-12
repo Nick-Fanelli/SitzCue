@@ -17,65 +17,59 @@ namespace SitzCue {
 
     };
 
-    class CreateCueCommand : public Command {
-
-    public:
-
-        CreateCueCommand(CueList& cueList) : m_CueList(cueList) {}
-        ~CreateCueCommand() = default;
-
-        void Execute() override;
-        void Undo() override;
-
-    private:
-        CueList& m_CueList;
-        UUID m_CreatedCueUUID;
-
-    };
-
-
+    
     class UpdateStringCommand : public Command {
 
     public:
+        UpdateStringCommand(std::string& ref, const std::string& previousValue, const std::string& newValue)
+            : m_Ref(ref), m_PreviousValue(previousValue), m_NewValue(newValue) {}
 
-        UpdateStringCommand(Ref<std::string> target, const std::string& previousValue, const std::string& newValue) : m_Target(target), m_PreviousValue(previousValue), m_NewValue(newValue) {}
         ~UpdateStringCommand() = default;
 
         void Execute() override {
-            m_Target.SetValueIfSafe(m_NewValue);
+
+            m_Ref = m_NewValue;
+
         }
 
         void Undo() override {
-            m_Target.SetValueIfSafe(m_PreviousValue);
+
+            m_Ref = m_PreviousValue;
+
         }
 
-    private:
-        Ref<std::string> m_Target;
+    private:    
+        std::string& m_Ref;
         std::string m_PreviousValue;
         std::string m_NewValue;
 
     };
 
 
-    class UpdateFloatCommand : public Command {
+    class UpdateOptionalFloatCommand : public Command {
 
     public:
+        UpdateOptionalFloatCommand(std::optional<float>& ref, const std::optional<float>& previousValue, const std::optional<float>& newValue) 
+        : m_Ref(ref), m_PreviousValue(previousValue), m_NewValue(newValue) {}
 
-        UpdateFloatCommand(Ref<float> target, float previousValue, float newValue) : m_Target(target), m_PreviousValue(previousValue), m_NewValue(newValue) {}
-        ~UpdateFloatCommand() = default;
+        ~UpdateOptionalFloatCommand() = default;
 
-        void Execute() override {   
-            m_Target.SetValueIfSafe(m_NewValue);
+        void Execute() override {
+
+            m_Ref = m_NewValue;
+
         }
 
         void Undo() override {
-            m_Target.SetValueIfSafe(m_PreviousValue);
+
+            m_Ref = m_PreviousValue;
+
         }
 
     private:
-        Ref<float> m_Target;
-        float m_PreviousValue;
-        float m_NewValue;
+        std::optional<float>& m_Ref;
+        std::optional<float> m_PreviousValue;
+        std::optional<float> m_NewValue;
 
     };
 
