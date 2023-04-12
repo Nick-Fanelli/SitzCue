@@ -21,7 +21,7 @@ namespace SitzCue {
 
     private:
         void HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID cue);
-        void DrawCue(const std::vector<Cue*>& cues, int n);
+        void DrawCue(CueList& cueList, const std::vector<Cue*>& cues, int n);
 
     private:
         CuePropertiesWindow m_CuePropertiesWindow;

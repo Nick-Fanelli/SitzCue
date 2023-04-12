@@ -37,6 +37,31 @@ std::shared_ptr<Cue> CueList::CreateCue() {
     return cue;
 }
 
+void CueList::ReinstateCue(const std::shared_ptr<Cue>& cue, uint32_t position) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    m_Registry.push_back(cue);
+    m_CueListOrder.insert(m_CueListOrder.begin() + position, cue->UUID);
+
+    UpdateCueCache();
+
+}
+
+void CueList::ReinstateCue(const std::shared_ptr<Cue>& cue) { ReinstateCue(cue, m_CueListOrder.size() - 1); }
+
+uint32_t CueList::GetListPositionOfCue(const std::shared_ptr<Cue>& cue) {
+
+    auto it = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), cue->UUID);
+    if(it != m_CueListOrder.end()) {
+        uint32_t position = static_cast<uint32_t>(std::distance(m_CueListOrder.begin(), it));
+        return position;
+    }
+
+    Log::Error("Could not find the position of a cue");
+    return 0;
+}
+
 std::shared_ptr<Cue> CueList::GetCue(UUID uuid) {
 
     SITZCUE_PROFILE_FUNCTION();
@@ -68,19 +93,6 @@ void CueList::DeleteCue(const std::shared_ptr<Cue>& cue) {
 
 
     // Update the Cue-Cache
-    UpdateCueCache();
-}
-
-void CueList::DeleteCue(UUID uuid) {
-
-    // Remove from Cue List Order
-    auto uuidIterator = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), uuid);
-    if(uuidIterator != m_CueListOrder.end()) {
-        m_CueListOrder.erase(uuidIterator);
-    }
-    
-    // TODO: Remove from Registry
-
     UpdateCueCache();
 }
 

@@ -61,7 +61,7 @@ void CueListWindow::HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID uui
     m_SelectedCues.push_back(uuid);
 }
 
-void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
+void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache, int n) {
     
     SITZCUE_PROFILE_FUNCTION();
 
@@ -113,8 +113,7 @@ void CueListWindow::DrawCue(const std::vector<Cue*>& cueCache, int n) {
     // Right Click Menu
     if(ImGui::BeginPopup("Cue Right Click Menu")) {
         if(ImGui::MenuItem("Delete")) {
-            // TODO: Delete Cue
-            // EditorActions::DeleteCueAction::Register(m_CueList, cue);
+            CommandStack::ExecuteCommand(new DeleteCueCommand(cueList, cue.UUID));
         }   
 
         ImGui::EndPopup();
@@ -178,7 +177,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
             ImGui::TableNextRow();
 
             ImGui::PushID(cache[n]);
-            DrawCue(cache, n);
+            DrawCue(cueList, cache, n);
             ImGui::PopID();
 
         }
@@ -196,9 +195,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
             switch(cueTemplate) {
 
             case EmptyCueTemplate:
-                // TODO Create Cue
-                // EditorActions::CreateCueAction::Register(m_CueList);
-                // CommandStack::ExecuteCommand<CreateNewCueCommand>(cueList);
+                CommandStack::ExecuteCommand(new CreateNewCueCommand{cueList});
                 break;
             default:
                 break;

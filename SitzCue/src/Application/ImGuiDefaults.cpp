@@ -20,7 +20,7 @@ void ImGuiDefaults::DrawTextInput(const std::string& label, std::string& data) {
     ImGui::InputText("", &dataCache);
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
-        CommandStack::ExecuteCommand<UpdateStringCommand>(data, data, dataCache);
+        CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::string>{data, data, dataCache});
     }
 
     ImGui::PopID();
@@ -43,7 +43,7 @@ void ImGuiDefaults::DrawHiddenTextInput(std::string& data) {
     ImGui::InputText("", &dataCache);
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
-        CommandStack::ExecuteCommand<UpdateStringCommand>(data, data, dataCache);
+        CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::string>{data, data, dataCache});
     }
  
     ImGui::PopStyleColor();
@@ -68,13 +68,13 @@ void ImGuiDefaults::DrawOptionalFloat(const std::string& label, std::optional<fl
         ImGui::InputFloat("", &dataCache, 1.0f, 10.0f, "%g");
 
         if(ImGui::IsItemDeactivatedAfterEdit()) {
-            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, dataCache);
+            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::optional<float>>{data, data, dataCache});
         }
 
         ImGui::SameLine();
 
         if(ImGui::Button("Remove")) {
-            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, std::nullopt);
+            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::optional<float>>{data, data, std::nullopt});
         }
 
     } else {
@@ -91,7 +91,7 @@ void ImGuiDefaults::DrawOptionalFloat(const std::string& label, std::optional<fl
                 value = std::stof(dataCache);
             } catch(...) {}
 
-            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, value);
+            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::optional<float>>{data, data, value});
         }
     }
 
@@ -122,7 +122,7 @@ void ImGuiDefaults::DrawHiddenOptionalFloat(std::optional<float>& data) {
     if(ImGui::IsItemDeactivatedAfterEdit()) {
 
         if(dataCache.empty()) {
-            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, std::nullopt);
+            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::optional<float>>{data, data, std::nullopt});
         } else {
             float value = 0.0f;
 
@@ -130,7 +130,7 @@ void ImGuiDefaults::DrawHiddenOptionalFloat(std::optional<float>& data) {
                 value = std::stof(dataCache);
             } catch(...) {}
 
-            CommandStack::ExecuteCommand<UpdateOptionalFloatCommand>(data, data, value);
+            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::optional<float>>{data, data, value});
         }
     }
 

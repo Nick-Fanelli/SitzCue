@@ -17,59 +17,81 @@ namespace SitzCue {
 
     };
 
-    
-    class UpdateStringCommand : public Command {
+
+    template<typename T>
+    class UpdateGenericDataCommand : public Command {
 
     public:
-        UpdateStringCommand(std::string& ref, const std::string& previousValue, const std::string& newValue)
+        UpdateGenericDataCommand(T& ref, const T& previousValue, const T& newValue)
             : m_Ref(ref), m_PreviousValue(previousValue), m_NewValue(newValue) {}
 
-        ~UpdateStringCommand() = default;
+        ~UpdateGenericDataCommand() = default;
 
         void Execute() override {
-
             m_Ref = m_NewValue;
-
         }
 
         void Undo() override {
-
             m_Ref = m_PreviousValue;
-
         }
 
-    private:    
-        std::string& m_Ref;
-        std::string m_PreviousValue;
-        std::string m_NewValue;
+    private:   
+        T& m_Ref;
+        T m_PreviousValue;
+        T m_NewValue;
 
     };
 
 
-    class UpdateOptionalFloatCommand : public Command {
+    class CreateNewCueCommand : public Command {
 
     public:
-        UpdateOptionalFloatCommand(std::optional<float>& ref, const std::optional<float>& previousValue, const std::optional<float>& newValue) 
-        : m_Ref(ref), m_PreviousValue(previousValue), m_NewValue(newValue) {}
+        CreateNewCueCommand(CueList& cueList)
+            : m_CueList(cueList) {}
 
-        ~UpdateOptionalFloatCommand() = default;
+        ~CreateNewCueCommand() = default;
 
         void Execute() override {
-
-            m_Ref = m_NewValue;
-
+            m_CreatedCue = m_CueList.CreateCue();
         }
 
         void Undo() override {
-
-            m_Ref = m_PreviousValue;
-
+            m_CueList.DeleteCue(m_CreatedCue);
         }
 
-    private:
-        std::optional<float>& m_Ref;
-        std::optional<float> m_PreviousValue;
-        std::optional<float> m_NewValue;
+    private:   
+        CueList& m_CueList;
+        std::shared_ptr<Cue> m_CreatedCue;
+
+    };
+
+
+    class DeleteCueCommand : public Command {
+
+    public:
+        DeleteCueCommand(CueList& cueList, std::shared_ptr<Cue> cue)
+            : m_CueList(cueList), m_Cue(cue) {}
+
+        DeleteCueCommand(CueList& cueList, UUID uuid) : m_CueList(cueList) {
+            m_Cue = cueList.GetCue(uuid);
+        }
+
+        ~DeleteCueCommand() = default;
+
+        void Execute() override {
+            m_CuePosition = m_CueList.GetListPositionOfCue(m_Cue);
+            m_CueList.DeleteCue(m_Cue);
+        }
+
+        void Undo() override {
+            m_CueList.ReinstateCue(m_Cue, m_CuePosition);
+        }
+
+    private:   
+        CueList& m_CueList;
+        std::shared_ptr<Cue> m_Cue;
+
+        uint32_t m_CuePosition;
 
     };
 

@@ -52,10 +52,14 @@ namespace SitzCue {
         std::shared_ptr<Cue> CreateCue(const std::string& cueName, float cueNumber);
         std::shared_ptr<Cue> CreateCue();
 
+        void ReinstateCue(const std::shared_ptr<Cue>& cue, uint32_t position);
+        void ReinstateCue(const std::shared_ptr<Cue>& cue);
+
+        uint32_t GetListPositionOfCue(const std::shared_ptr<Cue>& cue);
+
         std::shared_ptr<Cue> GetCue(UUID uuid);
 
         void DeleteCue(const std::shared_ptr<Cue>& cue);
-        void DeleteCue(UUID uuid);
 
         const std::vector<Cue*>& GetCueCache() const { return m_SortedCuesCache; }
 

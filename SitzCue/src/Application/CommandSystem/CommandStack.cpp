@@ -2,6 +2,27 @@
 
 using namespace SitzCue;
 
+Command* CommandStack::ExecuteCommand(Command* command) {
+    SITZCUE_PROFILE_FUNCTION();
+
+    if(command == nullptr)
+        return nullptr;
+
+    command->Execute();
+
+
+    s_UndoCommands.push_back(command);
+
+    if(s_UndoCommands.size() > CommandStackSize) {
+        delete (*s_UndoCommands.begin());
+        s_UndoCommands.erase(s_UndoCommands.begin());
+    }
+
+    s_RedoCommands.clear();
+
+    return command;
+}
+
 void CommandStack::Undo() {
 
     if(!s_UndoCommands.empty()) {
