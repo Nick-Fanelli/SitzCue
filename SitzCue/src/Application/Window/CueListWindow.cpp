@@ -18,47 +18,58 @@ void CueListWindow::HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID uui
 
     if(io.KeyShift) {
 
-        UUID lastSelectedUUID = m_SelectedCues[m_SelectedCues.size() - 1];
+        if(m_SelectedCues.size() <= 0) {
+            
+            m_SelectedCues.push_back(uuid);
 
-        if(lastSelectedUUID == uuid) {
-            auto it = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), uuid);
-            m_SelectedCues.erase(it);
-            return;
-        }
+        } else {
 
-        int lastSelectedIndex = -1;
-        int currentSelectedIndex = -1;
+            UUID lastSelectedUUID = m_SelectedCues[m_SelectedCues.size() - 1];
 
-        // Find Indices of the Selections
-        for(int i = 0; i < cueCache.size(); i++) {
-            if(cueCache[i]->UUID == lastSelectedUUID) {
-                lastSelectedIndex = i;
+            if(lastSelectedUUID == uuid) {
+                auto it = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), uuid);
+
+                if(it != m_SelectedCues.end())
+                    m_SelectedCues.erase(it);
+                return;
             }
 
-            if(cueCache[i]->UUID == uuid) {
-                currentSelectedIndex = i;
+            int lastSelectedIndex = -1;
+            int currentSelectedIndex = -1;
+
+            // Find Indices of the Selections
+            for(int i = 0; i < cueCache.size(); i++) {
+                if(cueCache[i]->UUID == lastSelectedUUID) {
+                    lastSelectedIndex = i;
+                }
+
+                if(cueCache[i]->UUID == uuid) {
+                    currentSelectedIndex = i;
+                }
+
+                if(currentSelectedIndex != -1 && lastSelectedIndex != -1)
+                    break;
             }
 
-            if(currentSelectedIndex != -1 && lastSelectedIndex != -1)
-                break;
+            int firstIndex = (lastSelectedIndex < currentSelectedIndex) ? lastSelectedIndex : currentSelectedIndex;
+            int lastIndex = (lastSelectedIndex > currentSelectedIndex) ? lastSelectedIndex : currentSelectedIndex;
+
+            for(int i = firstIndex; i <= lastIndex; i++) {
+                auto it = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), cueCache[i]->UUID);
+                if(it == m_SelectedCues.end()) {
+                    m_SelectedCues.push_back(cueCache[i]->UUID);
+                }
+
+            }
         }
-
-        int firstIndex = (lastSelectedIndex < currentSelectedIndex) ? lastSelectedIndex : currentSelectedIndex;
-        int lastIndex = (lastSelectedIndex > currentSelectedIndex) ? lastSelectedIndex : currentSelectedIndex;
-
-        for(int i = firstIndex; i <= lastIndex; i++) {
-            m_SelectedCues.push_back(cueCache[i]->UUID);
-        }
-
-        return;
 
     } else if(io.KeySuper) {
         // Platform Detection
-        Log::Info("Hey");
+        Log::Warn("Unimplemented");
+    } else {
+        m_SelectedCues.clear();
+        m_SelectedCues.push_back(uuid);
     }
-
-    m_SelectedCues.clear();
-    m_SelectedCues.push_back(uuid);
 }
 
 void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache, int n) {
@@ -132,6 +143,29 @@ void CueListWindow::OnUpdate(CueList& cueList) {
     static constexpr float cueTemplateButtonScale = 2.0f;
 
     ImGui::Begin("Cue List");
+
+    if(ImGui::IsWindowFocused()) {
+
+        if(PlatformDetection::IsNativeCommandKey() && ImGui::IsKeyPressed(ImGuiKey_Backspace, false)) {
+
+            // TODO: SOmetimes crashes and wrong order sometimes lol
+            
+
+            if(m_SelectedCues.size() > 0) {
+
+                auto* batchCommand = new BatchCommand();
+
+                for(UUID cueUUID : m_SelectedCues) {
+                    batchCommand->PushBackCommand(new DeleteCueCommand(cueList, cueUUID));
+                }
+
+                CommandStack::ExecuteCommand(batchCommand);
+
+                m_SelectedCues.clear();
+            }
+        }
+
+    }
 
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
 

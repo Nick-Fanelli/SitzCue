@@ -43,6 +43,45 @@ namespace SitzCue {
     };
 
 
+    class BatchCommand : public Command {
+
+    public: 
+
+        BatchCommand() = default;
+
+        BatchCommand(const std::vector<Command*>& batchCommands) {
+
+            for(Command* command : batchCommands)
+                m_Commands.push_back(command);
+
+        }
+
+        ~BatchCommand() {
+            for(auto* command : m_Commands)
+                delete command;
+        }
+
+        void Execute() override {
+            for(Command* command : m_Commands)
+                command->Execute();
+        }
+
+        void Undo() override {
+            for(auto it = m_Commands.rbegin(); it != m_Commands.rend(); ++it) {
+                (*it)->Undo();
+            }
+        }
+
+        void PushBackCommand(Command* command) {        
+            m_Commands.push_back(command);
+        }
+
+    private:
+
+        std::vector<Command*> m_Commands;
+
+    };
+
     class CreateNewCueCommand : public Command {
 
     public:
@@ -94,5 +133,4 @@ namespace SitzCue {
         uint32_t m_CuePosition;
 
     };
-
 }
