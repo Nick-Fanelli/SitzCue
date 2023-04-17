@@ -127,7 +127,7 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
             ImGuiWindow* window = ImGui::GetCurrentWindow();
 
-            window->DrawList->AddLine(startingPosition, ImVec2{ startingPosition.x + ImGui::GetWindowWidth(), startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.0f);
+            window->DrawList->AddLine(startingPosition, ImVec2{ startingPosition.x + ImGui::GetWindowWidth(), startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.5f);
 
         }
 
