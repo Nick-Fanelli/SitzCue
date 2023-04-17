@@ -24,9 +24,12 @@ namespace SitzCue {
         const WindowManager& GetWindowManager() const { return m_WindowManager; }
         WindowManager& GetWindowManager() { return m_WindowManager; }
 
-    private:
-        Application* m_Application;
+        static ImFont* GetBoldFont() { return s_BoldFont; }
 
+    private:
+        static inline ImFont* s_BoldFont = nullptr;
+
+        Application* m_Application;
         WindowManager m_WindowManager;
 
         void ApplyColorTheme();

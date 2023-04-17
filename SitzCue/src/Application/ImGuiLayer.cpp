@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "StatusBar.h"
 #include "MenuBar.h"
+#include "Popup.h"
 
 #include "Window/Window.h"
 #include "CommandSystem/CommandStack.h"
@@ -48,6 +49,9 @@ void ImGuiLayer::OnCreate() {
     faConfig.GlyphMinAdvanceX = 13.0f;
     static constexpr ImWchar iconRanges[] = { 0xe005, 0xf8ff, 0 };
     io.Fonts->AddFontFromFileTTF("resources/fonts/font-awesome/Font-Awesome-Solid-900.otf", 17.0f, &faConfig, iconRanges);
+
+    // Bold Font
+    s_BoldFont = io.Fonts->AddFontFromFileTTF("resources/fonts/Inter-Bold.ttf", 30.0f, &config);
 
     ImGuiStyle& style = ImGui::GetStyle();
     if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -139,6 +143,8 @@ void ImGuiLayer::Begin() {
     }
 
     m_WindowManager.OnUpdate();
+
+    Popup::Update(); // Update Popup System
 }
 
 void ImGuiLayer::End() {
