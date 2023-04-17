@@ -36,6 +36,8 @@ project "SitzCue"
             "UniformTypeIdentifiers.framework"
         }
 
+        files { "src/**.mm", "src/**.m" }
+
     filter "system:linux"
         links {
             "dl",
