@@ -7,3 +7,6 @@
 [submodule "SitzCue/vendor/nativefiledialog"]
 	path = SitzCue/vendor/nativefiledialog
 	url = https://github.com/Nick-Fanelli/nativefiledialog.git
+[submodule "SitzCue/vendor/yaml-cpp"]
+	path = SitzCue/vendor/yaml-cpp
+	url = https://github.com/Nick-Fanelli/yaml-cpp.git
