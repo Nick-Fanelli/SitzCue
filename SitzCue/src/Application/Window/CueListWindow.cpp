@@ -197,11 +197,12 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
     ImGui::PopStyleColor();
 
-    if(ImGui::BeginTable("CueTable", 3, ImGuiTableFlags_Resizable)) {
+    if(ImGui::BeginTable("CueTable", 4, ImGuiTableFlags_Resizable)) {
 
         ImGui::TableSetupColumn("Type");
         ImGui::TableSetupColumn("Number");
         ImGui::TableSetupColumn("Name");
+        ImGui::TableSetupColumn("Action");
         ImGui::TableHeadersRow();
 
         const auto& cache = cueList.GetCueCache();
