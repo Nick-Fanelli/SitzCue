@@ -4,6 +4,7 @@
 #include "StatusBar.h"
 #include "MenuBar.h"
 #include "Popup.h"
+#include "ImGuiDefaults.h"
 
 #include "Window/Window.h"
 #include "CommandSystem/CommandStack.h"
@@ -11,8 +12,6 @@
 using namespace SitzCue;
 
 static MenuBar s_MenuBar;
-
-static const ImVec4 StatusBarColor = { 0.396078f, 0.803921f, 0.992156f, 1.0f };
 
 ImGuiLayer::ImGuiLayer(Application* application) {
     m_Application = application;
@@ -182,10 +181,10 @@ void ImGuiLayer::ApplyColorTheme() {
 
     static auto& colors = ImGui::GetStyle().Colors;
 
-    colors[ImGuiCol_DockingPreview] = StatusBarColor;
-    colors[ImGuiCol_DragDropTarget] = StatusBarColor;
-    colors[ImGuiCol_NavHighlight] = StatusBarColor;
-    colors[ImGuiCol_ResizeGripActive] = StatusBarColor;
+    colors[ImGuiCol_DockingPreview] = ImGuiDefaults::AccentColor;
+    colors[ImGuiCol_DragDropTarget] = ImGuiDefaults::AccentColor;
+    colors[ImGuiCol_NavHighlight] = ImGuiDefaults::AccentColor;
+    colors[ImGuiCol_ResizeGripActive] = ImGuiDefaults::AccentColor;
 
     colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 

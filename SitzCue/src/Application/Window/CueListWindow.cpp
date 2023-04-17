@@ -117,6 +117,40 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         HandleOnCueClick(cueCache, cue.UUID);
     }
 
+    if(ImGui::BeginDragDropSource()) {
+        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        if(cue.CueNumber.has_value()) {
+            ImGui::Text("%g - %s", *cue.CueNumber, cue.CueName.c_str());
+        } else if(cue.CueName.empty()) {
+            ImGui::Text("Unnamed Cue");
+        } else {
+            ImGui::Text("%s", cue.CueName.c_str());
+        }
+
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget()) {
+
+        if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+            const ImVec2 cursorPosition = ImGui::GetCursorPos();
+            const ImVec2 startingPosition = ImVec2{ window->Pos.x, window->Pos.y + cursorPosition.y };
+
+            window->DrawList->AddLine(startingPosition, ImVec2{ window->Size.x + 200.0f, startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.0f);
+
+        }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+            // Do something with the dropped payload
+            Log::Info("Accept");
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
     if(ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
         ImGui::OpenPopup("Cue Right Click Menu");
     }
@@ -134,38 +168,10 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         ImGui::PopStyleColor(2);
 }
 
-static bool s_IsNewCueDropdownVisible = false;
-
-void CueListWindow::OnUpdate(CueList& cueList) {
-
+static void DrawNewCueTemplateButtons() {
     SITZCUE_PROFILE_FUNCTION();
 
     static constexpr float cueTemplateButtonScale = 2.0f;
-
-    ImGui::Begin("Cue List");
-
-    if(ImGui::IsWindowFocused()) {
-
-        if(PlatformDetection::IsNativeCommandKey() && ImGui::IsKeyPressed(ImGuiKey_Backspace, false)) {
-
-            // TODO: SOmetimes crashes and wrong order sometimes lol
-            
-
-            if(m_SelectedCues.size() > 0) {
-
-                auto* batchCommand = new BatchCommand();
-
-                for(UUID cueUUID : m_SelectedCues) {
-                    batchCommand->PushBackCommand(new DeleteCueCommand(cueList, cueUUID));
-                }
-
-                CommandStack::ExecuteCommand(batchCommand);
-
-                m_SelectedCues.clear();
-            }
-        }
-
-    }
 
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
 
@@ -196,6 +202,41 @@ void CueListWindow::OnUpdate(CueList& cueList) {
     }
 
     ImGui::PopStyleColor();
+}
+
+static bool s_IsNewCueDropdownVisible = false;
+
+void CueListWindow::OnUpdate(CueList& cueList) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    ImGui::Begin("Cue List");
+
+    if(ImGui::IsWindowFocused()) {
+
+        if(PlatformDetection::IsNativeCommandKey() && ImGui::IsKeyPressed(ImGuiKey_Backspace, false)) {
+
+            // FIXME: Sometimes crashes and wrong order sometimes lol
+
+            if(m_SelectedCues.size() > 0) {
+
+                auto* batchCommand = new BatchCommand();
+
+                for(UUID cueUUID : m_SelectedCues) {
+                    batchCommand->PushBackCommand(new DeleteCueCommand(cueList, cueUUID));
+                }
+
+                CommandStack::ExecuteCommand(batchCommand);
+
+                m_SelectedCues.clear();
+            }
+        }
+
+    }
+
+    DrawNewCueTemplateButtons();
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, 2.0f});
 
     if(ImGui::BeginTable("CueTable", 3, ImGuiTableFlags_Resizable)) {
 
@@ -212,8 +253,20 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
             ImGui::PushID(cache[n]);
             DrawCue(cueList, cache, n);
-            ImGui::PopID();
 
+            // After Cue Drag and Drop Area
+            // ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{0.0f, 0.0f, 0.0f, 1.0f});
+            // // ImGui::PopStyleColor();
+            // if(ImGui::BeginDragDropTarget()) {
+
+            //     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE")) {
+            //         Log::Info("Hey");
+            //     }
+
+            //     ImGui::EndDragDropTarget();
+            // }
+
+            ImGui::PopID();
         }
         ImGui::EndTable();
     }
@@ -241,6 +294,8 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
         ImGui::EndDragDropTarget();
     }
+
+    ImGui::PopStyleVar();
 
     ImGui::End();
 
