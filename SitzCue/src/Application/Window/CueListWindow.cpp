@@ -182,7 +182,7 @@ static void DrawNewCueTemplateButtons() {
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
         ImGui::Text("Empty Cue");
         ImGui::EndDragDropSource();
     }
@@ -196,7 +196,7 @@ static void DrawNewCueTemplateButtons() {
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
         ImGui::Text("Empty Cue");
         ImGui::EndDragDropSource();
     }
@@ -253,19 +253,6 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
             ImGui::PushID(cache[n]);
             DrawCue(cueList, cache, n);
-
-            // After Cue Drag and Drop Area
-            // ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{0.0f, 0.0f, 0.0f, 1.0f});
-            // // ImGui::PopStyleColor();
-            // if(ImGui::BeginDragDropTarget()) {
-
-            //     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE")) {
-            //         Log::Info("Hey");
-            //     }
-
-            //     ImGui::EndDragDropTarget();
-            // }
-
             ImGui::PopID();
         }
         ImGui::EndTable();
@@ -273,27 +260,6 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
     ImGui::BeginChild("CueDropSection", ImGui::GetContentRegionAvail());
     ImGui::EndChild();
-
-    if(ImGui::BeginDragDropTarget()) {
-
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TYPE")) {
-            int cueTemplate = *(int*) payload->Data;
-
-            switch(cueTemplate) {
-
-            case EmptyCueTemplate:
-                CommandStack::ExecuteCommand(new CreateNewCueCommand{cueList});
-                break;
-            default:
-                break;
-
-            }
-
-        }
-
-
-        ImGui::EndDragDropTarget();
-    }
 
     ImGui::PopStyleVar();
 
