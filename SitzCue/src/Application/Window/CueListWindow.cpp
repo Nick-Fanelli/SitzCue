@@ -117,6 +117,29 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         HandleOnCueClick(cueCache, cue.UUID);
     }
 
+     if (ImGui::BeginDragDropTarget()) {
+
+        if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
+            || ImGui::AcceptDragDropPayload("DND_CUE_TYPE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+
+            const ImVec2 cursorPosition = ImGui::GetCursorPos();
+            const ImVec2 startingPosition = ImVec2{ ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + cursorPosition.y };
+
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+            window->DrawList->AddLine(startingPosition, ImVec2{ startingPosition.x + ImGui::GetWindowWidth(), startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.0f);
+
+        }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+            // Do something with the dropped payload
+            Log::Info("Accept");
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
+
     if(ImGui::BeginDragDropSource()) {
         ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
         if(cue.CueNumber.has_value()) {
@@ -128,27 +151,6 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         }
 
         ImGui::EndDragDropSource();
-    }
-
-    if (ImGui::BeginDragDropTarget()) {
-
-        if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
-
-            ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-            const ImVec2 cursorPosition = ImGui::GetCursorPos();
-            const ImVec2 startingPosition = ImVec2{ window->Pos.x, window->Pos.y + cursorPosition.y };
-
-            window->DrawList->AddLine(startingPosition, ImVec2{ window->Size.x + 200.0f, startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.0f);
-
-        }
-
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
-            // Do something with the dropped payload
-            Log::Info("Accept");
-        }
-
-        ImGui::EndDragDropTarget();
     }
 
     if(ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
@@ -182,7 +184,7 @@ static void DrawNewCueTemplateButtons() {
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
         ImGui::Text("Empty Cue");
         ImGui::EndDragDropSource();
     }
@@ -196,7 +198,7 @@ static void DrawNewCueTemplateButtons() {
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
         ImGui::Text("Empty Cue");
         ImGui::EndDragDropSource();
     }
