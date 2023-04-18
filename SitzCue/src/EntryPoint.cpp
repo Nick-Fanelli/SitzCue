@@ -3,6 +3,7 @@
 #include <nfd.hpp>
 
 #include "Application/Application.h"
+#include "Utils/YAMLConversions.h"
 
 using namespace SitzCue;
 

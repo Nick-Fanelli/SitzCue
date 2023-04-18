@@ -2,6 +2,8 @@
 
 #include "sitzcuepch.h"
 
+#include "Utils/YAMLConversions.h"
+
 namespace SitzCue {
 
     struct UUID {
@@ -46,6 +48,8 @@ namespace SitzCue {
 
     class CueList {
 
+        friend struct YAML::convert<CueList>;
+        
     public: 
         CueList() = default;
 
@@ -62,7 +66,7 @@ namespace SitzCue {
         void DeleteCue(const std::shared_ptr<Cue>& cue);
 
         const std::vector<Cue*>& GetCueCache() const { return m_SortedCuesCache; }
-
+        
     private:
         UUID GenerateUUID();
 

@@ -74,6 +74,9 @@
         "list": "cpp",
         "numeric": "cpp",
         "random": "cpp",
-        "__memory": "cpp"
+        "__memory": "cpp",
+        "any": "cpp",
+        "forward_list": "cpp",
+        "valarray": "cpp"
     }
 }

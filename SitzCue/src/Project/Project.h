@@ -4,11 +4,15 @@
 
 #include "Cue.h"
 
+#include "Utils/YAMLConversions.h"
+
 namespace SitzCue {
 
     class Application;
 
     class Project {
+
+        friend struct YAML::convert<Project>;
 
     public:
         static const inline std::string ProjectDirectoryExtension = ".sitzqprj";
@@ -26,15 +30,21 @@ namespace SitzCue {
 
             m_ShowFilePath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" +  m_ProjectDirectoryPath.stem().string() + std::string(Project::ShowFileExtension));
             m_ResourcesDirectoryPath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" + "Resources");
+
+            LoadProject();
         }
 
         const CueList& GetCueList() const { return m_CueList; }
         CueList& GetCueList() { return m_CueList; }
 
+        const std::filesystem::path& GetProjectDirectoryPath() const { return m_ProjectDirectoryPath; }
         const std::filesystem::path& GetShowFilePath() const { return m_ShowFilePath; }
         const std::filesystem::path& GetResourcesDirectoryPath() const { return m_ResourcesDirectoryPath; }
 
         const std::string& GetProjectName() const { return m_ProjectName; }
+
+        void SaveProject();
+        void LoadProject();
 
     private:
         std::filesystem::path m_ProjectDirectoryPath;
