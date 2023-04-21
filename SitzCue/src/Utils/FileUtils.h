@@ -18,6 +18,9 @@ namespace SitzCue::FileUtils {
     void CreateFile(const std::filesystem::path& filepath);
     void CreateDirectory(const std::filesystem::path& dirPath);
 
+    // Modify
+    void ChangeContentTo(const std::filesystem::path& filepath, const std::string& content);
+
     // Delete
     void DeleteAllDirectoryContents(const std::filesystem::path& path);
 

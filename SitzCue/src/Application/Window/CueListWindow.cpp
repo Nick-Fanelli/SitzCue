@@ -117,6 +117,42 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         HandleOnCueClick(cueCache, cue.UUID);
     }
 
+     if (ImGui::BeginDragDropTarget()) {
+
+        if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
+            || ImGui::AcceptDragDropPayload("DND_CUE_TYPE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+
+            const ImVec2 cursorPosition = ImGui::GetCursorPos();
+            const ImVec2 startingPosition = ImVec2{ ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + cursorPosition.y };
+
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+            window->DrawList->AddLine(startingPosition, ImVec2{ startingPosition.x + ImGui::GetWindowWidth(), startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.5f);
+
+        }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+            // Do something with the dropped payload
+            Log::Info("Accept");
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
+
+    if(ImGui::BeginDragDropSource()) {
+        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        if(cue.CueNumber.has_value()) {
+            ImGui::Text("%g - %s", *cue.CueNumber, cue.CueName.c_str());
+        } else if(cue.CueName.empty()) {
+            ImGui::Text("Unnamed Cue");
+        } else {
+            ImGui::Text("%s", cue.CueName.c_str());
+        }
+
+        ImGui::EndDragDropSource();
+    }
+
     if(ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
         ImGui::OpenPopup("Cue Right Click Menu");
     }
@@ -134,38 +170,10 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         ImGui::PopStyleColor(2);
 }
 
-static bool s_IsNewCueDropdownVisible = false;
-
-void CueListWindow::OnUpdate(CueList& cueList) {
-
+static void DrawNewCueTemplateButtons() {
     SITZCUE_PROFILE_FUNCTION();
 
     static constexpr float cueTemplateButtonScale = 2.0f;
-
-    ImGui::Begin("Cue List");
-
-    if(ImGui::IsWindowFocused()) {
-
-        if(PlatformDetection::IsNativeCommandKey() && ImGui::IsKeyPressed(ImGuiKey_Backspace, false)) {
-
-            // TODO: SOmetimes crashes and wrong order sometimes lol
-            
-
-            if(m_SelectedCues.size() > 0) {
-
-                auto* batchCommand = new BatchCommand();
-
-                for(UUID cueUUID : m_SelectedCues) {
-                    batchCommand->PushBackCommand(new DeleteCueCommand(cueList, cueUUID));
-                }
-
-                CommandStack::ExecuteCommand(batchCommand);
-
-                m_SelectedCues.clear();
-            }
-        }
-
-    }
 
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.0f, 0.0f, 0.0f, 0.0f});
 
@@ -196,6 +204,41 @@ void CueListWindow::OnUpdate(CueList& cueList) {
     }
 
     ImGui::PopStyleColor();
+}
+
+static bool s_IsNewCueDropdownVisible = false;
+
+void CueListWindow::OnUpdate(CueList& cueList) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    ImGui::Begin("Cue List");
+
+    if(ImGui::IsWindowFocused()) {
+
+        if(PlatformDetection::IsNativeCommandKey() && ImGui::IsKeyPressed(ImGuiKey_Backspace, false)) {
+
+            // FIXME: Sometimes crashes and wrong order sometimes lol
+
+            if(m_SelectedCues.size() > 0) {
+
+                auto* batchCommand = new BatchCommand();
+
+                for(UUID cueUUID : m_SelectedCues) {
+                    batchCommand->PushBackCommand(new DeleteCueCommand(cueList, cueUUID));
+                }
+
+                CommandStack::ExecuteCommand(batchCommand);
+
+                m_SelectedCues.clear();
+            }
+        }
+
+    }
+
+    DrawNewCueTemplateButtons();
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, 2.0f});
 
     if(ImGui::BeginTable("CueTable", 4, ImGuiTableFlags_Resizable)) {
 
@@ -214,7 +257,6 @@ void CueListWindow::OnUpdate(CueList& cueList) {
             ImGui::PushID(cache[n]);
             DrawCue(cueList, cache, n);
             ImGui::PopID();
-
         }
         ImGui::EndTable();
     }
@@ -222,26 +264,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
     ImGui::BeginChild("CueDropSection", ImGui::GetContentRegionAvail());
     ImGui::EndChild();
 
-    if(ImGui::BeginDragDropTarget()) {
-
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TYPE")) {
-            int cueTemplate = *(int*) payload->Data;
-
-            switch(cueTemplate) {
-
-            case EmptyCueTemplate:
-                CommandStack::ExecuteCommand(new CreateNewCueCommand{cueList});
-                break;
-            default:
-                break;
-
-            }
-
-        }
-
-
-        ImGui::EndDragDropTarget();
-    }
+    ImGui::PopStyleVar();
 
     ImGui::End();
 

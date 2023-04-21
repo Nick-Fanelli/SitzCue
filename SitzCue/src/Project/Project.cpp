@@ -2,8 +2,11 @@
 
 #include <nfd.hpp>
 
+#include <yaml-cpp/yaml.h>
+
 #include "Application/Application.h"
 #include "Utils/FileUtils.h"
+#include "Utils/YAMLConversions.h"
 
 using namespace SitzCue;
 
@@ -58,4 +61,29 @@ void Project::OpenProjectDialog(Application* application) {
 
     application->SetProject(project);
 
+}
+
+void Project::SaveProject() {
+    Log::Info("Saving Project"); // Trace
+
+    YAML::Node node = YAML::convert<Project>::encode(*this);
+
+    std::ofstream file(m_ShowFilePath);
+
+    if(file.is_open()) {
+        file << node;
+        file.close();
+    }
+
+}   
+
+void Project::LoadProject() {
+
+    std::ifstream in(m_ShowFilePath);
+    std::stringstream stream;
+    stream << in.rdbuf();
+    in.close();
+
+    YAML::Node node = YAML::Load(stream.str());
+    YAML::convert<Project>::decode(node, *this);
 }

@@ -55,6 +55,28 @@ void FileUtils::CreateDirectory(const std::filesystem::path& dirPath) {
 }
 
 // ====================================================================================================================
+// Modify
+// ====================================================================================================================
+
+void FileUtils::ChangeContentTo(const std::filesystem::path& filepath, const std::string& content) {
+
+    try {
+        std::ofstream file(filepath);
+
+        if(file.is_open()) {
+            file << content;
+            file.close();
+            Log::Info("Updated file content"); // TODO: Trace and add filepath
+        } else {
+            Log::Error("Failed to open file"); // TODO: Add filepath
+        }
+    } catch(const std::filesystem::filesystem_error& ex) {
+        std::cerr << "Error" << ex.what() << std::endl;
+    }
+
+}
+
+// ====================================================================================================================
 // Delete
 // ====================================================================================================================
 void FileUtils::DeleteAllDirectoryContents(const std::filesystem::path& path) {

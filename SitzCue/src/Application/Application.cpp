@@ -26,13 +26,10 @@ void Application::OnCreate() {
     // TODO: REMOVE DEMO CODE
     Project* project = new Project("/Users/nickfanelli/Desktop/Example Project.sitzqprj");
 
-    project->GetCueList().CreateCue("House Open (Pre-Show)", 1.0f);
-    project->GetCueList().CreateCue();
-    // project->GetCueList().CreateCue();
-    project->GetCueList().CreateCue("Pre-Show Announcement", 2.0f);
-    // project->GetCueList().CreateCue();
-    project->GetCueList().CreateCue("Show Mode", 3.0f);
-    project->GetCueList().CreateCue("House Open (Post-Show)", 4.0f);
+    // project->GetCueList().CreateCue("House Open (Pre-Show)", 1.0f);
+    // project->GetCueList().CreateCue("Pre-Show Announcement", 2.0f);
+    // project->GetCueList().CreateCue("Show Mode", 3.0f);
+    // project->GetCueList().CreateCue("House Open (Post-Show)", 4.0f);
 
     SetProject(project);
 }
@@ -46,7 +43,7 @@ void Application::OnDestroy() {
     m_ImGuiLayer.OnDestroy();
 
     if(m_ActiveProject != nullptr) {
-        // TODO: Save Project
+        m_ActiveProject->SaveProject();
         delete m_ActiveProject;
     }
 }
