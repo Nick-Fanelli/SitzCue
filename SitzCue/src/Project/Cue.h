@@ -56,6 +56,11 @@ namespace SitzCue {
         std::shared_ptr<Cue> CreateCue(const std::string& cueName, float cueNumber);
         std::shared_ptr<Cue> CreateCue();
 
+        std::shared_ptr<Cue> CreateCue(UUID followCueUUID);
+        std::shared_ptr<Cue> CreateCue(size_t location);
+
+        void MoveCue(UUID targetCue, UUID cueToFollow);
+
         void ReinstateCue(const std::shared_ptr<Cue>& cue, uint32_t position);
         void ReinstateCue(const std::shared_ptr<Cue>& cue);
 

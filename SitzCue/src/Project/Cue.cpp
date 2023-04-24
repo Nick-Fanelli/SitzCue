@@ -37,6 +37,76 @@ std::shared_ptr<Cue> CueList::CreateCue() {
     return cue;
 }
 
+std::shared_ptr<Cue> CueList::CreateCue(UUID followCueUUID) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    UUID uuid = GenerateUUID();
+
+    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid));
+
+    // Put the cue into the cue list order after the follow cue
+    auto it = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), followCueUUID);
+    if(it != m_CueListOrder.end()) {
+        m_CueListOrder.insert(it + 1, uuid);
+    } else {
+        Log::Warn("Couldn't find the UUID");
+        m_CueListOrder.push_back(uuid);
+    }
+
+    UpdateCueCache();
+
+    return cue;
+}
+
+std::shared_ptr<Cue> CueList::CreateCue(size_t location) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    UUID uuid = GenerateUUID();
+
+    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid));
+
+    // Put the cue into the cue list order after the follow cue
+    auto it = m_CueListOrder.begin() + location;
+    if(it != m_CueListOrder.end()) {
+        m_CueListOrder.insert(it, uuid);
+    } else {
+        Log::Warn("Location overshot the cue list order size. Pushing back to end");
+        m_CueListOrder.push_back(uuid);
+    }
+
+    UpdateCueCache();
+
+    return cue;
+}
+
+void CueList::MoveCue(UUID targetCue, UUID cueToFollow) {
+
+    auto targetIt = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), targetCue);
+    auto followIt = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), cueToFollow);
+
+    if(targetIt == m_CueListOrder.end()) {
+        Log::Error("Target Cue does not exist in the cue list order!");
+        return;
+    } else if(followIt == m_CueListOrder.end()) {
+        Log::Error("Follow Cue does not exist in the cue list order!");
+        return;
+    }
+    
+    m_CueListOrder.erase(targetIt);
+
+    if(followIt < targetIt) {
+        m_CueListOrder.insert(followIt + 1, targetCue);
+    } else {
+        m_CueListOrder.insert(followIt, targetCue);
+    }
+
+    UpdateCueCache();
+
+}
+
+
 void CueList::ReinstateCue(const std::shared_ptr<Cue>& cue, uint32_t position) {
 
     SITZCUE_PROFILE_FUNCTION();
@@ -169,9 +239,11 @@ void CueList::UpdateCueCache() {
         if(!isFound) {
             Log::Warn("Found cue in the registry that is not referenced by the cue list order.\n\tStatus: Deleting Cue from Registry");
 
-            auto it = std::find(m_Registry.begin(), m_Registry.end(), cue);
-            if(it != m_Registry.end())
-                m_Registry.erase(it);
+            // FIXME: Causes segmentation fault
+
+            // auto it = std::find(m_Registry.begin(), m_Registry.end(), cue);
+            // if(it != m_Registry.end())
+            //     m_Registry.erase(it);
         }
 
     }

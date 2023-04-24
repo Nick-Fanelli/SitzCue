@@ -5,7 +5,7 @@ using namespace SitzCue;
 void Application::SetProject(Project* project) {
 
     if(m_ActiveProject != nullptr) {
-        // TODO: Handle Saving The Project
+        m_ActiveProject->SaveProject();
         delete m_ActiveProject;
     }
 

@@ -49,32 +49,13 @@ namespace SitzCue {
 
         BatchCommand() = default;
 
-        BatchCommand(const std::vector<Command*>& batchCommands) {
+        BatchCommand(const std::vector<Command*>& batchCommands);
+        ~BatchCommand();
 
-            for(Command* command : batchCommands)
-                m_Commands.push_back(command);
+        void Execute() override;
+        void Undo() override;
 
-        }
-
-        ~BatchCommand() {
-            for(auto* command : m_Commands)
-                delete command;
-        }
-
-        void Execute() override {
-            for(Command* command : m_Commands)
-                command->Execute();
-        }
-
-        void Undo() override {
-            for(auto it = m_Commands.rbegin(); it != m_Commands.rend(); ++it) {
-                (*it)->Undo();
-            }
-        }
-
-        void PushBackCommand(Command* command) {        
-            m_Commands.push_back(command);
-        }
+        void PushBackCommand(Command* command);
 
     private:
 
@@ -86,21 +67,20 @@ namespace SitzCue {
 
     public:
         CreateNewCueCommand(CueList& cueList)
-            : m_CueList(cueList) {}
+            : m_CueList(cueList), m_FollowingCueLocation({}) {}
+
+        CreateNewCueCommand(CueList& cueList, UUID followingCueLocation) 
+            : m_CueList(cueList), m_FollowingCueLocation(followingCueLocation) {}
 
         ~CreateNewCueCommand() = default;
 
-        void Execute() override {
-            m_CreatedCue = m_CueList.CreateCue();
-        }
-
-        void Undo() override {
-            m_CueList.DeleteCue(m_CreatedCue);
-        }
+        void Execute() override;
+        void Undo() override;
 
     private:   
         CueList& m_CueList;
         std::shared_ptr<Cue> m_CreatedCue;
+        std::optional<UUID> m_FollowingCueLocation;
 
     };
 
@@ -117,20 +97,31 @@ namespace SitzCue {
 
         ~DeleteCueCommand() = default;
 
-        void Execute() override {
-            m_CuePosition = m_CueList.GetListPositionOfCue(m_Cue);
-            m_CueList.DeleteCue(m_Cue);
-        }
-
-        void Undo() override {
-            m_CueList.ReinstateCue(m_Cue, m_CuePosition);
-        }
+        void Execute() override;
+        void Undo() override;
 
     private:   
         CueList& m_CueList;
         std::shared_ptr<Cue> m_Cue;
 
         uint32_t m_CuePosition;
+
+    };
+
+
+    class MoveCueCommand : public Command {
+
+    public:
+        MoveCueCommand(CueList& cueList, UUID targetCue, UUID cueToFollow) 
+            : m_CueList(cueList), m_TargetCue(targetCue), m_CueToFollow(cueToFollow) {}
+
+        void Execute() override;
+        void Undo() override;
+
+    private:
+        CueList& m_CueList;
+        UUID m_TargetCue;
+        UUID m_CueToFollow;
 
     };
 }

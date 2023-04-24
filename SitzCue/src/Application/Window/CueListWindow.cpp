@@ -117,7 +117,7 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         HandleOnCueClick(cueCache, cue.UUID);
     }
 
-     if (ImGui::BeginDragDropTarget()) {
+    if (ImGui::BeginDragDropTarget()) {
 
         if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
             || ImGui::AcceptDragDropPayload("DND_CUE_TYPE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
@@ -132,8 +132,20 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         }
 
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
-            // Do something with the dropped payload
-            Log::Info("Accept");
+
+            UUID payloadUUID = *static_cast<UUID*>(payload->Data);
+
+            auto payloadCue = cueList.GetCue(payloadUUID);
+
+            // Log::Info(cue.CueName);
+            // Log::Info(payloadCue->CueName);
+
+            CommandStack::ExecuteCommand(new MoveCueCommand(cueList, payloadUUID, cue.UUID));
+
+        }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TYPE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+            CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cue.UUID));
         }
 
         ImGui::EndDragDropTarget();
@@ -141,7 +153,8 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::SetDragDropPayload("DND_CUE", (void*) &cue.UUID, sizeof(UUID));
+
         if(cue.CueNumber.has_value()) {
             ImGui::Text("%g - %s", *cue.CueNumber, cue.CueName.c_str());
         } else if(cue.CueName.empty()) {
