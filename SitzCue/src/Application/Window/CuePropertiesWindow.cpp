@@ -19,34 +19,24 @@ void CuePropertiesWindow::OnUpdate(CueList& cueList, const std::vector<UUID>& se
 
         auto cue = cueList.GetCue(selectedCues[0]);
 
-        if(cue != nullptr)
-            DrawCue(*cue);
+        if(cue != nullptr) {
+            DrawCueHeader(*cue);
+        }
     }
 
     ImGui::End();
 
 }
 
-void CuePropertiesWindow::DrawCue(Cue& cue) {
+void CuePropertiesWindow::DrawCueHeader(Cue& cue) {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    ImGui::Text("Controls");
-    ImGui::AlignTextToFramePadding();
-    ImGui::SameLine();
-
-    if(ImGui::Button("Move Cue Up")) {}
-
-    ImGui::SameLine();
-
-    if(ImGui::Button("Move Cue Down")) {}
-
-    ImGui::NewLine();
+    if(!cue.CueName.empty()) {
+        ImGui::Text("%s", cue.CueName.c_str());
+        ImGui::NewLine();
+    }
 
     ImGuiDefaults::DrawTextInput("Cue Name", cue.CueName);
     ImGuiDefaults::DrawOptionalFloat("Cue Number", cue.CueNumber);
-
-    if(ImGui::Button("Execute")) {
-        cue.Execute();
-    }
 }

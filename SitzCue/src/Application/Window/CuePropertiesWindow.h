@@ -14,7 +14,9 @@ namespace SitzCue {
         CuePropertiesWindow() = default;
 
         void OnUpdate(CueList& cueList, const std::vector<UUID>& selectedCues);
-        void DrawCue(Cue& cue);
+        void DrawCueHeader(Cue& cue);
+
+        // void DrawSoundCueHeader();
 
     };
 

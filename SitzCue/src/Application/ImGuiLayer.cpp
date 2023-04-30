@@ -58,6 +58,8 @@ void ImGuiLayer::OnCreate() {
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
+    io.ConfigMacOSXBehaviors = true;
+
     m_Application->GetDisplay().GetImGuiSize(&io.DisplaySize);
 
     ImGui_ImplGlfw_InitForOpenGL(m_Application->GetDisplay().GetWindowPtr(), true);

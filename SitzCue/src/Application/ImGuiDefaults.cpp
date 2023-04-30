@@ -15,9 +15,7 @@ void ImGuiDefaults::DrawTextInput(const std::string& label, std::string& data) {
 
     ImGui::PushID(&data);
 
-    ImGui::Text("%s", label.c_str());
-    ImGui::SameLine();
-    ImGui::InputText("", &dataCache);
+    ImGui::InputText(label.c_str(), &dataCache);
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
         CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::string>{data, data, dataCache});
@@ -58,14 +56,11 @@ void ImGuiDefaults::DrawOptionalFloat(const std::string& label, std::optional<fl
 
     ImGui::PushID(&data);
 
-    ImGui::Text("%s", label.c_str());
-    ImGui::SameLine();
-
     if(data.has_value()) {
         static float dataCache = 0.0f;
         dataCache = *data;
 
-        ImGui::InputFloat("", &dataCache, 1.0f, 10.0f, "%g");
+        ImGui::InputFloat(label.c_str(), &dataCache, 1.0f, 10.0f, "%g");
 
         if(ImGui::IsItemDeactivatedAfterEdit()) {
             CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::optional<float>>{data, data, dataCache});
@@ -81,7 +76,7 @@ void ImGuiDefaults::DrawOptionalFloat(const std::string& label, std::optional<fl
         static std::string dataCache = "";
         dataCache.clear();
 
-        ImGui::InputText("", &dataCache);
+        ImGui::InputText(label.c_str(), &dataCache);
 
         if(ImGui::IsItemDeactivatedAfterEdit()) {
 
