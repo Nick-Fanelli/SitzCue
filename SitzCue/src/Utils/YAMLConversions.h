@@ -9,19 +9,29 @@ using namespace SitzCue;
 namespace SitzCue {
     class Project;
     class CueList;
+
     class Cue;
+    class SoundCue;
+
+    class CueWrapper;
 }
 
 namespace YAML {
 
-    // Cue
+    // CueWrapper
+    template<> struct convert<CueWrapper> {
+        static Node encode(const CueWrapper& cueList);
+        static bool decode(const Node& node, CueWrapper& cueList);
+    };
+
+    // Cue*
     template<> struct convert<Cue*> {
         static Node encode(const Cue* cue);
     };
     
-    template<> struct convert<Cue> {
-        static bool decode(const Node& node, Cue& cue);
-    };
+    // Cue
+    template<> struct convert<Cue> { static bool decode(const Node& node, Cue& cue); };
+    template<> struct convert<SoundCue> { static bool decode(const Node& node, SoundCue& cue); };
 
     // CueList
     template<> struct convert<CueList> {

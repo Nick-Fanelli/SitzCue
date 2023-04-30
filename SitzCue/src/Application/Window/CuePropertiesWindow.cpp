@@ -45,4 +45,8 @@ void CuePropertiesWindow::DrawCue(Cue& cue) {
 
     ImGuiDefaults::DrawTextInput("Cue Name", cue.CueName);
     ImGuiDefaults::DrawOptionalFloat("Cue Number", cue.CueNumber);
+
+    if(ImGui::Button("Execute")) {
+        cue.Execute();
+    }
 }

@@ -24,10 +24,13 @@ namespace SitzCue {
     public:
 
         Cue() = default;
+        Cue(const Cue&) = default;
 
-        void Execute();
+        virtual void Execute();
 
         bool operator==(const Cue& other) const { return UUID == other.UUID; }
+
+        CueType IdentifyCueType() const;
 
     public:
         struct UUID UUID;
@@ -42,7 +45,15 @@ namespace SitzCue {
 
     public:
         SoundCue() = default;
+        SoundCue(const SoundCue&) = default;
 
+        void Execute() override;
+
+    };
+
+    struct CueWrapper {
+        CueType Type;
+        std::shared_ptr<Cue> CuePtr;
     };
 
 }

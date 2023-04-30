@@ -64,6 +64,7 @@ void Project::OpenProjectDialog(Application* application) {
 }
 
 void Project::SaveProject() {
+
     Log::Info("Saving Project"); // Trace
 
     YAML::Node node = YAML::convert<Project>::encode(*this);
@@ -86,4 +87,7 @@ void Project::LoadProject() {
 
     YAML::Node node = YAML::Load(stream.str());
     YAML::convert<Project>::decode(node, *this);
+
+    // this->m_CueList.CreateCue(CueType::CueTypeSound);
+    // this->m_CueList.CreateCue(CueType::CueTypeEmpty);
 }
