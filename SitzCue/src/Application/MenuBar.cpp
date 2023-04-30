@@ -8,7 +8,9 @@ static inline void FileMenu(Application* application) {
 
     if(ImGui::BeginMenu("File")) {
 
-        if(ImGui::MenuItem("Save Project")) {}
+        if(ImGui::MenuItem("Save Project")) {
+            application->GetActiveProject()->SaveProject();
+        }
         
         if(ImGui::MenuItem("Open Project")) {}
 
