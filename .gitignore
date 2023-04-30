@@ -1,7 +1,15 @@
+# CPP Build
 bin/
 obj/
 build/
 build-int/
+
+# Make Files
 *.make
 Makefile
+
+# Profiling Results
 SitzCueProfilingResults.json
+
+# MacOS
+.DS_Store
