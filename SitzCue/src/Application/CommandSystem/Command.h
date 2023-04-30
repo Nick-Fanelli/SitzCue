@@ -3,6 +3,7 @@
 #include "sitzcuepch.h"
 
 #include "Project/Cue.h"
+#include "Project/CueList.h"
 
 namespace SitzCue {
 

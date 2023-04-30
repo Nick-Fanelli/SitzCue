@@ -3,6 +3,7 @@
 #include "sitzcuepch.h"
 
 #include "Cue.h"
+#include "CueList.h"
 
 #include "Utils/YAMLConversions.h"
 

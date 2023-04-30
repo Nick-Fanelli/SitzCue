@@ -1,6 +1,7 @@
 #include "CuePropertiesWindow.h"
 
 #include "Application/ImGuiDefaults.h"
+#include "Project/CueList.h"
 
 using namespace SitzCue;
 
