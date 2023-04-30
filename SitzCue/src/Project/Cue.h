@@ -10,6 +10,13 @@ namespace SitzCue {
 
     class CueList;
 
+    enum CueType {
+
+        CueTypeEmpty,
+        CueTypeSound
+
+    };
+
     class Cue {
 
         friend class CueList;
@@ -17,18 +24,24 @@ namespace SitzCue {
     public:
 
         Cue() = default;
-        Cue(struct UUID uuid) : UUID(uuid), CueName(""), CueNumber(std::nullopt) {}
-        Cue(struct UUID uuid, const std::string& cueName, float cueNumber) : UUID(uuid), CueName(cueName), CueNumber(cueNumber) {}
 
-        virtual void Execute() {}
+        void Execute();
 
         bool operator==(const Cue& other) const { return UUID == other.UUID; }
 
     public:
-
         struct UUID UUID;
         std::string CueName = "";
         std::optional<float> CueNumber = std::nullopt;
+    };
+
+
+    class SoundCue : public Cue {
+
+        friend class CueList;
+
+    public:
+        SoundCue() = default;
 
     };
 

@@ -38,9 +38,9 @@ void BatchCommand::PushBackCommand(Command* command) {
 void CreateNewCueCommand::Execute() {
 
     if(m_FollowingCueLocation.has_value()) {
-        m_CreatedCue = m_CueList.CreateCue(m_FollowingCueLocation.value());
+        m_CreatedCue = m_CueList.CreateCueAt(m_CueType, m_FollowingCueLocation.value());
     } else {
-        m_CreatedCue = m_CueList.CreateCue(0);
+        m_CreatedCue = m_CueList.CreateCueAt(m_CueType, 0);
     }
 }
 

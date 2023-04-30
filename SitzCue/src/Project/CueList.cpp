@@ -4,14 +4,40 @@ using namespace SitzCue;
 
 static std::random_device randomDevice;
 
-std::shared_ptr<Cue> CueList::CreateCue(const std::string& name, float cueNumber) {
+std::shared_ptr<Cue> CueList::PushBackCueToRegistry(CueType cueType) {
 
     SITZCUE_PROFILE_FUNCTION();
 
     UUID uuid = GenerateUUID();
 
-    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid, name, cueNumber));
-    m_CueListOrder.push_back(uuid);
+    std::shared_ptr<Cue> cue;
+
+    // Create Cue based on Cue Type
+    switch(cueType) {
+
+    case CueType::CueTypeSound:
+        cue = std::make_shared<SoundCue>();
+        break;
+    case CueType::CueTypeEmpty:
+        cue = std::make_shared<Cue>();
+        break;
+    default:
+        Log::Error("Unidentified Cue Type");
+        cue = std::make_shared<Cue>();
+        break;
+
+    }
+
+    cue->UUID = uuid;
+    m_Registry.push_back(cue);
+
+    return cue;
+}
+
+std::shared_ptr<Cue> CueList::CreateCue(CueType cueType) {
+
+    auto cue = PushBackCueToRegistry(cueType);
+    m_CueListOrder.push_back(cue->UUID);
 
     UpdateCueCache();
 
@@ -19,35 +45,16 @@ std::shared_ptr<Cue> CueList::CreateCue(const std::string& name, float cueNumber
 
 }
 
-std::shared_ptr<Cue> CueList::CreateCue() {
+std::shared_ptr<Cue> CueList::CreateCueAt(CueType cueType, UUID cueUUIDToFollow) {
 
-    SITZCUE_PROFILE_FUNCTION();
+    auto cue = PushBackCueToRegistry(cueType);
 
-    UUID uuid = GenerateUUID();
-
-    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid));
-    m_CueListOrder.push_back(uuid);
-
-    UpdateCueCache();
-
-    return cue;
-}
-
-std::shared_ptr<Cue> CueList::CreateCue(UUID followCueUUID) {
-
-    SITZCUE_PROFILE_FUNCTION();
-
-    UUID uuid = GenerateUUID();
-
-    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid));
-
-    // Put the cue into the cue list order after the follow cue
-    auto it = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), followCueUUID);
+    auto it = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), cueUUIDToFollow);
     if(it != m_CueListOrder.end()) {
-        m_CueListOrder.insert(it + 1, uuid);
+        m_CueListOrder.insert(it + 1, cue->UUID);
     } else {
         Log::Warn("Couldn't find the UUID");
-        m_CueListOrder.push_back(uuid);
+        m_CueListOrder.push_back(cue->UUID);
     }
 
     UpdateCueCache();
@@ -55,21 +62,16 @@ std::shared_ptr<Cue> CueList::CreateCue(UUID followCueUUID) {
     return cue;
 }
 
-std::shared_ptr<Cue> CueList::CreateCue(size_t location) {
+std::shared_ptr<Cue> CueList::CreateCueAt(CueType cueType, size_t location) {
 
-    SITZCUE_PROFILE_FUNCTION();
+    auto cue = PushBackCueToRegistry(cueType);
 
-    UUID uuid = GenerateUUID();
-
-    auto cue = m_Registry.emplace_back(std::make_shared<Cue>(uuid));
-
-    // Put the cue into the cue list order after the follow cue
     auto it = m_CueListOrder.begin() + location;
     if(it != m_CueListOrder.end()) {
-        m_CueListOrder.insert(it, uuid);
+        m_CueListOrder.insert(it, cue->UUID);
     } else {
         Log::Warn("Location overshot the cue list order size. Pushing back to end");
-        m_CueListOrder.push_back(uuid);
+        m_CueListOrder.push_back(cue->UUID);
     }
 
     UpdateCueCache();
@@ -221,7 +223,7 @@ void CueList::UpdateCueCache() {
     }
 
     // Safety Check for Un-targeted cues in Registry
-    for(auto& cue : m_Registry) {
+    for(auto cue : m_Registry) {
 
         bool isFound = false;
 
@@ -235,8 +237,7 @@ void CueList::UpdateCueCache() {
         if(!isFound) {
             Log::Warn("Found cue in the registry that is not referenced by the cue list order.\n\tStatus: Deleting Cue from Registry");
 
-            // FIXME: Causes segmentation fault
-
+            // TODO: FIX THIS -> Causes segmentation fault
             // auto it = std::find(m_Registry.begin(), m_Registry.end(), cue);
             // if(it != m_Registry.end())
             //     m_Registry.erase(it);

@@ -9,6 +9,7 @@ static constexpr ImVec4 SelectedCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.
 static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 
 static constexpr int EmptyCueTemplate = 0;
+static constexpr int SoundCueTemplate = 1;
 
 void CueListWindow::HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID uuid) {
 
@@ -120,7 +121,7 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
     if (ImGui::BeginDragDropTarget()) {
 
         if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
-            || ImGui::AcceptDragDropPayload("DND_CUE_TYPE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+            || ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
 
             const ImVec2 cursorPosition = ImGui::GetCursorPos();
             const ImVec2 startingPosition = ImVec2{ ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + cursorPosition.y };
@@ -144,8 +145,18 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
         }
 
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TYPE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
-            CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cue.UUID));
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+
+            switch(*static_cast<int*>(payload->Data)) {
+
+            case SoundCueTemplate:
+                CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, CueType::CueTypeSound, cue.UUID));
+                break;
+            case EmptyCueTemplate:
+            default:
+                CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, CueType::CueTypeEmpty, cue.UUID));
+
+            }
         }
 
         ImGui::EndDragDropTarget();
@@ -197,7 +208,7 @@ static void DrawNewCueTemplateButtons() {
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
+        ImGui::SetDragDropPayload("DND_CUE_TEMPLATE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
         ImGui::Text("Empty Cue");
         ImGui::EndDragDropSource();
     }
@@ -211,8 +222,8 @@ static void DrawNewCueTemplateButtons() {
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TYPE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
-        ImGui::Text("Empty Cue");
+        ImGui::SetDragDropPayload("DND_CUE_TEMPLATE", (void*) &SoundCueTemplate, sizeof(SoundCueTemplate));
+        ImGui::Text("Sound Cue");
         ImGui::EndDragDropSource();
     }
 

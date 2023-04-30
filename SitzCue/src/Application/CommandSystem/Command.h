@@ -67,11 +67,11 @@ namespace SitzCue {
     class CreateNewCueCommand : public Command {
 
     public:
-        CreateNewCueCommand(CueList& cueList)
-            : m_CueList(cueList), m_FollowingCueLocation({}) {}
+        CreateNewCueCommand(CueList& cueList, CueType cueType)
+            : m_CueList(cueList), m_CueType(cueType), m_FollowingCueLocation({}) {}
 
-        CreateNewCueCommand(CueList& cueList, UUID followingCueLocation) 
-            : m_CueList(cueList), m_FollowingCueLocation(followingCueLocation) {}
+        CreateNewCueCommand(CueList& cueList, CueType cueType, UUID followingCueLocation) 
+            : m_CueList(cueList), m_CueType(cueType), m_FollowingCueLocation(followingCueLocation) {}
 
         ~CreateNewCueCommand() = default;
 
@@ -80,6 +80,7 @@ namespace SitzCue {
 
     private:   
         CueList& m_CueList;
+        CueType m_CueType;
         std::shared_ptr<Cue> m_CreatedCue;
         std::optional<UUID> m_FollowingCueLocation;
 

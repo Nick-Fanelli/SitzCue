@@ -13,11 +13,12 @@ namespace SitzCue {
     public: 
         CueList() = default;
 
-        std::shared_ptr<Cue> CreateCue(const std::string& cueName, float cueNumber);
-        std::shared_ptr<Cue> CreateCue();
+        std::shared_ptr<Cue> PushBackCueToRegistry(CueType cueType);
 
-        std::shared_ptr<Cue> CreateCue(UUID followCueUUID);
-        std::shared_ptr<Cue> CreateCue(size_t location);
+        std::shared_ptr<Cue> CreateCue(CueType cueType);
+
+        std::shared_ptr<Cue> CreateCueAt(CueType cueType, UUID cueUUIDToFollow);
+        std::shared_ptr<Cue> CreateCueAt(CueType cueType, size_t location);
 
         void MoveCue(UUID targetCue, UUID cueToFollow);
 
