@@ -32,7 +32,7 @@ void Project::CreateNewProject(Application* application) {
     Project* project = new Project(projectPath);
 
     FileUtils::CreateFile(project->GetShowFilePath());
-    FileUtils::CreateDirectory(project->GetResourcesDirectoryPath());
+    FileUtils::CreateDirectory(project->GetAssetsDirectoryPath());
 
     application->SetProject(project);
 }

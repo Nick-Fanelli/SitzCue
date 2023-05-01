@@ -136,3 +136,21 @@ void ImGuiDefaults::DrawHiddenOptionalFloat(std::optional<float>& data) {
 
 }
 
+void ImGuiDefaults::FileDrop(const std::string& label, std::filesystem::path& filepath) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    ImGui::PushID(&filepath);
+
+    static std::string dataCache = std::string();
+    dataCache = filepath;
+
+    ImGui::InputText(label.c_str(), &dataCache);
+
+     if(ImGui::IsItemDeactivatedAfterEdit()) {
+        CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, std::filesystem::path(dataCache)});
+    }
+
+    ImGui::PopID();
+
+}

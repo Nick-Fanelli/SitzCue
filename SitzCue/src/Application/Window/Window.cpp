@@ -2,6 +2,7 @@
 
 #include "CueListWindow.h"
 #include "CuePropertiesWindow.h"
+#include "AssetBrowswerWindow.h"
 
 #include "Application/Application.h"
 #include "Project/Project.h"
@@ -80,6 +81,7 @@ void EditorScene::OnCreate() {
 
     m_StatusBarPtr = new StatusBar(m_WindowManagerPtr->GetApplicationPtr());
     m_CueListWindowPtr = new CueListWindow();
+    m_AssetBrowserWindow = new AssetBrowserWindow(m_WindowManagerPtr->GetApplicationPtr());
 }
 
 void EditorScene::OnUpdate() {
@@ -87,6 +89,7 @@ void EditorScene::OnUpdate() {
 
     m_StatusBarPtr->OnUpdate();
     m_CueListWindowPtr->OnUpdate(m_WindowManagerPtr->GetApplicationPtr()->GetActiveProject()->GetCueList());
+    m_AssetBrowserWindow->OnUpdate();
 }
 
 void EditorScene::OnDestroy() {
@@ -94,6 +97,7 @@ void EditorScene::OnDestroy() {
 
     delete m_StatusBarPtr;
     delete m_CueListWindowPtr;
+    delete m_AssetBrowserWindow;
 }
 
 // ===================================================================================================================

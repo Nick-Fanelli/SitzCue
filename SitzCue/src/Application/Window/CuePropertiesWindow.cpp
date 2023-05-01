@@ -32,11 +32,30 @@ void CuePropertiesWindow::DrawCueHeader(Cue& cue) {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    if(!cue.CueName.empty()) {
-        ImGui::Text("%s", cue.CueName.c_str());
-        ImGui::NewLine();
+    if(ImGui::TreeNodeEx("General", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+        if(!cue.CueName.empty()) {
+            ImGui::Text("%s", cue.CueName.c_str());
+            ImGui::NewLine();
+        }
+
+        ImGuiDefaults::DrawTextInput("Cue Name", cue.CueName);
+        ImGuiDefaults::DrawOptionalFloat("Cue Number", cue.CueNumber);
+
+        ImGui::TreePop();
+
     }
 
-    ImGuiDefaults::DrawTextInput("Cue Name", cue.CueName);
-    ImGuiDefaults::DrawOptionalFloat("Cue Number", cue.CueNumber);
+    if(cue.IdentifyCueType() == CueType::CueTypeSound) {
+
+        SoundCue* soundCue = dynamic_cast<SoundCue*>(&cue);
+
+        if(ImGui::TreeNodeEx("Sound", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+            ImGuiDefaults::FileDrop("Sound File Path", soundCue->SoundFilePath);
+
+            ImGui::TreePop();
+        }
+ 
+    }
 }

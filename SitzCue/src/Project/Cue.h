@@ -49,6 +49,9 @@ namespace SitzCue {
 
         void Execute() override;
 
+    public:
+        std::filesystem::path SoundFilePath;
+
     };
 
     struct CueWrapper {

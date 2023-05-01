@@ -22,6 +22,7 @@ namespace SitzCue {
     class WindowManager;
     class CueListWindow;
     class CuePropertiesWindow; 
+    class AssetBrowserWindow;
 
     // ===================================================================================================================
     // Scene
@@ -72,6 +73,7 @@ namespace SitzCue {
     private:
         StatusBar* m_StatusBarPtr = nullptr;
         CueListWindow* m_CueListWindowPtr = nullptr;
+        AssetBrowserWindow* m_AssetBrowserWindow = nullptr;
 
     };
 
