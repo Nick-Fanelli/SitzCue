@@ -13,6 +13,8 @@ static inline void DrawFile(const std::filesystem::path& filepath) {
 
         if(ImGui::BeginDragDropSource()) {
 
+            ImGui::Text(filepath.filename().c_str());
+
             ImGui::SetDragDropPayload("DND_AUDIO_FILEPATH", &filepath, sizeof(filepath));
             ImGui::EndDragDropSource();
 
