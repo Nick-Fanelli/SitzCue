@@ -21,4 +21,6 @@ namespace SitzCue::ImGuiDefaults {
 
     void FileDrop(const std::string& label, std::filesystem::path& filepath);
 
+    bool DrawPropertiesHeader(const std::string& label);
+
 }
