@@ -1,12 +1,12 @@
-[submodule "SitzCue/vendor/glfw"]
-	path = SitzCue/vendor/glfw
+[submodule "SitzQ/vendor/glfw"]
+	path = SitzQ/vendor/glfw
 	url = https://github.com/Nick-Fanelli/glfw.git
-[submodule "SitzCue/vendor/imgui"]
-	path = SitzCue/vendor/imgui
+[submodule "SitzQ/vendor/imgui"]
+	path = SitzQ/vendor/imgui
 	url = https://github.com/Nick-Fanelli/imgui
-[submodule "SitzCue/vendor/nativefiledialog"]
-	path = SitzCue/vendor/nativefiledialog
+[submodule "SitzQ/vendor/nativefiledialog"]
+	path = SitzQ/vendor/nativefiledialog
 	url = https://github.com/Nick-Fanelli/nativefiledialog.git
-[submodule "SitzCue/vendor/yaml-cpp"]
-	path = SitzCue/vendor/yaml-cpp
+[submodule "SitzQ/vendor/yaml-cpp"]
+	path = SitzQ/vendor/yaml-cpp
 	url = https://github.com/Nick-Fanelli/yaml-cpp
