@@ -3,7 +3,7 @@ project "SitzQ"
     language "C++"
     cppdialect "C++17"
 
-    pchheader "src/sitzcuepch.h"
+    pchheader "src/sitzqpch.h"
 
     targetdir ( "%{wks.location}/build/" .. outputdir .. "/%{prj.name}")
     objdir ( "%{wks.location}/build-int/" .. outputdir .. "/%{prj.name}")
