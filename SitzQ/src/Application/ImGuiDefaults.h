@@ -19,5 +19,8 @@ namespace SitzCue::ImGuiDefaults {
     void DrawOptionalFloat(const std::string& label, std::optional<float>& data);
     void DrawHiddenOptionalFloat(std::optional<float>& data);
 
+    void FileDrop(const std::string& label, std::filesystem::path& filepath);
+
+    bool DrawPropertiesHeader(const std::string& label);
 
 }

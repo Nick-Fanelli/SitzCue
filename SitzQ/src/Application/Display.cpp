@@ -20,7 +20,7 @@ void Display::CreateDisplay() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-    m_Window = glfwCreateWindow(s_DisplayWidth, s_DisplayHeight, "Sitz Cue", nullptr, nullptr);
+    m_Window = glfwCreateWindow(s_DisplayWidth, s_DisplayHeight, "SitzQ", nullptr, nullptr);
     glfwSwapInterval(1); // Enable V-Sync
 
     int width, height;

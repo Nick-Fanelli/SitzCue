@@ -30,7 +30,7 @@ namespace SitzCue {
             m_ProjectName = m_ProjectDirectoryPath.stem();
 
             m_ShowFilePath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" +  m_ProjectDirectoryPath.stem().string() + std::string(Project::ShowFileExtension));
-            m_ResourcesDirectoryPath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" + "Resources");
+            m_AssetsDirectoryPath = std::filesystem::path(m_ProjectDirectoryPath.string() + "/" + "Assets");
 
             LoadProject();
         }
@@ -40,7 +40,7 @@ namespace SitzCue {
 
         const std::filesystem::path& GetProjectDirectoryPath() const { return m_ProjectDirectoryPath; }
         const std::filesystem::path& GetShowFilePath() const { return m_ShowFilePath; }
-        const std::filesystem::path& GetResourcesDirectoryPath() const { return m_ResourcesDirectoryPath; }
+        const std::filesystem::path& GetAssetsDirectoryPath() const { return m_AssetsDirectoryPath; }
 
         const std::string& GetProjectName() const { return m_ProjectName; }
 
@@ -50,7 +50,7 @@ namespace SitzCue {
     private:
         std::filesystem::path m_ProjectDirectoryPath;
         std::filesystem::path m_ShowFilePath;
-        std::filesystem::path m_ResourcesDirectoryPath;
+        std::filesystem::path m_AssetsDirectoryPath;
 
         std::string m_ProjectName;
 

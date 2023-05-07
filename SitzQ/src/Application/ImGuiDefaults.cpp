@@ -136,3 +136,34 @@ void ImGuiDefaults::DrawHiddenOptionalFloat(std::optional<float>& data) {
 
 }
 
+void ImGuiDefaults::FileDrop(const std::string& label, std::filesystem::path& filepath) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    ImGui::PushID(&filepath);
+
+    static std::string dataCache = std::string();
+    dataCache = filepath;
+
+    ImGui::InputText(label.c_str(), &dataCache);
+
+     if(ImGui::IsItemDeactivatedAfterEdit()) {
+        CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, std::filesystem::path(dataCache)});
+    }
+
+    ImGui::PopID();
+
+}
+
+bool ImGuiDefaults::DrawPropertiesHeader(const std::string& label) {
+
+    static constexpr auto backgroundColor = ImVec4{ 0.3f, 0.3f, 0.3f, 1.0f };
+
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, backgroundColor);
+    
+    bool result = ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Selected | ImGuiTreeNodeFlags_Framed);
+
+    ImGui::PopStyleColor();
+
+    return result;
+}

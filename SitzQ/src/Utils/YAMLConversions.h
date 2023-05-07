@@ -18,6 +18,12 @@ namespace SitzCue {
 
 namespace YAML {
 
+    // Filesystem Path
+    template<> struct convert<std::filesystem::path> {
+        static Node encode(const std::filesystem::path& cueList);
+        static bool decode(const Node& node, std::filesystem::path& cueList);
+    };
+
     // CueWrapper
     template<> struct convert<CueWrapper> {
         static Node encode(const CueWrapper& cueList);

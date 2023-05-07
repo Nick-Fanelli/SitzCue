@@ -7,9 +7,26 @@ using namespace SitzCue;
 using namespace YAML;
 
 // ====================================================================
-// Sound Cue
+// Filesystem Path
 // ====================================================================
 
+Node convert<std::filesystem::path>::encode(const std::filesystem::path& filepath) {
+
+    Node node;
+
+    node = filepath.string();
+
+    return node;
+
+}
+
+bool convert<std::filesystem::path>::decode(const Node& node, std::filesystem::path& filepath) {
+
+    filepath = std::filesystem::path(node.as<std::string>());
+
+    return true;
+
+}
 
 // ====================================================================
 // Cue*
@@ -19,14 +36,17 @@ Node convert<Cue*>::encode(const Cue* constCue) {
 
     Cue* cue = const_cast<Cue*>(constCue);
 
-    if(dynamic_cast<SoundCue*>(cue)) 
-        node["Sound File"] = "Some File Here";
-    
     node["UUID"] = static_cast<uint32_t>(cue->UUID);
-    node["CueName"] = cue->CueName;
+    node["Cue Name"] = cue->CueName;
 
     if(cue->CueNumber.has_value())
-        node["CueNumber"] = cue->CueNumber.value();
+        node["Cue Number"] = cue->CueNumber.value();
+
+    if(dynamic_cast<SoundCue*>(cue)) {
+        SoundCue* soundCue = dynamic_cast<SoundCue*>(cue);
+
+        node["Sound File Path"] = soundCue->SoundFilePath;
+    }
 
     return node;
 }
@@ -40,11 +60,11 @@ bool convert<Cue>::decode(const Node& node, Cue& cue) {
     if(node["UUID"])
         cue.UUID = UUID(node["UUID"].as<uint32_t>());
 
-    if(node["CueName"])
-        cue.CueName = node["CueName"].as<std::string>();
+    if(node["Cue Name"])
+        cue.CueName = node["Cue Name"].as<std::string>();
 
-    if(node["CueNumber"])
-        cue.CueNumber = { node["CueNumber"].as<float>() };
+    if(node["Cue Number"])
+        cue.CueNumber = { node["Cue Number"].as<float>() };
 
     return true;
 }
@@ -54,11 +74,16 @@ bool convert<SoundCue>::decode(const Node& node, SoundCue& cue) {
     if(node["UUID"])
         cue.UUID = UUID(node["UUID"].as<uint32_t>());
 
-    if(node["CueName"])
-        cue.CueName = node["CueName"].as<std::string>();
+    if(node["Cue Name"])
+        cue.CueName = node["Cue Name"].as<std::string>();
 
-    if(node["CueNumber"])
-        cue.CueNumber = { node["CueNumber"].as<float>() };
+    if(node["Cue Number"])
+        cue.CueNumber = { node["Cue Number"].as<float>() };
+
+    if(node["Sound File Path"]) {
+        cue.SoundFilePath = node["Sound File Path"].as<std::filesystem::path>();
+    }
+        
 
     return true;
 }
@@ -72,7 +97,7 @@ Node convert<CueWrapper>::encode(const CueWrapper& cueWrapper) {
 
     Node node;
 
-    node["CueType"] = static_cast<int>(cueWrapper.Type);
+    node["Cue Type"] = static_cast<int>(cueWrapper.Type);
     node["Data"] = cueWrapper.CuePtr.get();
 
     return node;
@@ -81,8 +106,8 @@ Node convert<CueWrapper>::encode(const CueWrapper& cueWrapper) {
 
 bool convert<CueWrapper>::decode(const Node& node, CueWrapper& cueWrapper) {
 
-    if(node["CueType"]) {
-        cueWrapper.Type = static_cast<CueType>(node["CueType"].as<int>());
+    if(node["Cue Type"]) {
+        cueWrapper.Type = static_cast<CueType>(node["Cue Type"].as<int>());
     }
 
     if(node["Data"]) {
@@ -119,15 +144,15 @@ Node convert<CueList>::encode(const CueList& cueList) {
     }
 
     node["Cues"] = cueWrappers;
-    node["CueListOrder"] = cueList.m_CueListOrder;
+    node["Cue List Order"] = cueList.m_CueListOrder;
 
     return node;
 }
 
 bool convert<CueList>::decode(const Node& node, CueList& cueList) {
 
-    if(node["CueListOrder"])
-        cueList.m_CueListOrder = node["CueListOrder"].as<std::vector<uint32_t>>();
+    if(node["Cue List Order"])
+        cueList.m_CueListOrder = node["Cue List Order"].as<std::vector<uint32_t>>();
 
     if(node["Cues"]) {
         for(auto wrapperNode : node["Cues"]) {
@@ -162,15 +187,15 @@ bool convert<CueList>::decode(const Node& node, CueList& cueList) {
 Node convert<Project>::encode(const Project& project) {
     Node node;
 
-    node["CueList"] = project.m_CueList;
+    node["Cue List"] = project.m_CueList;
 
     return node;
 }
 
 bool convert<Project>::decode(const Node& node, Project& project) {
 
-    if(node["CueList"])
-        project.m_CueList = node["CueList"].as<CueList>();
+    if(node["Cue List"])
+        project.m_CueList = node["Cue List"].as<CueList>();
 
     return true;
 }

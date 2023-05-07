@@ -1,6 +1,6 @@
 workspace "SitzCue"
     architecture "x86_64"
-    startproject "SitzCue"
+    startproject "SitzQ"
 
     flags {
         "MultiProcessorCompile"
@@ -10,4 +10,4 @@ workspace "SitzCue"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "SitzCue/premake5.lua"
+include "SitzQ/premake5.lua"

@@ -87,9 +87,9 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
     // Type
     if(dynamic_cast<SoundCue*>(cueCache[n])) {
-        ImGui::Text("Sound");
+        ImGui::Text("\uf028"); // Sound
     } else {
-        ImGui::Text("Empty");
+        ImGui::Text("\uf49e"); // Empty
     }
 
     ImGui::TableNextColumn();
