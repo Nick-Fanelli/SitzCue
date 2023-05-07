@@ -2,7 +2,7 @@
 
 #include "Project/Project.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 // File
 static inline void OnFileSaveProject(Application* application) { application->GetActiveProject()->SaveProject(); }

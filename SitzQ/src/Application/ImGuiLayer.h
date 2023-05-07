@@ -4,7 +4,7 @@
 
 #include "Window/Window.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class Application;
 

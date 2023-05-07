@@ -7,7 +7,7 @@
 
 #include "Utils/YAMLConversions.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class Application;
 

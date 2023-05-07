@@ -2,7 +2,7 @@
 
 #include "sitzcuepch.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class Application;
 

@@ -2,7 +2,7 @@
 
 #include "Application.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static constexpr int s_DisplayWidth = 1600;
 static constexpr int s_DisplayHeight = 900;

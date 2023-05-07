@@ -4,7 +4,7 @@
 
 #include "Application/StatusBar.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     // ===================================================================================================================
     // Window

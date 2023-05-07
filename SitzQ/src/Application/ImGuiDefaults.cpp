@@ -4,7 +4,7 @@
 
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 void ImGuiDefaults::DrawTextInput(const std::string& label, std::string& data) {
 

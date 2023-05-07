@@ -33,7 +33,7 @@
     #error "Unknown Platform is Not Supported"
 #endif
 
-namespace SitzCue::PlatformDetection {
+namespace SitzQ::PlatformDetection {
 
     enum Platform {
         PlatformMacOS, PlatformWindows, PlatformLinux

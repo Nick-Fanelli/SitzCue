@@ -10,6 +10,7 @@ Makefile
 
 # Profiling Results
 SitzCueProfilingResults.json
+SitzQProfilingResults.json
 
 # MacOS
 .DS_Store

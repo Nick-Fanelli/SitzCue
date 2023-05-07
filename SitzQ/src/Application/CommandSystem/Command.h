@@ -5,7 +5,7 @@
 #include "Project/Cue.h"
 #include "Project/CueList.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class Command {
 

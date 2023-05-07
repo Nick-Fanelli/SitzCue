@@ -4,7 +4,7 @@
 
 #include "ImGuiLayer.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class Popup;
 

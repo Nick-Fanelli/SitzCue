@@ -3,7 +3,7 @@
 #include "Application/ImGuiDefaults.h"
 #include "Project/CueList.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 void CuePropertiesWindow::OnUpdate(CueList& cueList, const std::vector<UUID>& selectedCues) {
 

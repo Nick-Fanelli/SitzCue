@@ -8,7 +8,7 @@
 
 #define SITZCUE_PROFILE DEBUG
 
-namespace SitzCue {
+namespace SitzQ {
 
 #if SITZCUE_PROFILE || SITZCUE_PROFILE_OVERRIDE
 
@@ -206,9 +206,9 @@ namespace SitzCue {
 		#define __FUNCSIG__ __PRETTY_FUNCTION__
 	#endif
 
-	#define SITZCUE_PROFILE_BEGIN_SESSION(name, filepath) ::SitzCue::Instrumentor::Get().BeginSession(name, filepath)
-	#define SITZCUE_PROFILE_END_SESSION() ::SitzCue::Instrumentor::Get().EndSession()
-	#define SITZCUE_PROFILE_SCOPE(name) ::SitzCue::InstrumentationTimer timer##__LINE__(name);
+	#define SITZCUE_PROFILE_BEGIN_SESSION(name, filepath) ::SitzQ::Instrumentor::Get().BeginSession(name, filepath)
+	#define SITZCUE_PROFILE_END_SESSION() ::SitzQ::Instrumentor::Get().EndSession()
+	#define SITZCUE_PROFILE_SCOPE(name) ::SitzQ::InstrumentationTimer timer##__LINE__(name);
 	#define SITZCUE_PROFILE_FUNCTION() SITZCUE_PROFILE_SCOPE(__FUNCSIG__)
 #else
 	#define SITZCUE_PROFILE_BEGIN_SESSION(name, filepath)

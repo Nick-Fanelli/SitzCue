@@ -4,7 +4,7 @@
 
 #include "Cue.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class CueList {
 

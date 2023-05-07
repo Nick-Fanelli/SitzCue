@@ -1,6 +1,6 @@
 #include "FileUtils.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 // ====================================================================================================================
 // Validate

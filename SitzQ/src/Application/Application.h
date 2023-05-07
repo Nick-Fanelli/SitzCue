@@ -7,7 +7,7 @@
 
 #include "Project/Project.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class Application {
 

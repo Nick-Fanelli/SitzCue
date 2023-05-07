@@ -9,7 +9,7 @@
 #include "Window/Window.h"
 #include "CommandSystem/CommandStack.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static MenuBar s_MenuBar;
 

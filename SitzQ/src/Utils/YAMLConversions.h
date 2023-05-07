@@ -4,9 +4,9 @@
 
 #include <yaml-cpp/yaml.h>
 
-using namespace SitzCue;
+using namespace SitzQ;
 
-namespace SitzCue {
+namespace SitzQ {
     class Project;
     class CueList;
 

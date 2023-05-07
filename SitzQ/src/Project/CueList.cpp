@@ -1,6 +1,6 @@
 #include "CueList.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static std::random_device randomDevice;
 

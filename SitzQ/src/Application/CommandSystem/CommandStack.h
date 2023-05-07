@@ -4,7 +4,7 @@
 
 #include "Command.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class CommandStack {
 

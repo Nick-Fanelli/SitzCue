@@ -1,6 +1,6 @@
 #include "AssetBrowswerWindow.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static inline void DrawFile(const std::filesystem::path& filepath) {
 

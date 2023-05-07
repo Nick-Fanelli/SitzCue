@@ -1,6 +1,6 @@
 #include "Application.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 void Application::SetProject(Project* project) {
 

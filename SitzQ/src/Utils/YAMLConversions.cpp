@@ -3,7 +3,7 @@
 #include "Project/Cue.h"
 #include "Project/Project.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 using namespace YAML;
 
 // ====================================================================

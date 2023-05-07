@@ -8,7 +8,7 @@
 #include "Utils/FileUtils.h"
 #include "Utils/YAMLConversions.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 void Project::CreateNewProject(Application* application) {
 

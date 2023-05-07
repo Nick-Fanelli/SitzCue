@@ -2,7 +2,7 @@
 
 #include "sitzcuepch.h"
 
-namespace SitzCue::FileUtils {
+namespace SitzQ::FileUtils {
 
     // Validate
     bool Exists(const std::filesystem::path& path);

@@ -1,4 +1,4 @@
-workspace "SitzCue"
+workspace "SitzQ"
     architecture "x86_64"
     startproject "SitzQ"
 

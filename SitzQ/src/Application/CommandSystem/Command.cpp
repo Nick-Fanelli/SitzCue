@@ -1,6 +1,6 @@
 #include "Command.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 // ================================================================================================
 // BatchCommand

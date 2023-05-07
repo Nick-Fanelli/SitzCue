@@ -1,6 +1,6 @@
 #include "Log.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 #ifdef DEBUG
 Log::LogLevel Log::s_LogLevel = Log::LogLevel::LogLevelInfo;

@@ -5,11 +5,11 @@
 #include "Application/Application.h"
 #include "Utils/YAMLConversions.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 int main() {
 
-    SITZCUE_PROFILE_BEGIN_SESSION("SitzCue", "SitzCueProfilingResults.json");
+    SITZCUE_PROFILE_BEGIN_SESSION("SitzQ", "SitzQProfilingResults.json");
 
     // Initialize Global Libraries
     NFD_Init();

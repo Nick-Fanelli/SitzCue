@@ -3,7 +3,7 @@
 #include "Application/ImGuiDefaults.h"
 #include "Application/CommandSystem/CommandStack.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static constexpr ImVec4 SelectedCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };

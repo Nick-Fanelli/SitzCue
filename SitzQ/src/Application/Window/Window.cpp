@@ -7,7 +7,7 @@
 #include "Application/Application.h"
 #include "Project/Project.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 
 // ===================================================================================================================

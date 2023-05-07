@@ -1,6 +1,6 @@
 #include "Cue.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 CueType Cue::IdentifyCueType() const {
     Cue* cue = const_cast<Cue*>(this);

@@ -2,7 +2,7 @@
 
 #include "Application/Application.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static constexpr ImVec4 StatusBarColor = { 0.06f, 0.06f, 0.06f, 1.0f };
 

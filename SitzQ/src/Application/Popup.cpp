@@ -2,7 +2,7 @@
 
 #include "ImGuiDefaults.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 static constexpr ImGuiWindowFlags s_RigidWindowFlags =  ImGuiWindowFlags_NoTitleBar |
                                                         ImGuiWindowFlags_NoResize | 

@@ -4,7 +4,7 @@
 
 #include "Application/Application.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class AssetBrowserWindow {
         

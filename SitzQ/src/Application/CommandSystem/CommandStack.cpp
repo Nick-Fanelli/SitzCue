@@ -1,6 +1,6 @@
 #include "CommandStack.h"
 
-using namespace SitzCue;
+using namespace SitzQ;
 
 Command* CommandStack::ExecuteCommand(Command* command) {
     SITZCUE_PROFILE_FUNCTION();

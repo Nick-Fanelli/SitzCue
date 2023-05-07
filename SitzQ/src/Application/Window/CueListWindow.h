@@ -7,7 +7,7 @@
 #include "Application/Application.h"
 #include "Project/Cue.h"
 
-namespace SitzCue {
+namespace SitzQ {
 
     class CueListWindow {
 

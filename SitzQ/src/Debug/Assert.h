@@ -4,8 +4,8 @@
 
 #if DEBUG
 
-    #define SITZCUE_ASSERT(value) if(!value) { Log::Error("SitzCue Assertion!"); exit(-1); }
-    #define SITZCUE_ASSERT_MESSAGE(value, message) if(!value) { Log::FormatError("SitzCue Assertion!:\n\t%s", message); exit(-1); }
+    #define SITZCUE_ASSERT(value) if(!value) { Log::Error("SitzQ Assertion!"); exit(-1); }
+    #define SITZCUE_ASSERT_MESSAGE(value, message) if(!value) { Log::FormatError("SitzQ Assertion!:\n\t%s", message); exit(-1); }
 
 #else
 
