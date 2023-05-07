@@ -1,4 +1,4 @@
-project "SitzCue"
+project "SitzQ"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
