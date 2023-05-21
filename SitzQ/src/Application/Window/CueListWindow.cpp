@@ -73,6 +73,33 @@ void CueListWindow::HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID uui
     }
 }
 
+static inline CueType ConvertCueTemplateIntToCueType(int templateInt) {
+    switch(templateInt) {
+
+    case SoundCueTemplate:
+        return CueType::CueTypeSound;
+    case EmptyCueTemplate:
+    default:
+        return CueType::CueTypeEmpty;
+
+    }
+}
+
+static inline void HandleCueTemplateCueExecution(CueList& cueList, int templateInt, std::optional<UUID> followCue = {}) {
+
+    CueType cueType = ConvertCueTemplateIntToCueType(templateInt);
+
+    if(followCue.has_value())
+        CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, followCue.value()));
+    else {
+        if(cueList.CueListOrderSize() >= 0) {
+            CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, cueList.LastUUID()));
+        } else {
+            CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType));
+        }
+    }
+}   
+
 void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache, int n) {
     
     SITZCUE_PROFILE_FUNCTION();
@@ -145,30 +172,16 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
             auto payloadCue = cueList.GetCue(payloadUUID);
 
-            // Log::Info(cue.CueName);
-            // Log::Info(payloadCue->CueName);
-
             CommandStack::ExecuteCommand(new MoveCueCommand(cueList, payloadUUID, cue.UUID));
 
         }
 
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
-
-            switch(*static_cast<int*>(payload->Data)) {
-
-            case SoundCueTemplate:
-                CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, CueType::CueTypeSound, cue.UUID));
-                break;
-            case EmptyCueTemplate:
-            default:
-                CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, CueType::CueTypeEmpty, cue.UUID));
-
-            }
+            HandleCueTemplateCueExecution(cueList, *static_cast<int*>(payload->Data), cue.UUID);
         }
 
         ImGui::EndDragDropTarget();
     }
-
 
     if(ImGui::BeginDragDropSource()) {
         ImGui::SetDragDropPayload("DND_CUE", (void*) &cue.UUID, sizeof(UUID));
@@ -222,7 +235,10 @@ static void DrawTemplateButton(const std::string& buttonLabel, const std::string
     }
     
     if(ImGui::IsItemClicked() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-        CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, cueList.LastUUID()));
+        if(cueList.CueListOrderSize() <= 0)
+            CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType));
+        else
+            CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, cueList.LastUUID()));
     }
 
     ImGui::PopStyleColor();
@@ -254,7 +270,8 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
         if(PlatformDetection::IsNativeCommandKey() && ImGui::IsKeyPressed(ImGuiKey_Backspace, false)) {
 
-            // FIXME: Sometimes crashes and wrong order sometimes lol
+            // FIXME
+            // TODO: Sometimes crashes and wrong order sometimes lol
 
             if(m_SelectedCues.size() > 0) {
 
@@ -287,18 +304,40 @@ void CueListWindow::OnUpdate(CueList& cueList) {
         const auto& cache = cueList.GetCueCache();
 
         for(int n = 0; n < cache.size(); n++) {
-
             ImGui::TableNextRow();
 
             ImGui::PushID(cache[n]);
             DrawCue(cueList, cache, n);
             ImGui::PopID();
         }
+
         ImGui::EndTable();
     }
 
-    ImGui::BeginChild("CueDropSection", ImGui::GetContentRegionAvail());
+    ImVec2 overflowSize{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - 10.0f };
+
+    ImGui::BeginChild("DragDropOverflow", overflowSize, false);
     ImGui::EndChild();
+
+    if(ImGui::BeginDragDropTarget()) {
+
+        if(ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+
+            const ImVec2 cursorPosition = ImGui::GetCursorPos();
+            const ImVec2 startingPosition = ImVec2{ ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + cursorPosition.y - overflowSize.y - 5.0f };
+
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+            window->DrawList->AddLine(startingPosition, ImVec2{ startingPosition.x + ImGui::GetWindowWidth(), startingPosition.y }, ImGui::GetColorU32(ImGuiCol_DragDropTarget), 2.5f);
+
+        }
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+            HandleCueTemplateCueExecution(cueList, *static_cast<int*>(payload->Data));
+        }
+
+        ImGui::EndDragDropTarget();
+    }
 
     ImGui::PopStyleVar();
 

@@ -25,6 +25,8 @@ namespace SitzQ {
         void ReinstateCue(const std::shared_ptr<Cue>& cue, uint32_t position);
         void ReinstateCue(const std::shared_ptr<Cue>& cue);
 
+        size_t CueListOrderSize() const { return m_CueListOrder.size(); }
+
         uint32_t GetListPositionOfCue(const std::shared_ptr<Cue>& cue);
 
         uint32_t FirstUUID() const;
