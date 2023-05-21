@@ -27,9 +27,13 @@ void ImGuiLayer::OnCreate() {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
-    // TODO
-    // io.IniFilename = saveFilelocation.c_str();
-    // ImGui::LoadIniSettingsFromDisk(s_SaveFileLocation.c_str());
+    auto& iniFilePath = PlatformDetection::GetIniFilePath();
+    std::string iniFileData;
+    FileUtils::ReadFile(iniFilePath, iniFileData);
+
+    io.IniFilename = NULL;
+
+    ImGui::LoadIniSettingsFromMemory(iniFileData.c_str(), iniFileData.size());
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -166,15 +170,20 @@ void ImGuiLayer::End() {
     }
 }
 
+static inline void SaveIniData() {
+    size_t size;
+    const char* rawData = ImGui::SaveIniSettingsToMemory(&size);
+
+    FileUtils::ChangeContentTo(PlatformDetection::GetIniFilePath(), std::string(rawData));
+}
+
 void ImGuiLayer::OnDestroy() {
     
     SITZCUE_PROFILE_FUNCTION();
 
     m_WindowManager.OnDestroy();
 
-    // TODO: IMPLEMENT
-    // ImGui::SaveIniSettingsToDisk(s_SaveFileLocation.c_str());
-    ImGui::SaveIniSettingsToDisk("imgui.ini");
+    SaveIniData();
 }
 
 void ImGuiLayer::ApplyColorTheme() {

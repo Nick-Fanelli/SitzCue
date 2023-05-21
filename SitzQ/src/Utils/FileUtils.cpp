@@ -23,6 +23,29 @@ bool FileUtils::IsDirectoryEmpty(const std::filesystem::path& path) {
     }
 }
 
+
+// ====================================================================================================================
+// Read
+// ====================================================================================================================
+void FileUtils::ReadFile(const std::filesystem::path& path, std::string& toString) {
+    toString.clear();
+
+    std::ifstream inputFileStream(path);
+
+    if(inputFileStream.is_open()) {
+        std::string line;
+
+        while(std::getline(inputFileStream, line)) {
+            toString += line + '\n';
+        }
+
+        inputFileStream.close();
+    } else {
+        Log::Error("Failed to open file");
+    }
+}
+
+
 // ====================================================================================================================
 // Move
 // ====================================================================================================================
@@ -46,11 +69,18 @@ void FileUtils::MoveFile(const std::filesystem::path& originalPath, const std::f
 // ====================================================================================================================
 
 void FileUtils::CreateFile(const std::filesystem::path& filepath) {
+    FileUtils::CreateDirectory(filepath.parent_path());
+
     std::ofstream outFile(filepath);
     outFile.close();
 }
 
 void FileUtils::CreateDirectory(const std::filesystem::path& dirPath) {
+
+    // if(!Exists(dirPath.parent_path())) {
+    //     CreateDirectory(dirPath.parent_path());
+    // }
+
     std::filesystem::create_directory(dirPath);
 }
 

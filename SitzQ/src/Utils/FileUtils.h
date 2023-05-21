@@ -9,6 +9,9 @@ namespace SitzQ::FileUtils {
     bool IsDirectory(const std::filesystem::path& path);
     bool IsDirectoryEmpty(const std::filesystem::path& path);
 
+    // Read
+    void ReadFile(const std::filesystem::path& path, std::string& toString);
+
     // Move
     void MoveFile(const std::filesystem::path& originalPath, const std::filesystem::path& newPath);
 
