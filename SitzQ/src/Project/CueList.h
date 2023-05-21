@@ -27,6 +27,9 @@ namespace SitzQ {
 
         uint32_t GetListPositionOfCue(const std::shared_ptr<Cue>& cue);
 
+        uint32_t FirstUUID() const;
+        uint32_t LastUUID() const;
+
         std::shared_ptr<Cue> GetCue(UUID uuid);
 
         void DeleteCue(const std::shared_ptr<Cue>& cue);

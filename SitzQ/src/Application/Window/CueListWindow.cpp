@@ -201,7 +201,8 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
         ImGui::PopStyleColor(2);
 }
 
-static void DrawNewCueTemplateButtons() {
+static void DrawTemplateButton(const std::string& buttonLabel, const std::string& fullName, void* payload, CueType cueType, CueList& cueList) {
+
     SITZCUE_PROFILE_FUNCTION();
 
     static constexpr float cueTemplateButtonScale = 2.0f;
@@ -210,31 +211,35 @@ static void DrawNewCueTemplateButtons() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 1.0f);
     ImGui::GetStyle().ScaleAllSizes(cueTemplateButtonScale);
-    ImGui::Button("\uf49e");
+    ImGui::Button(buttonLabel.c_str());
     ImGui::GetStyle().ScaleAllSizes(1.0f / cueTemplateButtonScale);
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TEMPLATE", (void*) &EmptyCueTemplate, sizeof(EmptyCueTemplate));
-        ImGui::Text("Empty Cue");
+        ImGui::SetDragDropPayload("DND_CUE_TEMPLATE", payload, sizeof(int));
+        ImGui::Text("%s", fullName.c_str());
         ImGui::EndDragDropSource();
     }
-
-    ImGui::SameLine();
     
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 1.0f);
-    ImGui::GetStyle().ScaleAllSizes(cueTemplateButtonScale);
-    ImGui::Button("\uf028");
-    ImGui::GetStyle().ScaleAllSizes(1.0f / cueTemplateButtonScale);
-    ImGui::PopStyleVar();
-
-    if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TEMPLATE", (void*) &SoundCueTemplate, sizeof(SoundCueTemplate));
-        ImGui::Text("Sound Cue");
-        ImGui::EndDragDropSource();
+    if(ImGui::IsItemClicked() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+        CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, cueList.LastUUID()));
     }
 
     ImGui::PopStyleColor();
+
+    ImGui::SameLine();
+
+}
+
+void CueListWindow::DrawNewCueTemplateButtons(CueList& cueList) {
+    SITZCUE_PROFILE_FUNCTION();
+
+    static constexpr float cueTemplateButtonScale = 2.0f;
+
+    DrawTemplateButton("\uf49e", "Empty Cue", (void*) &EmptyCueTemplate, CueType::CueTypeEmpty, cueList);
+    DrawTemplateButton("\uf028", "Sound Cue", (void*) &SoundCueTemplate, CueType::CueTypeSound, cueList);
+
+    ImGui::NewLine();
 }
 
 static bool s_IsNewCueDropdownVisible = false;
@@ -267,7 +272,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
     }
 
-    DrawNewCueTemplateButtons();
+    DrawNewCueTemplateButtons(cueList);
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{0.0f, 2.0f});
 

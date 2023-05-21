@@ -130,6 +130,14 @@ uint32_t CueList::GetListPositionOfCue(const std::shared_ptr<Cue>& cue) {
     return 0;
 }
 
+uint32_t CueList::FirstUUID() const {
+    return m_CueListOrder.front();
+}
+
+uint32_t CueList::LastUUID() const {
+    return m_CueListOrder.back();
+}
+
 std::shared_ptr<Cue> CueList::GetCue(UUID uuid) {
 
     SITZCUE_PROFILE_FUNCTION();
