@@ -6,9 +6,8 @@ using namespace SitzQ;
 
 // File
 static inline void OnFileSaveProject(Application* application) { application->GetActiveProject()->SaveProject(); }
-
+static inline void OnFileOpenProject(Application* application) { Project::OpenProjectDialog(application); }
 static inline void OnFileNewProject(Application* application) { Project::CreateNewProject(application); }
-
 
 static inline void HandleShortcuts(Application* application) {
 
@@ -18,10 +17,13 @@ static inline void HandleShortcuts(Application* application) {
         // SHIFT
         if(ImGui::IsKeyDown(ImGuiKey_ModShift)) {
 
+            // Cmd+Shift+O (Open Project)
+            if(ImGui::IsKeyPressed(ImGuiKey_O)) OnFileOpenProject(application);
+
             // Cmd+Shift+N (New Project)
             if(ImGui::IsKeyPressed(ImGuiKey_N)) OnFileNewProject(application);
 
-            return;
+            return; // Boot-Out because shift was pressed
         }
 
         // Cmd+S (Save Project)
@@ -36,7 +38,7 @@ static inline void FileMenu(Application* application) {
     if(ImGui::BeginMenu("File")) {
 
         if(ImGui::MenuItem("Save Project", PlatformDetection::ActivePlatform == PlatformDetection::PlatformMacOS ? "Cmd+S" : "Ctrl+S")) OnFileSaveProject(application);
-        if(ImGui::MenuItem("Open Project")) {}
+        if(ImGui::MenuItem("Open Project", PlatformDetection::ActivePlatform == PlatformDetection::PlatformMacOS ? "Cmd+Shift+O" : "Ctrl+Shift+O")) OnFileOpenProject(application);
         if(ImGui::MenuItem("New Project", PlatformDetection::ActivePlatform == PlatformDetection::PlatformMacOS ? "Cmd+Shift+N" : "Ctrl+Shift+N")) OnFileNewProject(application);
 
         ImGui::EndMenu();
