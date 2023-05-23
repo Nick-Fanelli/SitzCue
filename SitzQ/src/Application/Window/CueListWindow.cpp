@@ -92,7 +92,7 @@ static inline void HandleCueTemplateCueExecution(CueList& cueList, int templateI
     if(followCue.has_value())
         CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, followCue.value()));
     else {
-        if(cueList.CueListOrderSize() >= 0) {
+        if(cueList.CueListOrderSize() > 0) {
             CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, cueList.LastUUID()));
         } else {
             CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType));
