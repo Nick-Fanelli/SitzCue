@@ -23,6 +23,7 @@ void Project::CreateNewProject(Application* application) {
 
     if(!FileUtils::IsDirectoryEmpty(directoryPath)) {
         // TODO: Add Warning
+        // TODO: Readd
         // FileUtils::DeleteAllDirectoryContents(projectPath);
     }
 
@@ -87,7 +88,4 @@ void Project::LoadProject() {
 
     YAML::Node node = YAML::Load(stream.str());
     YAML::convert<Project>::decode(node, *this);
-
-    // this->m_CueList.CreateCue(CueType::CueTypeSound);
-    // this->m_CueList.CreateCue(CueType::CueTypeEmpty);
 }

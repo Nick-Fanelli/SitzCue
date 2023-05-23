@@ -2,6 +2,8 @@
 
 #include "ApplicationCache.h"
 
+#include "Runtime/RuntimeEngine.h"
+
 using namespace SitzQ;
 
 void Application::SetProject(Project* project) {
@@ -34,20 +36,11 @@ void Application::OnCreate() {
     if(lastActiveProject.has_value() && FileUtils::Exists(lastActiveProject.value())) {
         SetProject(new Project(lastActiveProject.value()));
     }
-
-    // TODO: REMOVE DEMO CODE
-    // Project* project = new Project("/Users/nickfanelli/Desktop/Example Project.sitzqprj");
-
-    // project->GetCueList().CreateCue("House Open (Pre-Show)", 1.0f);
-    // project->GetCueList().CreateCue("Pre-Show Announcement", 2.0f);
-    // project->GetCueList().CreateCue("Show Mode", 3.0f);
-    // project->GetCueList().CreateCue("House Open (Post-Show)", 4.0f);
-
-    // SetProject(project);
-
 }
 
 void Application::OnUpdate(float deltaTime) {
+    RuntimeEngine::Update(deltaTime);
+
     m_ImGuiLayer.Begin();
     m_ImGuiLayer.End();
 }
