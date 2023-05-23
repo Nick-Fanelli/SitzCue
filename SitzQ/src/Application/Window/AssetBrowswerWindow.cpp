@@ -2,20 +2,28 @@
 
 using namespace SitzQ;
 
+// File Extensions
+static const std::vector<std::string> s_SupportedAudioFileExtensions = { ".wav", ".aiff", ".ogg", ".mp3" };
+
 static inline void DrawFile(const std::filesystem::path& filepath) {
 
     static constexpr ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
     ImGui::TreeNodeEx(filepath.filename().c_str(), flags);
 
-    // TODO: Replace with REGEX
-    if(filepath.extension() == ".wav") { // Sound File
+    std::string lowercaseExtension = filepath.extension();
+    std::transform(lowercaseExtension.begin(), lowercaseExtension.end(), lowercaseExtension.begin(), ::tolower);
+
+    if(std::find(s_SupportedAudioFileExtensions.begin(), s_SupportedAudioFileExtensions.end(), lowercaseExtension) != s_SupportedAudioFileExtensions.end()) { // Sound File
 
         if(ImGui::BeginDragDropSource()) {
 
+            static std::filesystem::path pathCache;
+            pathCache = filepath;
+
             ImGui::Text("%s", filepath.filename().c_str());
 
-            ImGui::SetDragDropPayload("DND_AUDIO_FILEPATH", &filepath, sizeof(filepath));
+            ImGui::SetDragDropPayload("DND_AUDIO_FILEPATH", &pathCache, sizeof(pathCache));
             ImGui::EndDragDropSource();
 
         }

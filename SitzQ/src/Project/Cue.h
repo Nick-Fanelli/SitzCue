@@ -30,10 +30,14 @@ namespace SitzQ {
 
         bool operator==(const Cue& other) const { return UUID == other.UUID; }
 
+        virtual bool IsValid() const;
+
         CueType IdentifyCueType() const;
 
     public:
         struct UUID UUID;
+
+        // Serializable
         std::string CueName = "";
         std::optional<float> CueNumber = std::nullopt;
     };
@@ -48,6 +52,9 @@ namespace SitzQ {
         SoundCue(const SoundCue&) = default;
 
         void Execute() override;
+
+        bool IsValid() const override;
+
 
     public:
         std::filesystem::path SoundFilePath;

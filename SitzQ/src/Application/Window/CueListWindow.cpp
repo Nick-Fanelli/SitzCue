@@ -7,6 +7,7 @@ using namespace SitzQ;
 
 static constexpr ImVec4 SelectedCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
 static constexpr ImVec4 ActiveCueColor = { 0.0f, 74.0f / 255.0f, 204.0f / 255.0f, 1.0f };
+static constexpr ImVec4 ErrorColor { 1.0f, 0.3f, 0.3f, 1.0f };
 
 static constexpr int EmptyCueTemplate = 0;
 static constexpr int SoundCueTemplate = 1;
@@ -107,7 +108,13 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
     // Getting Active Cue
     Cue& cue = *cueCache[n];
 
+    bool isCueValid = cue.IsValid();
+
     bool isSelected = std::find(m_SelectedCues.begin(), m_SelectedCues.end(), cue.UUID) != m_SelectedCues.end();
+
+    if(!isCueValid && !isSelected) {
+        ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.2f, 0.2f, 1.0f });
+    }
 
     ImGui::TableNextColumn();
     ImGui::AlignTextToFramePadding();
@@ -143,8 +150,8 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
     ImGui::SameLine();
 
     if(isSelected) {
-        ImGui::PushStyleColor(ImGuiCol_Header, SelectedCueColor);
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, SelectedCueColor);
+        ImGui::PushStyleColor(ImGuiCol_Header, isCueValid ? SelectedCueColor : ErrorColor);
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, isCueValid ? SelectedCueColor : ErrorColor);
     }
 
     // Element Targets
@@ -212,6 +219,8 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
     if(isSelected)
         ImGui::PopStyleColor(2);
+    else if(!isCueValid)
+        ImGui::PopStyleColor();
 }
 
 static void DrawTemplateButton(const std::string& buttonLabel, const std::string& fullName, void* payload, CueType cueType, CueList& cueList) {
@@ -237,8 +246,9 @@ static void DrawTemplateButton(const std::string& buttonLabel, const std::string
     if(ImGui::IsItemClicked() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
         if(cueList.CueListOrderSize() <= 0)
             CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType));
-        else
+        else {
             CommandStack::ExecuteCommand(new CreateNewCueCommand(cueList, cueType, cueList.LastUUID()));
+        }
     }
 
     ImGui::PopStyleColor();

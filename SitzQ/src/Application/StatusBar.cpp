@@ -36,6 +36,7 @@ void StatusBar::OnUpdate() {
 
     ImGui::Text("%s", m_ApplicationPtr->GetActiveProject()->GetProjectName().c_str());
 
+
     ImGui::End();
 
     ImGui::PopStyleVar(2);

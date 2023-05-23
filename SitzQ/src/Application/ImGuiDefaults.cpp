@@ -145,10 +145,33 @@ void ImGuiDefaults::FileDrop(const std::string& label, std::filesystem::path& fi
     static std::string dataCache = std::string();
     dataCache = filepath;
 
+    bool exists = true;
+
+    // File Validation
+    if(!FileUtils::Exists(filepath)) {
+        exists = false;
+        ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f });
+    }
+
     ImGui::InputText(label.c_str(), &dataCache);
 
-     if(ImGui::IsItemDeactivatedAfterEdit()) {
+    if(!exists)
+        ImGui::PopStyleColor();
+
+    if(ImGui::IsItemDeactivatedAfterEdit()) {
         CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, std::filesystem::path(dataCache)});
+    }
+
+    if(ImGui::BeginDragDropTarget()) {
+
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_AUDIO_FILEPATH")) {
+
+            std::filesystem::path* pathPtr = static_cast<std::filesystem::path*>(payload->Data);
+
+            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, *pathPtr});
+
+        }
+
     }
 
     ImGui::PopID();

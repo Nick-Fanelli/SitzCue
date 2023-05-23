@@ -12,6 +12,12 @@ CueType Cue::IdentifyCueType() const {
     }
 }
 
+// Cue Validation
+bool Cue::IsValid() const { return true; }
+
+bool SoundCue::IsValid() const {
+    return FileUtils::Exists(SoundFilePath);
+}
 
 // Cue
 void Cue::Execute() {
