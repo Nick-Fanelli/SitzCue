@@ -34,6 +34,38 @@ void LanderScene::OnCreate() {
 
 }
 
+static inline void DrawLanderPage(WindowManager* windowManagerPtr) {
+
+    static ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+    ImGui::PushStyleColor(ImGuiCol_Border, { 0.0f, 0.0f, 0.0f, 0.0f });
+
+    // Left Child
+    ImGui::SetNextWindowPos(viewport->Pos);
+    ImGui::BeginChild("##left-child", { viewport->Size.x / 2.0f, viewport->Size.y - 10.0f }, true);
+
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text("SitzQ");
+
+    ImGui::EndChild();
+
+    ImGui::SetNextWindowPos({ viewport->Pos.x + (viewport->Size.x / 2.0f), viewport->Pos.y });
+    ImGui::BeginChild("##right-child", { viewport->Size.x / 2.0f, viewport->Size.y - 10.0f }, true);
+    
+    if(ImGui::Button("Create Project"))
+        Project::CreateNewProject(windowManagerPtr->GetApplicationPtr());
+
+    if(ImGui::Button("Open Project")) {
+        Project::OpenProjectDialog(windowManagerPtr->GetApplicationPtr());
+    }
+
+    ImGui::EndChild();
+
+    ImGui::PopStyleColor();
+
+
+}
+
 void LanderScene::OnUpdate() {
     SITZCUE_PROFILE_FUNCTION();
 
@@ -51,12 +83,7 @@ void LanderScene::OnUpdate() {
 
     ImGui::Begin("Lander", &shouldDisplay, windowFlags);
 
-    if(ImGui::Button("Create Project"))
-        Project::CreateNewProject(m_WindowManagerPtr->GetApplicationPtr());
-
-    if(ImGui::Button("Open Project")) {
-        Project::OpenProjectDialog(m_WindowManagerPtr->GetApplicationPtr());
-    }
+    DrawLanderPage(m_WindowManagerPtr);
 
     ImGui::End();
 
