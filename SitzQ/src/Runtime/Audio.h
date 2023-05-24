@@ -8,6 +8,12 @@ namespace SitzQ {
 
     class RuntimeEngine;
 
+    struct AudioSourceSpecs {
+
+        std::optional<double> Duration = {};
+
+    };
+
     class AudioSource {
 
     public:
@@ -17,17 +23,23 @@ namespace SitzQ {
         bool StreamAudio();
         void StreamFree();
 
+        double GetCurrentPlaybackPosition();
+        
         void Play();
         void Loop();
 
         void Pause();
         void Stop();
 
+
+        const AudioSourceSpecs& GetSpecs() const { return m_Specs; }
+
     private:
         std::filesystem::path m_AbsFilePath;
         bool m_IsAudioStreamed = false;
 
         HSTREAM m_Stream;
+        AudioSourceSpecs m_Specs;
 
     };
 

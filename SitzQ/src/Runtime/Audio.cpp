@@ -13,6 +13,8 @@ AudioSource::~AudioSource() {
 
 bool AudioSource::StreamAudio() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     if(m_IsAudioStreamed) {
         Log::Warn("Attempting to re-stream audio\n\tStatus: Returning");
         return false;
@@ -25,11 +27,22 @@ bool AudioSource::StreamAudio() {
         return false;
     }
 
+    m_Specs = {};
+
+    // Load Specs
+    QWORD length = BASS_ChannelGetLength(m_Stream, BASS_POS_BYTE);
+
+    double duration = BASS_ChannelBytes2Seconds(m_Stream, length);
+
+    m_Specs.Duration = duration;
+
     m_IsAudioStreamed = true;
     return true;
 }
 
 void AudioSource::StreamFree() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     if(!m_IsAudioStreamed) {
         Log::Warn("Not streamed audio is attempting to be freed\n\tStatus: Returning");
@@ -37,8 +50,14 @@ void AudioSource::StreamFree() {
     }
 
     BASS_StreamFree(m_Stream);
+    m_Specs = {};
     m_IsAudioStreamed = false;
 
+}
+
+double AudioSource::GetCurrentPlaybackPosition() {
+    auto position = BASS_ChannelGetPosition(m_Stream, BASS_POS_BYTE);
+    return BASS_ChannelBytes2Seconds(m_Stream, position);
 }
 
 void AudioSource::Play() {

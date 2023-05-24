@@ -127,6 +127,9 @@ void EditorScene::OnUpdate() {
 
     ImGui::Begin("Music Controls");
 
+    ImGui::Text("Duration: %g seconds", s_AudioSource.GetSpecs().Duration.value());
+    ImGui::Text("%.1f / %g", s_AudioSource.GetCurrentPlaybackPosition(), s_AudioSource.GetSpecs().Duration.value());
+
     if(ImGui::Button("Play")) {
         s_AudioSource.Play();
     }
