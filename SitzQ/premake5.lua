@@ -17,6 +17,9 @@ project "SitzQ"
         "vendor/imgui/backends",
         "vendor/nativefiledialog/src/include",
         "vendor/yaml-cpp/include",
+        "vendor/openal-soft/include",
+        "vendor/openal-soft/src",
+        "vendor/openal-soft/common",
 
         "src"
     }
@@ -26,7 +29,8 @@ project "SitzQ"
         "GLAD",
         "ImGui",
         "NFD",
-        "yaml-cpp"
+        "yaml-cpp",
+        "OpenAL-Soft"
     }
 
     filter "system:macosx"
@@ -76,3 +80,4 @@ include "vendor/glad/premake5.lua"
 include "vendor/imgui/premake5.lua"
 include "vendor/nativefiledialog/premake5.lua"
 include "vendor/yaml-cpp/premake5.lua"
+include "vendor/openal-soft/premake5.lua"
