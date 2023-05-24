@@ -1,4 +1,4 @@
-#include "sitzqpch.h"
+#include "EntryPoint.h"
 
 #include <nfd.hpp>
 
@@ -8,13 +8,13 @@
 
 using namespace SitzQ;
 
-static inline void Initialize() {
+EntryPoint::EntryPoint() {
     NFD_Init();
     
     RuntimeEngine::Initialize();
 }
 
-static inline void Destroy() {
+EntryPoint::~EntryPoint() {
     NFD_Quit();
 
     RuntimeEngine::Destroy();    
@@ -23,12 +23,14 @@ static inline void Destroy() {
 int main() {
 
     SITZCUE_PROFILE_BEGIN_SESSION("SitzQ", "SitzQProfilingResults.json");
-    Initialize();
+
+    EntryPoint* entryPoint = new EntryPoint();
 
     Application application = Application();
     application.StartApplication();
 
-    Destroy();
+    delete entryPoint;
+
     SITZCUE_PROFILE_END_SESSION();
 
 }

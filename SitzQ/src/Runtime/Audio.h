@@ -2,19 +2,43 @@
 
 #include "sitzqpch.h"
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <bass.h>
 
-#include "alhelpers.h"
+namespace SitzQ {
 
-namespace SitzQ::RuntimeEngine {
+    class RuntimeEngine;
 
-    namespace AudioEngine {
+    class AudioSource {
 
-        void Initialize();
+    public:
+        AudioSource(const std::filesystem::path& absFilePath);
+        ~AudioSource();
 
-        static ALCdevice* s_AudioDevice = nullptr;
+        bool StreamAudio();
+        void StreamFree();
 
-    }
+        void Play();
+        void Loop();
+
+        void Pause();
+        void Stop();
+
+    private:
+        std::filesystem::path m_AbsFilePath;
+        bool m_IsAudioStreamed = false;
+
+        HSTREAM m_Stream;
+
+    };
+
+    class AudioEngine {
+
+        friend class RuntimeEngine;
+
+    private:
+        static void Initialize();
+        static void Destroy();
+
+    };
 
 }

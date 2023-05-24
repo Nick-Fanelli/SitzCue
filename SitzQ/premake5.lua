@@ -17,9 +17,6 @@ project "SitzQ"
         "vendor/imgui/backends",
         "vendor/nativefiledialog/src/include",
         "vendor/yaml-cpp/include",
-        "vendor/openal-soft/include",
-        "vendor/openal-soft/src",
-        "vendor/openal-soft/common",
 
         "src"
     }
@@ -30,19 +27,36 @@ project "SitzQ"
         "ImGui",
         "NFD",
         "yaml-cpp",
-        "OpenAL-Soft"
     }
 
     filter "system:macosx"
+
+        linkoptions {
+            "-rpath %{prj.location}/SitzQ/vendor/bass24-osx" -- Set the runtime path for the BASS library
+        }
+        
+        includedirs {
+            "vendor/bass24-osx"
+        }
+
+        libdirs {
+            "vendor/bass24-osx/"
+        }
+
         links {
             "Cocoa.framework",
             "OpenGL.framework",
             "IOKit.framework",
             "CoreVideo.framework",
-            "UniformTypeIdentifiers.framework"
+            "UniformTypeIdentifiers.framework",
+            "bass"
         }
 
-        files { "src/**.mm", "src/**.m" }
+        files {
+            "src/**.mm", 
+            "src/**.m",
+            "vendor/bass24-osx"
+        }
 
     filter "system:linux"
         links {
@@ -80,4 +94,3 @@ include "vendor/glad/premake5.lua"
 include "vendor/imgui/premake5.lua"
 include "vendor/nativefiledialog/premake5.lua"
 include "vendor/yaml-cpp/premake5.lua"
-include "vendor/openal-soft/premake5.lua"

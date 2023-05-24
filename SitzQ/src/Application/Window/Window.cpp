@@ -7,6 +7,9 @@
 #include "Application/Application.h"
 #include "Project/Project.h"
 
+#include "Runtime/RuntimeEngine.h"
+#include "Runtime/Audio.h"
+
 using namespace SitzQ;
 
 
@@ -98,6 +101,8 @@ void LanderScene::OnDestroy() {
 // Editor Scene
 // ===================================================================================================================
 
+static AudioSource s_AudioSource = { "/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Tyler Hubbard & Keith Urban - Dancin' In The Country (Lyrics).mp3" };
+
 void EditorScene::OnCreate() {
     SITZCUE_PROFILE_FUNCTION();
 
@@ -109,6 +114,8 @@ void EditorScene::OnCreate() {
     m_StatusBarPtr = new StatusBar(m_WindowManagerPtr->GetApplicationPtr());
     m_CueListWindowPtr = new CueListWindow();
     m_AssetBrowserWindow = new AssetBrowserWindow(m_WindowManagerPtr->GetApplicationPtr());
+
+    s_AudioSource.StreamAudio();
 }
 
 void EditorScene::OnUpdate() {
@@ -117,10 +124,28 @@ void EditorScene::OnUpdate() {
     m_StatusBarPtr->OnUpdate();
     m_CueListWindowPtr->OnUpdate(m_WindowManagerPtr->GetApplicationPtr()->GetActiveProject()->GetCueList());
     m_AssetBrowserWindow->OnUpdate();
+
+    ImGui::Begin("Music Controls");
+
+    if(ImGui::Button("Play")) {
+        s_AudioSource.Play();
+    }
+
+    if(ImGui::Button("Pause")) {
+        s_AudioSource.Pause();
+    }
+
+    if(ImGui::Button("Stop")) {
+        s_AudioSource.Stop();
+    }
+
+    ImGui::End();
 }
 
 void EditorScene::OnDestroy() {
     SITZCUE_PROFILE_FUNCTION();
+
+    s_AudioSource.StreamFree();
 
     delete m_StatusBarPtr;
     delete m_CueListWindowPtr;

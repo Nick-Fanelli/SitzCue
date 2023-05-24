@@ -4,13 +4,23 @@
 
 namespace SitzQ {
 
-    namespace RuntimeEngine {
+    class Application;
+    class EntryPoint;
 
-        void Initialize();
-        void Destroy();
+    class RuntimeEngine {
+        
+        friend class Application;
+        friend class EntryPoint;
 
-        void Update(float deltaTime);
+    public:
 
-    }
+    private:
+
+        static void Initialize();
+        static void Destroy();
+
+        static void Update(float deltaTime);
+
+    };
 
 }
