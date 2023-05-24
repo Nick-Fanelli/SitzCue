@@ -10,6 +10,3 @@
 [submodule "SitzQ/vendor/yaml-cpp"]
 	path = SitzQ/vendor/yaml-cpp
 	url = https://github.com/Nick-Fanelli/yaml-cpp
-[submodule "SitzQ/vendor/openal-soft"]
-	path = SitzQ/vendor/openal-soft
-	url = https://github.com/Nick-Fanelli/openal-soft.git
