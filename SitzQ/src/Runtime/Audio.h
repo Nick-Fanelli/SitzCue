@@ -7,7 +7,7 @@
 namespace SitzQ {
 
     class RuntimeEngine;
-
+    class AudioEngine;
 
     struct AudioSourceSpecs {
 
@@ -18,6 +18,8 @@ namespace SitzQ {
     };
 
     class AudioSource {
+        
+        friend class AudioEngine;
 
     public:
         AudioSource(const std::filesystem::path& absFilePath);
@@ -35,9 +37,15 @@ namespace SitzQ {
         void Pause();
         void Stop();
 
-        float GetCurrentAudioLevel() const;
+        float GetCurrentAudioLevelMono() const;
+        const std::pair<float, float>& GetCurrentAudioLevelStereo() const { return m_CurrentAudioLevel; }
+
+        bool IsPlaying() const { return m_IsPlaying; }
 
         const AudioSourceSpecs& GetSpecs() const { return m_Specs; }
+
+    private:
+        void Update();
 
     private:
         std::filesystem::path m_AbsFilePath;
@@ -46,17 +54,29 @@ namespace SitzQ {
         HSTREAM m_Stream;
         AudioSourceSpecs m_Specs;
 
+        bool m_IsPlaying = false;
+        std::pair<float, float> m_CurrentAudioLevel;
+
     };
 
     class AudioEngine {
 
         friend class RuntimeEngine;
+        friend class AudioSource;
+
+    public:
+        static const std::pair<float, float>& GetMasterAudioLevel();
 
     private:
         static void Initialize();
         static void Destroy();
 
         static void OnUpdate(float deltaTime);
+
+    private:    
+        static inline std::vector<AudioSource*> s_AudioSources;
+
+        static inline std::pair<float, float> s_MasterAudioLevel;
 
     };
 

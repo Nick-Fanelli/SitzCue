@@ -2,6 +2,8 @@
 
 #include "Application/Application.h"
 
+#include "Runtime/Audio.h"
+
 using namespace SitzQ;
 
 static constexpr ImVec4 StatusBarColor = { 0.06f, 0.06f, 0.06f, 1.0f };
@@ -36,6 +38,10 @@ void StatusBar::OnUpdate() {
 
     ImGui::Text("%s", m_ApplicationPtr->GetActiveProject()->GetProjectName().c_str());
 
+    auto& audioLevel = AudioEngine::GetMasterAudioLevel();
+
+    ImGui::Text("Left, %g", audioLevel.first);
+    ImGui::Text("Left, %g", audioLevel.second);
 
     ImGui::End();
 

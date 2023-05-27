@@ -3,10 +3,17 @@
 using namespace SitzQ;
 
 AudioSource::AudioSource(const std::filesystem::path& absFilePath) : m_AbsFilePath(absFilePath) {
-
+    AudioEngine::s_AudioSources.push_back(this);
 }
 
 AudioSource::~AudioSource() {
+
+    AudioEngine::s_AudioSources.erase(std::remove(
+        AudioEngine::s_AudioSources.begin(),
+        AudioEngine::s_AudioSources.end(),
+        this
+    ));
+
     if(m_IsAudioStreamed)
         StreamFree();
 }
@@ -20,7 +27,7 @@ bool AudioSource::StreamAudio() {
         return false;
     }
 
-    m_Stream = BASS_StreamCreateFile(FALSE, m_AbsFilePath.c_str(), 0, 0, 0);
+    m_Stream = BASS_StreamCreateFile(FALSE, m_AbsFilePath.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 
     if(m_Stream == 0) {
         Log::Error("Could not stream file!");
@@ -55,15 +62,9 @@ void AudioSource::StreamFree() {
 
 static float fft[1];
 
-float AudioSource::GetCurrentAudioLevel() const {
+float AudioSource::GetCurrentAudioLevelMono() const {
 
-    DWORD level = BASS_ChannelGetLevel(m_Stream);
-
-    // Extract the left and right channel volumes
-    float leftLevel = LOWORD(level) / 32768.0f;   // Left channel volume (0.0 to 1.0)
-    float rightLevel = HIWORD(level) / 32768.0f;  // Right channel volume (0.0 to 1.0)
-
-    return (leftLevel + rightLevel) / 2.0f;
+    return (m_CurrentAudioLevel.first + m_CurrentAudioLevel.second) / 2.0f;
 
 }
 
@@ -94,6 +95,15 @@ void AudioSource::Stop() {
     BASS_ChannelSetPosition(m_Stream, 0, BASS_POS_BYTE);
 }
 
+void AudioSource::Update() {
+
+    m_IsPlaying = BASS_ChannelIsActive(m_Stream);
+
+    DWORD level = BASS_ChannelGetLevel(m_Stream);
+    m_CurrentAudioLevel = { LOWORD(level) / 32768.0f, HIWORD(level) / 32768.0f };
+
+}
+
 void AudioEngine::Initialize() {
 
     Log::Info("Initializing the Audio Engine...");
@@ -102,6 +112,7 @@ void AudioEngine::Initialize() {
         Log::Error("Problem Initializing BASS");
         return;
     }
+
 }
 
 void AudioEngine::Destroy() {
@@ -111,5 +122,36 @@ void AudioEngine::Destroy() {
 }
 
 void AudioEngine::OnUpdate(float deltaTime) {
+    SITZCUE_PROFILE_FUNCTION();
+
     BASS_Update(deltaTime);
+
+    std::pair<float, float> levelSum = { 0.0f, 0.0f };
+    uint32_t activeChannels = 0;
+
+    // Calculate master audio level
+    for(auto* source : s_AudioSources) {
+
+        source->Update();
+
+        if(!source->IsPlaying())
+            return;
+
+        auto& level = source->GetCurrentAudioLevelStereo();
+
+        levelSum.first += level.first;
+        levelSum.second += level.second;
+
+        activeChannels++;
+    }
+
+
+    if(activeChannels > 0) {
+        levelSum.first /= activeChannels;
+        levelSum.second /= activeChannels;
+    }
+
+    s_MasterAudioLevel = levelSum;
 }
+
+const std::pair<float, float>& AudioEngine::GetMasterAudioLevel() { return s_MasterAudioLevel; }
