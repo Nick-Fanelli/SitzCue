@@ -31,9 +31,7 @@ bool AudioSource::StreamAudio() {
 
     // Load Specs
     QWORD length = BASS_ChannelGetLength(m_Stream, BASS_POS_BYTE);
-
     double duration = BASS_ChannelBytes2Seconds(m_Stream, length);
-
     m_Specs.Duration = duration;
 
     m_IsAudioStreamed = true;
@@ -55,9 +53,28 @@ void AudioSource::StreamFree() {
 
 }
 
-double AudioSource::GetCurrentPlaybackPosition() {
+static float fft[1];
+
+float AudioSource::GetCurrentAudioLevel() const {
+
+    DWORD level = BASS_ChannelGetLevel(m_Stream);
+
+    // Extract the left and right channel volumes
+    float leftLevel = LOWORD(level) / 32768.0f;   // Left channel volume (0.0 to 1.0)
+    float rightLevel = HIWORD(level) / 32768.0f;  // Right channel volume (0.0 to 1.0)
+
+    return (leftLevel + rightLevel) / 2.0f;
+
+}
+
+double AudioSource::GetCurrentPlaybackPosition() const {
     auto position = BASS_ChannelGetPosition(m_Stream, BASS_POS_BYTE);
     return BASS_ChannelBytes2Seconds(m_Stream, position);
+}
+
+void AudioSource::SetCurrentPlaybackPosition(double position) {
+    auto pos = BASS_ChannelSeconds2Bytes(m_Stream, position);
+    BASS_ChannelSetPosition(m_Stream, pos, BASS_POS_BYTE);
 }
 
 void AudioSource::Play() {
@@ -85,23 +102,14 @@ void AudioEngine::Initialize() {
         Log::Error("Problem Initializing BASS");
         return;
     }
-
-    // HSTREAM stream = BASS_StreamCreateFile(FALSE, "/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Tyler Hubbard & Keith Urban - Dancin' In The Country (Lyrics).mp3", 0, 0, 0);
-
-    // if(stream != 0) {
-        
-    //     BASS_ChannelPlay(stream, FALSE);
-
-    //     // BASS_StreamFree(stream);
-
-    // } else {
-    //     Log::Warn("Could not load sound file");
-    // }
-
 }
 
 void AudioEngine::Destroy() {
     Log::Info("Destroying the Audio Engine...");
 
     BASS_Free();
+}
+
+void AudioEngine::OnUpdate(float deltaTime) {
+    BASS_Update(deltaTime);
 }

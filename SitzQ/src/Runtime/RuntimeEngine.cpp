@@ -18,5 +18,5 @@ void RuntimeEngine::Destroy() {
 }
 
 void RuntimeEngine::Update(float deltaTime) {
-
+    AudioEngine::OnUpdate(deltaTime);
 }

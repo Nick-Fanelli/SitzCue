@@ -8,9 +8,12 @@ namespace SitzQ {
 
     class RuntimeEngine;
 
+
     struct AudioSourceSpecs {
 
         std::optional<double> Duration = {};
+        std::vector<float> Waveform;
+
 
     };
 
@@ -23,7 +26,8 @@ namespace SitzQ {
         bool StreamAudio();
         void StreamFree();
 
-        double GetCurrentPlaybackPosition();
+        double GetCurrentPlaybackPosition() const;
+        void SetCurrentPlaybackPosition(double position);
         
         void Play();
         void Loop();
@@ -31,6 +35,7 @@ namespace SitzQ {
         void Pause();
         void Stop();
 
+        float GetCurrentAudioLevel() const;
 
         const AudioSourceSpecs& GetSpecs() const { return m_Specs; }
 
@@ -50,6 +55,8 @@ namespace SitzQ {
     private:
         static void Initialize();
         static void Destroy();
+
+        static void OnUpdate(float deltaTime);
 
     };
 

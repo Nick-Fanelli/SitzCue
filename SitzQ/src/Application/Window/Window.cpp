@@ -101,7 +101,7 @@ void LanderScene::OnDestroy() {
 // Editor Scene
 // ===================================================================================================================
 
-static AudioSource s_AudioSource = { "/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Tyler Hubbard & Keith Urban - Dancin' In The Country (Lyrics).mp3" };
+static AudioSource s_AudioSource = { "/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Kassi Ashton - Drive You Out Of My Mind (Official Audio).mp3" };
 
 void EditorScene::OnCreate() {
     SITZCUE_PROFILE_FUNCTION();
@@ -117,6 +117,8 @@ void EditorScene::OnCreate() {
 
     s_AudioSource.StreamAudio();
 }
+
+static std::vector<float> s_Data;
 
 void EditorScene::OnUpdate() {
     SITZCUE_PROFILE_FUNCTION();
@@ -140,6 +142,15 @@ void EditorScene::OnUpdate() {
 
     if(ImGui::Button("Stop")) {
         s_AudioSource.Stop();
+    }
+
+    float position = (float) s_AudioSource.GetCurrentPlaybackPosition();
+    float max = (float) s_AudioSource.GetSpecs().Duration.value();
+
+    ImGui::SliderFloat("Position", &position, 0.0f, max, "%.1f");
+
+    if(ImGui::IsItemEdited()) {
+        s_AudioSource.SetCurrentPlaybackPosition(position);
     }
 
     ImGui::End();
