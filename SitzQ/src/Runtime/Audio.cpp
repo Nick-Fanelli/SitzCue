@@ -126,10 +126,10 @@ void AudioEngine::Destroy() {
     BASS_Free();
 }
 
-void AudioEngine::OnUpdate(float deltaTime) {
+void AudioEngine::OnUpdate() {
     SITZCUE_PROFILE_FUNCTION();
 
-    BASS_Update(deltaTime);
+    // BASS_Update();
 
     std::pair<float, float> levelSum = { 0.0f, 0.0f };
     uint32_t activeChannels = 0;

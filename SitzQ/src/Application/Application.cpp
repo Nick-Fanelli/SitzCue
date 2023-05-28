@@ -39,8 +39,6 @@ void Application::OnCreate() {
 }
 
 void Application::OnUpdate(float deltaTime) {
-    RuntimeEngine::Update(deltaTime);
-
     m_ImGuiLayer.Begin();
     m_ImGuiLayer.End();
 }

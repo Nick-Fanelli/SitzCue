@@ -77,6 +77,11 @@
         "__memory": "cpp",
         "any": "cpp",
         "forward_list": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "thread": "cpp",
+        "cinttypes": "cpp",
+        "condition_variable": "cpp",
+        "csignal": "cpp",
+        "future": "cpp"
     }
 }

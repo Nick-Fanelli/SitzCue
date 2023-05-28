@@ -10,14 +10,14 @@ using namespace SitzQ;
 
 EntryPoint::EntryPoint() {
     NFD_Init();
-    
-    RuntimeEngine::Initialize();
+
+    RuntimeEngine::InitializeAsync();    
 }
 
 EntryPoint::~EntryPoint() {
     NFD_Quit();
 
-    RuntimeEngine::Destroy();    
+    RuntimeEngine::Terminate();
 }
 
 int main() {

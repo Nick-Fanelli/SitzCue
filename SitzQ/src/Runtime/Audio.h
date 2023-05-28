@@ -72,7 +72,7 @@ namespace SitzQ {
         static void Initialize();
         static void Destroy();
 
-        static void OnUpdate(float deltaTime);
+        static void OnUpdate();
 
     private:    
         static inline std::vector<AudioSource*> s_AudioSources;
