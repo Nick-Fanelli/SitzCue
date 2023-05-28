@@ -69,6 +69,17 @@ namespace SitzQ {
 
 		void WriteProfile(const ProfileResult& result)
 		{
+			int id = 0;
+
+			auto it = std::find(s_Threads.begin(), s_Threads.end(), result.ThreadID);
+
+			if(it != s_Threads.end()) {
+				id = std::distance(s_Threads.begin(), it);
+			} else {
+				s_Threads.push_back(result.ThreadID);
+				id = s_Threads.size() - 1;
+			}
+
 			std::stringstream json;
 
 			json << std::setprecision(3) << std::fixed;
@@ -78,7 +89,7 @@ namespace SitzQ {
 			json << "\"name\":\"" << result.Name << "\",";
 			json << "\"ph\":\"X\",";
 			json << "\"pid\":0,";
-			// json << "\"tid\":" << result.ThreadID << ",";
+			json << "\"tid\":" << id << ",";
 			json << "\"ts\":" << result.Start.count();
 			json << "}";
 
@@ -134,6 +145,8 @@ namespace SitzQ {
 		std::mutex m_Mutex;
 		InstrumentationSession* m_CurrentSession;
 		std::ofstream m_OutputStream;
+
+		static inline std::vector<std::thread::id> s_Threads;
 	};
 
 	class InstrumentationTimer
