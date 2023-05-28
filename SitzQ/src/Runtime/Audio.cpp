@@ -29,8 +29,6 @@ bool AudioSource::StreamAudio() {
 
     m_Stream = BASS_StreamCreateFile(FALSE, m_AbsFilePath.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 
-    BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, 0.25f);
-
     if(m_Stream == 0) {
         Log::Error("Could not stream file!");
         return false;
