@@ -127,33 +127,33 @@ void EditorScene::OnUpdate() {
     m_CueListWindowPtr->OnUpdate(m_WindowManagerPtr->GetApplicationPtr()->GetActiveProject()->GetCueList());
     m_AssetBrowserWindow->OnUpdate();
 
-    ImGui::Begin("Music Controls");
+    // ImGui::Begin("Music Controls");
 
-    ImGui::Text("Duration: %g seconds", s_AudioSource.GetSpecs().Duration.value());
-    ImGui::Text("%.1f / %g", s_AudioSource.GetCurrentPlaybackPosition(), s_AudioSource.GetSpecs().Duration.value());
+    // ImGui::Text("Duration: %g seconds", s_AudioSource.GetSpecs().Duration.value());
+    // ImGui::Text("%.1f / %g", s_AudioSource.GetCurrentPlaybackPosition(), s_AudioSource.GetSpecs().Duration.value());
 
-    if(ImGui::Button("Play")) {
-        s_AudioSource.Play();
-    }
+    // if(ImGui::Button("Play")) {
+    //     s_AudioSource.Play();
+    // }
 
-    if(ImGui::Button("Pause")) {
-        s_AudioSource.Pause();
-    }
+    // if(ImGui::Button("Pause")) {
+    //     s_AudioSource.Pause();
+    // }
 
-    if(ImGui::Button("Stop")) {
-        s_AudioSource.Stop();
-    }
+    // if(ImGui::Button("Stop")) {
+    //     s_AudioSource.Stop();
+    // }
 
-    float position = (float) s_AudioSource.GetCurrentPlaybackPosition();
-    float max = (float) s_AudioSource.GetSpecs().Duration.value();
+    // float position = (float) s_AudioSource.GetCurrentPlaybackPosition();
+    // float max = (float) s_AudioSource.GetSpecs().Duration.value();
 
-    ImGui::SliderFloat("Position", &position, 0.0f, max, "%.1f");
+    // ImGui::SliderFloat("Position", &position, 0.0f, max, "%.1f");
 
-    if(ImGui::IsItemEdited()) {
-        s_AudioSource.SetCurrentPlaybackPosition(position);
-    }
+    // if(ImGui::IsItemEdited()) {
+    //     s_AudioSource.SetCurrentPlaybackPosition(position);
+    // }
 
-    ImGui::End();
+    // ImGui::End();
 }
 
 void EditorScene::OnDestroy() {

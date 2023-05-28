@@ -68,7 +68,7 @@ void StatusBar::OnUpdate() {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    DrawMasterAudioLevels();
+    // DrawMasterAudioLevels();
 
     static auto& colors = ImGui::GetStyle().Colors;
     static ImGuiViewport* viewport = ImGui::GetMainViewport();
