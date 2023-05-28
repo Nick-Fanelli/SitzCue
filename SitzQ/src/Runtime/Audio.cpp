@@ -29,6 +29,8 @@ bool AudioSource::StreamAudio() {
 
     m_Stream = BASS_StreamCreateFile(FALSE, m_AbsFilePath.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 
+    BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, 0.25f);
+
     if(m_Stream == 0) {
         Log::Error("Could not stream file!");
         return false;
@@ -69,8 +71,7 @@ float AudioSource::GetCurrentAudioLevelMono() const {
 }
 
 double AudioSource::GetCurrentPlaybackPosition() const {
-    auto position = BASS_ChannelGetPosition(m_Stream, BASS_POS_BYTE);
-    return BASS_ChannelBytes2Seconds(m_Stream, position);
+    return m_PlaybackPosition;
 }
 
 void AudioSource::SetCurrentPlaybackPosition(double position) {
@@ -97,11 +98,15 @@ void AudioSource::Stop() {
 
 void AudioSource::Update() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     m_IsPlaying = BASS_ChannelIsActive(m_Stream);
 
     DWORD level = BASS_ChannelGetLevel(m_Stream);
     m_CurrentAudioLevel = { LOWORD(level) / 32768.0f, HIWORD(level) / 32768.0f };
 
+    auto position = BASS_ChannelGetPosition(m_Stream, BASS_POS_BYTE);
+    m_PlaybackPosition = BASS_ChannelBytes2Seconds(m_Stream, position);
 }
 
 void AudioEngine::Initialize() {
@@ -135,7 +140,7 @@ void AudioEngine::OnUpdate(float deltaTime) {
         source->Update();
 
         if(!source->IsPlaying())
-            return;
+            continue;
 
         auto& level = source->GetCurrentAudioLevelStereo();
 

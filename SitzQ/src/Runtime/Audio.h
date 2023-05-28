@@ -56,6 +56,7 @@ namespace SitzQ {
 
         bool m_IsPlaying = false;
         std::pair<float, float> m_CurrentAudioLevel;
+        double m_PlaybackPosition = 0;
 
     };
 
