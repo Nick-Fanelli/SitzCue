@@ -71,34 +71,3 @@ void RuntimeEngine::Update() {
 void RuntimeEngine::Destroy() {
     AudioEngine::Destroy();
 }
-
-// std::atomic<bool> isRunning(true);
-
-// void RuntimeEngine::StartLoop() {
-
-//     while(isRunning) {
-//         Log::Info("Running");
-//     }
-
-//     // while(true) {
-//     //     Log::Info("Hey");
-//     // }
-
-// }
-
-// void RuntimeEngine::Initialize() {
-//     Log::Info("Initializing the Runtime Engine...");
-
-//     AudioEngine::Initialize();
-
-// }
-
-// void RuntimeEngine::Destroy() {
-//     Log::Info("Destroying the Runtime Engine...");
-
-//     AudioEngine::Destroy();
-// }
-
-// void RuntimeEngine::Update(float deltaTime) {
-//     AudioEngine::OnUpdate(deltaTime);
-// }

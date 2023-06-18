@@ -3,6 +3,7 @@
 #include "ApplicationCache.h"
 
 #include "Runtime/RuntimeEngine.h"
+#include "Runtime/Asset.h"
 
 using namespace SitzQ;
 
@@ -18,6 +19,8 @@ void Application::SetProject(Project* project) {
     m_ImGuiLayer.GetWindowManager().SetScene<EditorScene>();
 
     ApplicationCache::Push(ApplicationCache::Keys::LastActiveProject, project->GetProjectDirectoryPath());
+
+    AssetManager::AssignWatchDirectory(m_ActiveProject->GetAssetsDirectoryPath());
 }
 
 void Application::StartApplication() {

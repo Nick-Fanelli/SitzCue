@@ -3,7 +3,10 @@
 #include <nfd.hpp>
 
 #include "Application/Application.h"
+
 #include "Runtime/RuntimeEngine.h"
+#include "Runtime/Asset.h"
+
 #include "Utils/YAMLConversions.h"
 
 using namespace SitzQ;
@@ -12,12 +15,14 @@ EntryPoint::EntryPoint() {
     NFD_Init();
 
     RuntimeEngine::InitializeAsync();    
+    AssetManager::InitializeAsync();
 }
 
 EntryPoint::~EntryPoint() {
     NFD_Quit();
 
     RuntimeEngine::Terminate();
+    AssetManager::Terminate();
 }
 
 int main() {

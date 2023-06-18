@@ -42,6 +42,7 @@ bool AudioSource::StreamAudio() {
     m_Specs.Duration = duration;
 
     m_IsAudioStreamed = true;
+
     return true;
 }
 

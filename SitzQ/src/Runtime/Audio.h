@@ -22,6 +22,7 @@ namespace SitzQ {
         friend class AudioEngine;
 
     public:
+        AudioSource() = default;
         AudioSource(const std::filesystem::path& absFilePath);
         ~AudioSource();
 
@@ -43,6 +44,8 @@ namespace SitzQ {
         bool IsPlaying() const { return m_IsPlaying; }
 
         const AudioSourceSpecs& GetSpecs() const { return m_Specs; }
+
+        const std::filesystem::path& GetAbsFilePath() const { return m_AbsFilePath; }
 
     private:
         void Update();
