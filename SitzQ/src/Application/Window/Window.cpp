@@ -110,7 +110,11 @@ void EditorScene::OnCreate() {
     if(m_WindowManagerPtr->GetApplicationPtr()->GetActiveProject() == nullptr) {
         Log::Error("No Project Found");
         m_WindowManagerPtr->SetScene<LanderScene>();
+        return;
     }
+
+    RuntimeEngine::InitializeAsync();    
+    AssetManager::InitializeAsync();
 
     m_StatusBarPtr = new StatusBar(m_WindowManagerPtr->GetApplicationPtr());
     m_CueListWindowPtr = new CueListWindow();
@@ -165,6 +169,9 @@ void EditorScene::OnDestroy() {
     delete m_StatusBarPtr;
     delete m_CueListWindowPtr;
     delete m_AssetBrowserWindow;
+
+    RuntimeEngine::Terminate();
+    AssetManager::Terminate();
 }
 
 // ===================================================================================================================
@@ -177,6 +184,8 @@ void WindowManager::OnUpdate() {
 }
 
 void WindowManager::OnDestroy() {
-    if(m_ActiveScene != nullptr)
+    if(m_ActiveScene != nullptr) {
         m_ActiveScene->OnDestroy();
+        delete m_ActiveScene;
+    }
 }

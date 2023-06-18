@@ -27,6 +27,11 @@ bool AudioSource::StreamAudio() {
         return false;
     }
 
+    if(!FileUtils::Exists(m_AbsFilePath.c_str())) {
+        Log::Error("Audio file does not exist");
+        return false;
+    }
+
     m_Stream = BASS_StreamCreateFile(FALSE, m_AbsFilePath.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 
     if(m_Stream == 0) {

@@ -13,6 +13,8 @@ bool RuntimeEngine::IsRunningAsync() { return s_IsRunning; }
 
 void RuntimeEngine::InitializeAsync() {
 
+    Initialize();
+
     s_IsRunning = true;
     s_RuntimeEngineThread = std::make_shared<std::thread>([] {
         StartLoop();
@@ -33,8 +35,6 @@ static constexpr double UpdateSecondInterval = 1.0 / UpdatesPerSecond;
 void RuntimeEngine::StartLoop() {
 
     SITZCUE_PROFILE_FUNCTION();
-
-    Initialize();
 
     while(s_IsRunning) {
 

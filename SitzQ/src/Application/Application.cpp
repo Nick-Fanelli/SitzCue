@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include <nfd.hpp>
+
 #include "ApplicationCache.h"
 
 #include "Runtime/RuntimeEngine.h"
@@ -24,6 +26,8 @@ void Application::SetProject(Project* project) {
 }
 
 void Application::StartApplication() {
+    NFD_Init();
+
     ApplicationCache::Pull();
 
     m_Display.CreateDisplay();
@@ -56,4 +60,6 @@ void Application::OnDestroy() {
         m_ActiveProject->SaveProject();
         delete m_ActiveProject;
     }
+
+    NFD_Quit();
 }

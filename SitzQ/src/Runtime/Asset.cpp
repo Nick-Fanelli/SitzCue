@@ -10,11 +10,14 @@ AudioSource* AssetManager::CreateAudioSource(const std::filesystem::path& path) 
     SITZCUE_PROFILE_FUNCTION();
 
     AudioSource* audioSource = new AudioSource(path);
-    audioSource->StreamAudio();
+    bool result = audioSource->StreamAudio();
 
-    s_AudioSources[std::string(path)] = audioSource;
+    if(result) {
+        s_AudioSources[std::string(path)] = audioSource;
+        return audioSource;
+    }
 
-    return audioSource;
+    return nullptr;
 }
 
 AudioSource* AssetManager::GetAudioSource(const std::filesystem::path& path) {
