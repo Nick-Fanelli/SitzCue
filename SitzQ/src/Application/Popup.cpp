@@ -48,6 +48,8 @@ static void BeginRigidWindow(bool* opened) {
 
 void ConfirmationPopupWindow::Update() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     DrawBackgroundBlur();
 
     BeginRigidWindow(&m_IsActive);
@@ -84,6 +86,8 @@ void ConfirmationPopupWindow::Update() {
 }
 
 void Popup::Update() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     if(m_PopupWindow && m_PopupWindow->IsActive()) {
         m_PopupWindow->Update();

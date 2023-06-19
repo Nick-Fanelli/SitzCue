@@ -50,6 +50,8 @@ static bool s_IsVUIMeterVisible = true;
 
 static void DrawMasterAudioLevels() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     ImGui::Begin("VU Meter", &s_IsVUIMeterVisible, ImGuiWindowFlags_NoTitleBar);
 
     ImVec2 faderSize = (ImGui::GetContentRegionAvail() * ImVec2{ 0.5f, 1.0f }) - ImVec2{ 5.0f, 0.0f };

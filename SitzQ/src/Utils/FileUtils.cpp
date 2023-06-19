@@ -7,14 +7,21 @@ using namespace SitzQ;
 // ====================================================================================================================
 
 bool FileUtils::Exists(const std::filesystem::path& path) {
+    SITZCUE_PROFILE_FUNCTION();
+
     return std::filesystem::exists(path);
 }
 
 bool FileUtils::IsDirectory(const std::filesystem::path& path) {
+    SITZCUE_PROFILE_FUNCTION();
+
     return std::filesystem::is_directory(path);
 }
 
 bool FileUtils::IsDirectoryEmpty(const std::filesystem::path& path) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     if(std::filesystem::is_directory(path)) {
         return std::filesystem::is_empty(path);
     } else {
@@ -28,6 +35,9 @@ bool FileUtils::IsDirectoryEmpty(const std::filesystem::path& path) {
 // Read
 // ====================================================================================================================
 void FileUtils::ReadFile(const std::filesystem::path& path, std::string& toString) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     toString.clear();
 
     std::ifstream inputFileStream(path);
@@ -52,6 +62,8 @@ void FileUtils::ReadFile(const std::filesystem::path& path, std::string& toStrin
 
 void FileUtils::MoveFile(const std::filesystem::path& originalPath, const std::filesystem::path& newPath) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     if(!std::filesystem::exists(originalPath)) {
         Log::Error(std::string(originalPath) + std::string("does not exist!"));
         return;
@@ -69,6 +81,9 @@ void FileUtils::MoveFile(const std::filesystem::path& originalPath, const std::f
 // ====================================================================================================================
 
 void FileUtils::CreateFile(const std::filesystem::path& filepath) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     FileUtils::CreateDirectory(filepath.parent_path());
 
     std::ofstream outFile(filepath);
@@ -76,6 +91,8 @@ void FileUtils::CreateFile(const std::filesystem::path& filepath) {
 }
 
 void FileUtils::CreateDirectory(const std::filesystem::path& dirPath) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     // if(!Exists(dirPath.parent_path())) {
     //     CreateDirectory(dirPath.parent_path());
@@ -89,6 +106,8 @@ void FileUtils::CreateDirectory(const std::filesystem::path& dirPath) {
 // ====================================================================================================================
 
 void FileUtils::ChangeContentTo(const std::filesystem::path& filepath, const std::string& content) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     try {
         std::ofstream file(filepath);
@@ -110,6 +129,8 @@ void FileUtils::ChangeContentTo(const std::filesystem::path& filepath, const std
 // Delete
 // ====================================================================================================================
 void FileUtils::DeleteAllDirectoryContents(const std::filesystem::path& path) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     if(std::filesystem::is_directory(path)) {
         for(const auto& entry : std::filesystem::directory_iterator(path)) {

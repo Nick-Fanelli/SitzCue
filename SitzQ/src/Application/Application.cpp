@@ -11,6 +11,8 @@ using namespace SitzQ;
 
 void Application::SetProject(Project* project) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     if(m_ActiveProject != nullptr) {
         m_ActiveProject->SaveProject();
         delete m_ActiveProject;
@@ -26,6 +28,9 @@ void Application::SetProject(Project* project) {
 }
 
 void Application::StartApplication() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     NFD_Init();
 
     ApplicationCache::Pull();
@@ -35,6 +40,9 @@ void Application::StartApplication() {
 }
 
 void Application::OnCreate() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     m_ImGuiLayer = ImGuiLayer(this);
     m_ImGuiLayer.OnCreate();
 
@@ -46,11 +54,16 @@ void Application::OnCreate() {
 }
 
 void Application::OnUpdate(float deltaTime) {
+    
+    SITZCUE_PROFILE_FUNCTION();
+
     m_ImGuiLayer.Begin();
     m_ImGuiLayer.End();
 }
 
 void Application::OnDestroy() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     ApplicationCache::Commit();
 

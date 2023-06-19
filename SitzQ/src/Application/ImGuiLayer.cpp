@@ -123,9 +123,13 @@ void ImGuiLayer::Begin() {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+    {
+        SITZCUE_PROFILE_SCOPE("ImGui->NewFrames");
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+    }
 
     static ImGuiStyle& style = ImGui::GetStyle();
     static ImGuiIO& io = ImGui::GetIO();

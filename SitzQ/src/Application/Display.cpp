@@ -8,6 +8,9 @@ static constexpr int s_DisplayWidth = 1600;
 static constexpr int s_DisplayHeight = 900;
 
 void Display::CreateDisplay() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     if(!glfwInit()) {
         Log::Error("Failed to initialize GLFW!\n\tStatus: Returning");
         return;
@@ -21,7 +24,7 @@ void Display::CreateDisplay() {
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
     m_Window = glfwCreateWindow(s_DisplayWidth, s_DisplayHeight, "SitzQ", nullptr, nullptr);
-    glfwSwapInterval(1); // Enable V-Sync
+    glfwSwapInterval(true); // Enable V-Sync
 
     int width, height;
 
@@ -82,38 +85,30 @@ void Display::GetImGuiSize(ImVec2* outVec2) {
 
 void Display::StartApplicationLoop(Application* application) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     application->OnCreate();
 
-    float endTime, startTime = (float) glfwGetTime();
-    float deltaTime = -1.0f;
-    float accumulativeDeltaTime = 0.0f;
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
 
-    uint32_t frameCount = 0;
+    float currentFrame = (float) glfwGetTime();
 
     while(!glfwWindowShouldClose(m_Window)) {
+
+        SITZCUE_PROFILE_SCOPE("Update Loop");
+
+        currentFrame = (float) glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(deltaTime >= 0) {
-            application->OnUpdate(deltaTime);
-        }
+        application->OnUpdate(deltaTime);
 
-        glfwSwapBuffers(m_Window);
         glfwPollEvents();
-
-        endTime = (float) glfwGetTime();
-        deltaTime = endTime - startTime;
-        startTime = endTime;
-
-        accumulativeDeltaTime += deltaTime;
-        if(accumulativeDeltaTime >= 1.0f) {
-            m_CurrentFps = frameCount;
-            frameCount = 0;
-            accumulativeDeltaTime = 0.0f;
-        }
-
-        frameCount++;
+        glfwSwapBuffers(m_Window);
     }
 
     application->OnDestroy();
@@ -122,6 +117,8 @@ void Display::StartApplicationLoop(Application* application) {
 }
 
 void Display::CleanUp() {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     Log::Info("Closing Application");
 

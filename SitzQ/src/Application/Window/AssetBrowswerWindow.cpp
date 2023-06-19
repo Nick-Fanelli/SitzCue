@@ -6,6 +6,8 @@ using namespace SitzQ;
 static const std::vector<std::string> s_SupportedAudioFileExtensions = { ".wav", ".aiff", ".ogg", ".mp3" };
 
 static inline void DrawFile(const std::filesystem::path& filepath) {
+    
+    SITZCUE_PROFILE_FUNCTION();
 
     static constexpr ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
@@ -32,6 +34,8 @@ static inline void DrawFile(const std::filesystem::path& filepath) {
 }
 
 static void DrawDirectory(const std::filesystem::path& directory, bool isRoot = false) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     if(ImGui::TreeNodeEx(directory.stem().c_str(), isRoot ? ImGuiTreeNodeFlags_DefaultOpen : 0)) {
 

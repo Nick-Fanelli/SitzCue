@@ -94,6 +94,45 @@ static void SearchDirectory(const std::filesystem::path& path, std::vector<std::
     }
 }
 
+enum FileType {
+    FileTypeUnidentified = 0,
+    FileTypeAudio = 1
+};
+
+struct CaseInsensitiveHash {
+
+    std::size_t operator()(const std::string& str) const {
+        std::size_t hash = 0;
+
+        for(char c : str) {
+            hash = hash * 37 * std::tolower(c);
+        }
+
+        return hash;
+    }
+
+};
+
+static FileType IdentifyFile(const std::filesystem::path& filepath) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    static const std::unordered_set<std::string, CaseInsensitiveHash> audioExtensions = { ".wav", ".aiff", ".mp3", ".mp2", ".mp1", ".ogg" };
+
+    std::string extension = filepath.extension().string();
+
+    if(!extension.empty()) {
+
+        if(audioExtensions.count(extension)) {
+            return FileType::FileTypeAudio;
+        }
+
+    }
+
+    return FileType::FileTypeUnidentified;
+
+}
+
 void AssetManager::SweepDirectory() {
 
     SITZCUE_PROFILE_FUNCTION();
@@ -106,7 +145,7 @@ void AssetManager::SweepDirectory() {
     SearchDirectory(s_WatchDirectory.value(), uncompressedFiles);
 
     for(auto& file : uncompressedFiles) {
-        Log::Info(file);
+        FileType fileType = IdentifyFile(file);
     }
 
 }

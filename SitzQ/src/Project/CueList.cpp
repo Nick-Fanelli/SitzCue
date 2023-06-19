@@ -36,6 +36,8 @@ std::shared_ptr<Cue> CueList::PushBackCueToRegistry(CueType cueType) {
 
 std::shared_ptr<Cue> CueList::CreateCue(CueType cueType) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     auto cue = PushBackCueToRegistry(cueType);
     m_CueListOrder.push_back(cue->UUID);
 
@@ -46,6 +48,8 @@ std::shared_ptr<Cue> CueList::CreateCue(CueType cueType) {
 }
 
 std::shared_ptr<Cue> CueList::CreateCueAt(CueType cueType, UUID cueUUIDToFollow) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     auto cue = PushBackCueToRegistry(cueType);
 
@@ -64,6 +68,8 @@ std::shared_ptr<Cue> CueList::CreateCueAt(CueType cueType, UUID cueUUIDToFollow)
 
 std::shared_ptr<Cue> CueList::CreateCueAt(CueType cueType, size_t location) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     auto cue = PushBackCueToRegistry(cueType);
 
     auto it = m_CueListOrder.begin() + location;
@@ -80,6 +86,8 @@ std::shared_ptr<Cue> CueList::CreateCueAt(CueType cueType, size_t location) {
 }
 
 void CueList::MoveCue(UUID targetCue, UUID cueToFollow) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     auto targetIt = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), targetCue);
     auto followIt = std::find(m_CueListOrder.begin(), m_CueListOrder.end(), cueToFollow);

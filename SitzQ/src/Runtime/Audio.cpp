@@ -115,6 +115,8 @@ void AudioSource::Update() {
 
 void AudioEngine::Initialize() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     Log::Info("Initializing the Audio Engine...");
 
     if(!BASS_Init(-1, 44100, 0, nullptr, nullptr)) {

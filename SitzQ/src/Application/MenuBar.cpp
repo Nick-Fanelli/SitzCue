@@ -11,6 +11,8 @@ static inline void OnFileNewProject(Application* application) { Project::CreateN
 
 static inline void HandleShortcuts(Application* application) {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     // Command
     if(PlatformDetection::IsNativeCommandKey()) {
 
@@ -34,6 +36,8 @@ static inline void HandleShortcuts(Application* application) {
 }
 
 static inline void FileMenu(Application* application) {
+
+    SITZCUE_PROFILE_FUNCTION();
 
     if(ImGui::BeginMenu("File")) {
 

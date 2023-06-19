@@ -13,6 +13,8 @@ bool RuntimeEngine::IsRunningAsync() { return s_IsRunning; }
 
 void RuntimeEngine::InitializeAsync() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     Initialize();
 
     s_IsRunning = true;
