@@ -4,6 +4,8 @@
 
 #include <bass.h>
 
+#include "Asset.h"
+
 namespace SitzQ {
 
     class RuntimeEngine;
@@ -17,14 +19,15 @@ namespace SitzQ {
 
     };
 
-    class AudioSource {
+    class AudioSource : public Asset {
         
         friend class AudioEngine;
 
     public:
         AudioSource() = default;
         AudioSource(const std::filesystem::path& absFilePath);
-        ~AudioSource();
+
+        ~AudioSource() override;
 
         bool StreamAudio();
         void StreamFree();
@@ -48,6 +51,8 @@ namespace SitzQ {
         const std::filesystem::path& GetAbsFilePath() const { return m_AbsFilePath; }
 
     private:
+        void CreateAsset() override { StreamAudio(); }
+
         void Update();
 
     private:

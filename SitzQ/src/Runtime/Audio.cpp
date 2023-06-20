@@ -8,6 +8,8 @@ AudioSource::AudioSource(const std::filesystem::path& absFilePath) : m_AbsFilePa
 
 AudioSource::~AudioSource() {
 
+    SITZCUE_PROFILE_FUNCTION();
+
     AudioEngine::s_AudioSources.erase(std::remove(
         AudioEngine::s_AudioSources.begin(),
         AudioEngine::s_AudioSources.end(),

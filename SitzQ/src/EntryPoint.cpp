@@ -2,8 +2,6 @@
 #include "Application/Application.h"
 
 #include "Runtime/RuntimeEngine.h"
-#include "Runtime/Asset.h"
-
 #include "Utils/YAMLConversions.h"
 
 int main() {

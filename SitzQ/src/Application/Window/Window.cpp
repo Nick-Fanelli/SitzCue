@@ -102,7 +102,7 @@ void LanderScene::OnDestroy() {
 // Editor Scene
 // ===================================================================================================================
 
-static AudioSource* s_AudioSource; 
+static AssetHandle<AudioSource> s_AudioSource; 
 
 void EditorScene::OnCreate() {
     SITZCUE_PROFILE_FUNCTION();
@@ -120,7 +120,11 @@ void EditorScene::OnCreate() {
     m_CueListWindowPtr = new CueListWindow();
     m_AssetBrowserWindow = new AssetBrowserWindow(m_WindowManagerPtr->GetApplicationPtr());
 
-    s_AudioSource = AssetManager::CreateAudioSource("/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Kassi Ashton - Drive You Out Of My Mind (Official Audio).mp3");
+    if(s_AudioSource) {
+        Log::Info("Created");
+    }
+
+    s_AudioSource = AssetManager::CreateAsset<AudioSource>("/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Kassi Ashton - Drive You Out Of My Mind (Official Audio).mp3", "/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Kassi Ashton - Drive You Out Of My Mind (Official Audio).mp3");
 }
 
 static std::vector<float> s_Data;
@@ -134,28 +138,35 @@ void EditorScene::OnUpdate() {
 
     ImGui::Begin("Music Controls");
 
-    ImGui::Text("Duration: %g seconds", s_AudioSource->GetSpecs().Duration.value());
-    ImGui::Text("%.1f / %g", s_AudioSource->GetCurrentPlaybackPosition(), s_AudioSource->GetSpecs().Duration.value());
+    if(s_AudioSource) {
 
-    if(ImGui::Button("Play")) {
-        s_AudioSource->Play();
+        ImGui::Text("Duration: %g seconds", s_AudioSource.Get().value()->GetSpecs().Duration.value());
+        ImGui::Text("%.1f / %g", s_AudioSource.Get().value()->GetCurrentPlaybackPosition(), s_AudioSource.Get().value()->GetSpecs().Duration.value());
+
+        if(ImGui::Button("Play")) {
+            s_AudioSource.Get().value()->Play();
+        }
+
+        if(ImGui::Button("Pause")) {
+            s_AudioSource.Get().value()->Pause();
+        }
+
+        if(ImGui::Button("Stop")) {
+            s_AudioSource.Get().value()->Stop();
+        }
+
+        float position = (float) s_AudioSource.Get().value()->GetCurrentPlaybackPosition();
+        float max = (float) s_AudioSource.Get().value()->GetSpecs().Duration.value();
+
+        ImGui::SliderFloat("Position", &position, 0.0f, max, "%.1f");
+
+        if(ImGui::IsItemEdited()) {
+            s_AudioSource.Get().value()->SetCurrentPlaybackPosition(position);
+        }
     }
 
-    if(ImGui::Button("Pause")) {
-        s_AudioSource->Pause();
-    }
-
-    if(ImGui::Button("Stop")) {
-        s_AudioSource->Stop();
-    }
-
-    float position = (float) s_AudioSource->GetCurrentPlaybackPosition();
-    float max = (float) s_AudioSource->GetSpecs().Duration.value();
-
-    ImGui::SliderFloat("Position", &position, 0.0f, max, "%.1f");
-
-    if(ImGui::IsItemEdited()) {
-        s_AudioSource->SetCurrentPlaybackPosition(position);
+    if(ImGui::Button("Erase!")) {
+        AssetManager::ClearRegistry();
     }
 
     ImGui::End();
@@ -163,8 +174,6 @@ void EditorScene::OnUpdate() {
 
 void EditorScene::OnDestroy() {
     SITZCUE_PROFILE_FUNCTION();
-
-    s_AudioSource->StreamFree();
 
     delete m_StatusBarPtr;
     delete m_CueListWindowPtr;

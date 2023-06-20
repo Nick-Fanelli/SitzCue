@@ -1,35 +1,46 @@
 #include "Asset.h"
 
+#include "Audio.h"
+
 using namespace SitzQ;
 
 static std::unique_ptr<std::thread> s_AssetManagerThread;
 static std::atomic<bool> s_IsRunning(false);
 
-AudioSource* AssetManager::CreateAudioSource(const std::filesystem::path& path) {
+std::shared_ptr<AssetRemote> Asset::GenerateAssetRemote() {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    AudioSource* audioSource = new AudioSource(path);
-    bool result = audioSource->StreamAudio();
+    std::shared_ptr<AssetRemote>& assetRemote = m_AssetRemotes.emplace_back(std::make_shared<AssetRemote>(this));
 
-    if(result) {
-        s_AudioSources[std::string(path)] = audioSource;
-        return audioSource;
-    }
+    return assetRemote;
 
-    return nullptr;
 }
 
-AudioSource* AssetManager::GetAudioSource(const std::filesystem::path& path) {
+std::shared_ptr<AssetRemote>& AssetRemote::GetNullAssetRemote() {
+    
     SITZCUE_PROFILE_FUNCTION();
 
-    auto it = s_AudioSources.find(path);
+    static auto nullAssetRemote = std::make_shared<AssetRemote>(nullptr);
 
-    if(it != s_AudioSources.end()) {
-        return it->second;
+    return nullAssetRemote;
+}
+
+Asset::~Asset() {
+    if(!m_AssetRemotesBroken)
+        BreakAssetRemotes();
+}
+
+void Asset::BreakAssetRemotes() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    for(auto& remote : m_AssetRemotes) {
+        remote->m_AssetPtr = nullptr;
     }
 
-    return nullptr;
+    m_AssetRemotesBroken = true;
+
 }
 
 void AssetManager::InitializeAsync() {
@@ -76,15 +87,26 @@ void AssetManager::Terminate() {
 
     s_IsRunning = false;
 
-    for(auto audioSource : s_AudioSources) {
-        delete audioSource.second;
-    }
-
-    s_AudioSources.clear();
+    ClearRegistry();
 
 }
 
+void AssetManager::ClearRegistry() {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    for(auto entry : s_AssetRegistry) {
+        entry.second->BreakAssetRemotes();
+        delete entry.second;
+    }
+
+    s_AssetRegistry.clear();
+}
+
 static void SearchDirectory(const std::filesystem::path& path, std::vector<std::filesystem::path>& uncompressedFiles) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
     for(const auto& entry : std::filesystem::directory_iterator(path)) {
         if(std::filesystem::is_directory(entry)) {
             SearchDirectory(entry, uncompressedFiles);
@@ -141,11 +163,16 @@ void AssetManager::SweepDirectory() {
         return;
 
     std::vector<std::filesystem::path> uncompressedFiles;
+    std::vector<std::filesystem::path> audioFiles;
 
     SearchDirectory(s_WatchDirectory.value(), uncompressedFiles);
 
     for(auto& file : uncompressedFiles) {
         FileType fileType = IdentifyFile(file);
+
+        if(fileType == FileType::FileTypeAudio) {
+            audioFiles.push_back(file);
+        }
     }
 
 }
