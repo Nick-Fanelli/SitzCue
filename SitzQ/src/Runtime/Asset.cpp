@@ -2,10 +2,19 @@
 
 #include "Audio.h"
 
+#include <condition_variable>
+
 using namespace SitzQ;
 
 static std::unique_ptr<std::thread> s_AssetManagerThread;
+
 static std::atomic<bool> s_IsRunning(false);
+static std::atomic<bool> s_IsTerminated(false);
+
+static std::condition_variable s_ConditionVariable;
+static std::mutex s_Mutex;
+
+static bool s_Interrupted = false;
 
 std::shared_ptr<AssetRemote> Asset::GenerateAssetRemote() {
 
@@ -67,9 +76,20 @@ void AssetManager::StartLoop() {
 
         Update();
 
-        std::this_thread::sleep_for(ThreadSleepDuration);
+        {
+            std::unique_lock<std::mutex> lock(s_Mutex);
+            s_ConditionVariable.wait_for(lock, ThreadSleepDuration, [] { return s_Interrupted; });
+        }
+
+        if(s_Interrupted) {
+            s_Interrupted = false;
+        }
 
     }
+
+    ClearRegistry();
+
+    s_IsTerminated = true;
 
 }
 
@@ -86,8 +106,13 @@ void AssetManager::Terminate() {
     SITZCUE_PROFILE_FUNCTION();
 
     s_IsRunning = false;
+    s_Interrupted = true;
 
-    ClearRegistry();
+    const auto sleepTime = std::chrono::milliseconds(1);
+    
+    while(!s_IsTerminated) {
+        std::this_thread::sleep_for(sleepTime);
+    }
 
 }
 

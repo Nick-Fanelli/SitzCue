@@ -1,5 +1,7 @@
 #include "Audio.h"
 
+#include "RuntimeEngine.h"
+
 using namespace SitzQ;
 
 AudioSource::AudioSource(const std::filesystem::path& absFilePath) : m_AbsFilePath(absFilePath) {
@@ -137,7 +139,7 @@ void AudioEngine::Destroy() {
 void AudioEngine::OnUpdate() {
     SITZCUE_PROFILE_FUNCTION();
 
-    // BASS_Update();
+    BASS_Update(RuntimeEngine::UpdateSecondInterval);
 
     std::pair<float, float> levelSum = { 0.0f, 0.0f };
     uint32_t activeChannels = 0;

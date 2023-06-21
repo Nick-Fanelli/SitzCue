@@ -175,6 +175,8 @@ void EditorScene::OnUpdate() {
 void EditorScene::OnDestroy() {
     SITZCUE_PROFILE_FUNCTION();
 
+    Log::Info("Destroying the editor scene...");
+
     delete m_StatusBarPtr;
     delete m_CueListWindowPtr;
     delete m_AssetBrowserWindow;

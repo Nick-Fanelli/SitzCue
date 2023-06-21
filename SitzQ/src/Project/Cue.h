@@ -17,6 +17,10 @@ namespace SitzQ {
 
     };
 
+    // ===========================================================================
+    // Cue
+    // ===========================================================================
+
     class Cue {
 
         friend class CueList;
@@ -26,11 +30,12 @@ namespace SitzQ {
         Cue() = default;
         Cue(const Cue&) = default;
 
-        virtual void Execute();
-
-        bool operator==(const Cue& other) const { return UUID == other.UUID; }
+        virtual void Execute() {}
+        virtual void Stop() {}
 
         virtual bool IsValid() const;
+
+        bool operator==(const Cue& other) const { return UUID == other.UUID; }
 
         CueType IdentifyCueType() const;
 
@@ -40,8 +45,18 @@ namespace SitzQ {
         // Serializable
         std::string CueName = "";
         std::optional<float> CueNumber = std::nullopt;
+
+        virtual bool IsActive() const;
+
+    private:
+
+        void ReportSelfToRuntimeEngine();
+
     };
 
+    // ===========================================================================
+    // SoundCue
+    // ===========================================================================
 
     class SoundCue : public Cue {
 
@@ -52,9 +67,10 @@ namespace SitzQ {
         SoundCue(const SoundCue&) = default;
 
         void Execute() override;
+        void Stop() override;
 
         bool IsValid() const override;
-
+        bool IsActive() const override;
 
     public:
         std::filesystem::path SoundFilePath;
