@@ -112,7 +112,7 @@ namespace SitzQ {
 
             if( !std::is_base_of<Asset, typename std::decay<T>::type>::value &&
                 !std::is_same<Asset, typename std::decay<T>::type>::value) {
-                Log::FormatError("When creating asset, \"%s\", the base type does not inherit Asset\n\tStatus: Returning Null Asset Handle", filepath.c_str());
+                Log::Error("When creating asset, \"{}\", the base type does not inherit Asset\n\tStatus: Returning Null Asset Handle", filepath.c_str());
                 return AssetHandle<T>(AssetRemote::GetNullAssetRemote());
             }
 

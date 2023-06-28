@@ -198,7 +198,7 @@ UUID CueList::GenerateUUID() {
         // Ensure no duplicate UUIDs
         for(auto& cue : m_Registry) {
             if(cue->UUID == rand) {
-                Log::Info("Duplicate UUID Found!");
+                Log::Trace("Duplicate UUID Found! This is rare.. \n\tStatus: Self-correcting");
                 isDuplicate = true;
                 break;
             }

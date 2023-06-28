@@ -11,6 +11,7 @@ void Display::CreateDisplay() {
 
     SITZCUE_PROFILE_FUNCTION();
 
+    Log::Trace("Initializing GLFW");
     if(!glfwInit()) {
         Log::Error("Failed to initialize GLFW!\n\tStatus: Returning");
         return;
@@ -54,6 +55,7 @@ void Display::CreateDisplay() {
 
     glfwWindowHint(GLFW_SAMPLES, 4);
 
+    Log::Trace("Loading GLAD");
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "GLAD FAILED" << std::endl;
         Log::Error("Failed to initialize GLAD");
@@ -69,8 +71,6 @@ void Display::CreateDisplay() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    Log::Success("Created the GLFW Display!");
 
     glfwFocusWindow(m_Window);
 }
@@ -120,8 +120,10 @@ void Display::CleanUp() {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    Log::Info("Closing Application");
+    Log::Trace("Closing Application");
 
     glfwDestroyWindow(m_Window);
     glfwTerminate();
+
+    Log::Info("GLFW Terminated");
 }

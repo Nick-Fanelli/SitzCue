@@ -126,9 +126,9 @@ void FileUtils::ChangeContentTo(const std::filesystem::path& filepath, const std
         if(file.is_open()) {
             file << content;
             file.close();
-            Log::Info("Updated file content"); // TODO: Trace and add filepath
+            Log::Trace("Updated file content at filepath: \"{}\"", filepath);
         } else {
-            Log::Error("Failed to open file"); // TODO: Add filepath
+            Log::Error("Failed to open file: \"{}\"", filepath);
         }
     } catch(const std::filesystem::filesystem_error& ex) {
         std::cerr << "Error" << ex.what() << std::endl;

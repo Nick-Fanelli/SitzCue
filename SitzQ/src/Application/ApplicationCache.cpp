@@ -38,6 +38,8 @@ void ApplicationCache::Pull() {
 
 void ApplicationCache::Commit() {
 
+    Log::Trace("Committing Application Cache");
+
     YAML::Node node = YAML::convert<std::unordered_map<std::string, std::string>>::encode(s_CacheValues);
 
     std::ofstream file(PlatformDetection::GetApplicationCacheFilePath());

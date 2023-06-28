@@ -120,10 +120,6 @@ void EditorScene::OnCreate() {
     m_CueListWindowPtr = new CueListWindow();
     m_AssetBrowserWindow = new AssetBrowserWindow(m_WindowManagerPtr->GetApplicationPtr());
 
-    if(s_AudioSource) {
-        Log::Info("Created");
-    }
-
     s_AudioSource = AssetManager::CreateAsset<AudioSource>("/Users/nickfanelli/Desktop/Example Project.sitzqprj/Assets/Kassi Ashton - Drive You Out Of My Mind (Official Audio).mp3");
 }
 

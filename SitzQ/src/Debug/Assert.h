@@ -2,10 +2,10 @@
 
 #include "Log.h"
 
-#if DEBUG
+#if SITZQ_DEBUG
 
     #define SITZCUE_ASSERT(value) if(!value) { Log::Error("SitzQ Assertion!"); exit(-1); }
-    #define SITZCUE_ASSERT_MESSAGE(value, message) if(!value) { Log::FormatError("SitzQ Assertion!:\n\t%s", message); exit(-1); }
+    #define SITZCUE_ASSERT_MESSAGE(value, message) if(!value) { Log::Error("SitzQ Assertion!:\n\t{}", message); exit(-1); }
 
 #else
 

@@ -31,11 +31,18 @@ void Application::StartApplication() {
 
     SITZCUE_PROFILE_FUNCTION();
 
+    Log::Trace("Creating the Application");
+
+    Log::Trace("NFD Init");
     NFD_Init();
 
+    Log::Trace("Application Cache Pull");
     ApplicationCache::Pull();
 
+    Log::Trace("Creating the display");
     m_Display.CreateDisplay();
+
+    Log::Trace("Starting application loop");
     m_Display.StartApplicationLoop(this);
 }
 
@@ -74,5 +81,8 @@ void Application::OnDestroy() {
         delete m_ActiveProject;
     }
 
+    Log::Trace("NFD Quit");
     NFD_Quit();
+
+    Log::Info("Application Destroyed");
 }

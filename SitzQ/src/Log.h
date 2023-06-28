@@ -4,95 +4,189 @@
 
 namespace SitzQ {
 
-    static const char* ANSI_RESET = "\033[0m";
+    namespace Log {
+
+        static const char* ANSI_RESET = "\033[0m";
     
-    static const char* ANSI_RED = "\033[0;31m";
-    static const char* ANSI_RED_BOLD = "\033[1;31m";
+        static const char* ANSI_RED = "\033[0;31m";
+        static const char* ANSI_RED_BOLD = "\033[1;31m";
 
-    static const char* ANSI_YELLOW = "\033[0;33m";
-    static const char* ANSI_YELLOW_BOLD = "\033[1;33m";
+        static const char* ANSI_YELLOW = "\033[0;33m";
+        static const char* ANSI_YELLOW_BOLD = "\033[1;33m";
 
-    static const char* ANSI_BLUE_BOLD = "\033[38;5;153;1m";
-    static const char* ANSI_BLUE = "\033[0;38;5;153m";
+        static const char* ANSI_BLUE_BOLD = "\033[38;5;153;1m";
+        static const char* ANSI_BLUE = "\033[0;38;5;153m";
 
-    static const char* ANSI_GREEN = "\033[0;32m";
-    static const char* ANSI_GREEN_BOLD = "\033[1;32m";
+        static const char* ANSI_GREEN = "\033[0;32m";
+        static const char* ANSI_GREEN_BOLD = "\033[1;32m";
 
-    class Log {
-    
-    public:
         enum LogLevel {
-            LogLevelError = 0, LogLevelWarn = 1, LogLevelInfo = 2
+            LogLevelError = 0, LogLevelWarn = 1, LogLevelInfo = 2, LogLevelTrace = 3, LogLevelDebug = 4
         };
-    
-    private:
 
-        static LogLevel s_LogLevel;
+#ifdef SITZQ_DEBUG
+        static LogLevel s_LogLevel = LogLevel::LogLevelDebug;
+#else
+        static LogLevel s_LogLevel = LogLevel::LogLevelError;
+#endif
 
-    public:
+        static bool s_ShouldDisplayThreadInformation = false;
+        static bool s_ShouldDisplayTimestampInformation = true;
 
-        static const LogLevel& GetLogLevel() { return s_LogLevel; }
-        static void SetLogLevel(const LogLevel& logLevel) { s_LogLevel = logLevel; }
+        inline bool ShouldDisplayThreadInformation() { return s_ShouldDisplayThreadInformation; }
+        inline void SetShouldDisplayThreadInformation(bool shouldDisplay) { s_ShouldDisplayThreadInformation = shouldDisplay; }
 
-        template<typename... Values>
-        static void FormatInfo(const char* message, Values&&... values) {
-            if(s_LogLevel >= LogLevelInfo) {
-                printf("%sSitz Cue - [INFO]:%s ", ANSI_BLUE_BOLD, ANSI_BLUE);
-                printf(message, std::forward<Values>(values)...);
-                printf("%s\n", ANSI_RESET);
+        inline bool ShouldDisplayTimestampInformation() { return s_ShouldDisplayTimestampInformation; }
+        inline void SetShouldDisplayTimestampInformation(bool shouldDisplay) { s_ShouldDisplayTimestampInformation = shouldDisplay; }
+
+        inline LogLevel GetLogLevel() { return s_LogLevel; }
+        inline void SetLogLevel(LogLevel logLevel) { s_LogLevel = logLevel; }
+
+        static void FormatString(std::ostringstream& oss, const std::string& format) {
+            oss << format;
+        }
+
+        template<typename T, typename... Args>
+        static void FormatString(std::ostringstream& oss, const std::string& format, const T& arg, Args... args) {
+
+            size_t pos = format.find("{}");
+
+            if(pos != std::string::npos) {
+                oss << format.substr(0, pos) << arg;
+                FormatString(oss, format.substr(pos + 2), args...);
+            } else {
+                oss << format;
             }
         }
 
-        template<typename... Values>
-        static void FormatSuccess(const char* message, Values&&... values) {
-            if(s_LogLevel >= LogLevelInfo) {
-                printf("%sSitz Cue - [SUCCESS]:%s ", ANSI_GREEN_BOLD, ANSI_GREEN);
-                printf(message, std::forward<Values>(values)...);
-                printf("%s\n", ANSI_RESET);
+        static inline void GetTimeStamp(std::ostringstream& oss) {
+
+            if(!s_ShouldDisplayTimestampInformation)  
+                return;
+
+            auto now = std::chrono::system_clock::now();
+            std::time_t time = std::chrono::system_clock::to_time_t(now);
+
+            oss << "[";
+
+            std::tm* localTime = std::localtime(&time);
+            if(localTime != nullptr) {
+                oss << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
+
+                // Obtain millisecond
+                auto duration = now.time_since_epoch();
+                auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 1000;
+                oss << "." << std::setfill('0') << std::setw(3) << milliseconds;
             }
+
+            oss << "] ";
+
         }
 
-        template<typename... Values>
-        static void FormatWarn(const char* message, Values&&... values) {
-             if(s_LogLevel >= LogLevelWarn) {
-                printf("%sSitz Cue - [WARN]:%s ", ANSI_YELLOW_BOLD, ANSI_YELLOW);
-                printf(message, std::forward<Values>(values)...);
-                printf("%s\n", ANSI_RESET);
-            }
+        static inline void GetThread(std::ostringstream& oss) {
+            if(s_ShouldDisplayThreadInformation)
+                oss << "[thread " << std::this_thread::get_id() << "] ";
         }
 
-        template<typename... Values>
-        static void FormatError(const char* message, Values&&... values) {
-             if(s_LogLevel >= LogLevelError) {
-                printf("%sSitz Cue - [ERROR]:%s ", ANSI_RED_BOLD, ANSI_RED);
-                printf(message, std::forward<Values>(values)...);
-                printf("%s\n", ANSI_RESET);
-            }
+        template<typename... Args>
+        void Trace(const std::string& format, Args... args) {
+
+            if(s_LogLevel < LogLevelTrace)
+                return;
+
+            std::ostringstream oss;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[trace] ";
+
+            FormatString(oss, format, args...);
+
+            std::cout << oss.str() << "\n";
         }
 
-        template<typename T>
-        static void Info(const T& message) {
-            if(s_LogLevel >= LogLevelInfo)
-                std::cout << ANSI_BLUE_BOLD << "Sitz Cue - [INFO]: " << ANSI_BLUE << message << ANSI_RESET << std::endl;
+        template<typename... Args>
+        void Info(const std::string& format, Args... args) {
+
+            if(s_LogLevel < LogLevelInfo)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_BLUE_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[info] " << ANSI_BLUE;
+
+            FormatString(oss, format, args...);
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
         }
 
-        template<typename T>
-        static void Success(const T& message) {
-            if(s_LogLevel >= LogLevelInfo)
-                std::cout << ANSI_GREEN_BOLD << "Sitz Cue - [SUCCESS]: " << ANSI_GREEN << message << ANSI_RESET << std::endl;
+        template<typename... Args>
+        void Warn(const std::string& format, Args... args) {
+
+            if(s_LogLevel < LogLevelWarn)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_YELLOW_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[WARN] " << ANSI_YELLOW;
+
+            FormatString(oss, format, args...);
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
         }
 
-        template<typename T>
-        static void Warn(const T& message) {
-            if(s_LogLevel >= LogLevelWarn)
-                std::cout << ANSI_YELLOW_BOLD << "Sitz Cue - [WARNING]: " << ANSI_YELLOW << message << ANSI_RESET << std::endl;
+        template<typename... Args>
+        void Error(const std::string& format, Args... args) {
+
+            if(s_LogLevel < LogLevelError)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_RED_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[ERROR] " << ANSI_RED;
+
+            FormatString(oss, format, args...);
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
         }
 
-        template<typename T>
-        static void Error(const T& message) {
-            if(s_LogLevel >= LogLevelError)
-                std::cout << ANSI_RED_BOLD << "Sitz Cue - [ERROR]: " << ANSI_RED << message << ANSI_RESET << std::endl;
+        template<typename... Args>
+        void Debug(const std::string& format, Args... args) {
+
+            if(s_LogLevel < LogLevelDebug)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_GREEN_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[DEBUG] " << ANSI_GREEN;
+
+            FormatString(oss, format, args...);
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
         }
-    };
+
+    }
+
 
 }

@@ -78,7 +78,8 @@ project "SitzQ"
 		symbols "On"
 
         defines {
-            "DEBUG"
+            "DEBUG",
+            "SITZQ_DEBUG"
         }
 
 	filter "configurations:Release"

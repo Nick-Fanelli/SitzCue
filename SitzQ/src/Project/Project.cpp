@@ -66,7 +66,7 @@ void Project::OpenProjectDialog(Application* application) {
 
 void Project::SaveProject() {
 
-    Log::Info("Saving Project"); // Trace
+    Log::Trace("Saving Project");
 
     YAML::Node node = YAML::convert<Project>::encode(*this);
 

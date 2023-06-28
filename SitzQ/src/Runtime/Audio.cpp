@@ -121,8 +121,9 @@ void AudioEngine::Initialize() {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    Log::Info("Initializing the Audio Engine...");
+    Log::Trace("Initializing the Audio Engine...");
 
+    Log::Trace("BASS Init");
     if(!BASS_Init(-1, 44100, 0, nullptr, nullptr)) {
         Log::Error("Problem Initializing BASS");
         return;
@@ -131,8 +132,9 @@ void AudioEngine::Initialize() {
 }
 
 void AudioEngine::Destroy() {
-    Log::Info("Destroying the Audio Engine...");
+    Log::Trace("Destroying the Audio Engine...");
 
+    Log::Trace("Bass Free");
     BASS_Free();
 }
 

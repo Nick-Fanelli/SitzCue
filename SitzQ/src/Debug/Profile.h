@@ -36,6 +36,7 @@ namespace SitzQ {
 
 		void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 		{
+			Log::Trace("Beginning trace session");
 			std::lock_guard lock(m_Mutex);
 			if (m_CurrentSession)
 			{
@@ -63,6 +64,7 @@ namespace SitzQ {
 
 		void EndSession()
 		{
+			Log::Trace("Ending trace session");
 			std::lock_guard lock(m_Mutex);
 			InternalEndSession();
 		}
