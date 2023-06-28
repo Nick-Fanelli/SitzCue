@@ -2,6 +2,14 @@
 
 #include "sitzqpch.h"
 
+namespace std {
+    template<> struct hash<std::filesystem::path> {
+        std::size_t operator()(const std::filesystem::path& path) const noexcept {
+            return std::hash<std::string>{}(path.string());
+        }
+    };
+}
+
 namespace SitzQ {
 
     class AudioSource;
@@ -126,6 +134,8 @@ namespace SitzQ {
             return handle;
         }
 
+        static const std::unordered_map<std::filesystem::path, Asset*>& GetAssetRegistry() { return s_AssetRegistry; }
+
     private:
         static void SweepDirectory();
 
@@ -137,7 +147,7 @@ namespace SitzQ {
         static inline std::optional<std::filesystem::path> s_WatchDirectory = {};
         static inline std::filesystem::file_time_type s_LastFileUpdateTime;
 
-        static inline std::unordered_map<std::string, Asset*> s_AssetRegistry;
+        static inline std::unordered_map<std::filesystem::path, Asset*> s_AssetRegistry;
 
     };
     

@@ -209,7 +209,7 @@ void AssetManager::SweepDirectory() {
         }
     }
 
-    std::vector<std::string> filesMarkedForDeletion;
+    std::vector<std::filesystem::path> filesMarkedForDeletion;
 
     // Get all files marked for deletion (aka no longer exist in the dir)
     for(auto& entry : s_AssetRegistry) {
