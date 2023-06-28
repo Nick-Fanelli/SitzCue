@@ -86,6 +86,8 @@ void AssetManager::Update() {
         FileUtils::GetLastWriteTime(s_WatchDirectory.value(), lastUpdateTime);
 
         if(s_LastFileUpdateTime != lastUpdateTime) {
+            Log::Trace("Sweeping Directory");
+
             SweepDirectory();
             s_LastFileUpdateTime = lastUpdateTime;
         }
@@ -191,10 +193,13 @@ void AssetManager::SweepDirectory() {
         if(it != s_AssetRegistry.end())
             continue;
 
+        Log::Trace("Creating Asset");
+
         // Create the asset by type
         switch(fileType) {
 
         case FileType::FileTypeAudio:
+            Log::Trace("Creating Audio Source Asset");
             CreateAsset<AudioSource>(filepath);
             break;
         case FileType::FileTypeUnidentified:
