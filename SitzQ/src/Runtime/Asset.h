@@ -102,10 +102,11 @@ namespace SitzQ {
 
         static void AssignWatchDirectory(const std::filesystem::path& path) {
             s_WatchDirectory = path;
+            s_LastFileUpdateTime = std::filesystem::file_time_type();
         }
 
-        template<typename T, typename... Args>
-        static AssetHandle<T> CreateAsset(const std::filesystem::path& filepath, Args&&... args) {
+        template<typename T>
+        static AssetHandle<T> CreateAsset(const std::filesystem::path& filepath) {
 
             SITZCUE_PROFILE_FUNCTION();
 
@@ -115,7 +116,7 @@ namespace SitzQ {
                 return AssetHandle<T>(AssetRemote::GetNullAssetRemote());
             }
 
-            Asset* assetPtr = new T(std::forward<Args>(args)...);
+            Asset* assetPtr = new T(filepath);
             assetPtr->CreateAsset(); // TODO: Multithread by assigning to other thread and then wait to create by setting remote to nullptr until created
             s_AssetRegistry[filepath] = assetPtr;
 
@@ -134,6 +135,7 @@ namespace SitzQ {
 
     private:
         static inline std::optional<std::filesystem::path> s_WatchDirectory = {};
+        static inline std::filesystem::file_time_type s_LastFileUpdateTime;
 
         static inline std::unordered_map<std::string, Asset*> s_AssetRegistry;
 

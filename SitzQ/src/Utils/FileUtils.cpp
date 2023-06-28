@@ -30,6 +30,17 @@ bool FileUtils::IsDirectoryEmpty(const std::filesystem::path& path) {
     }
 }
 
+// ====================================================================================================================
+// Query
+// ====================================================================================================================
+
+void FileUtils::GetLastWriteTime(const std::filesystem::path& filepath, std::filesystem::file_time_type& returnRef) {
+
+    SITZCUE_PROFILE_FUNCTION();
+
+    returnRef = std::filesystem::last_write_time(filepath);
+}
+
 
 // ====================================================================================================================
 // Read

@@ -9,6 +9,9 @@ namespace SitzQ::FileUtils {
     bool IsDirectory(const std::filesystem::path& path);
     bool IsDirectoryEmpty(const std::filesystem::path& path);
 
+    // Query
+    void GetLastWriteTime(const std::filesystem::path& filepath, std::filesystem::file_time_type& returnRef);
+
     // Read
     void ReadFile(const std::filesystem::path& path, std::string& toString);
 

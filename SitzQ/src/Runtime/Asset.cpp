@@ -60,7 +60,7 @@ void AssetManager::InitializeAsync() {
 
 }
 
-static constexpr auto ThreadSleepDuration = std::chrono::seconds(1);
+static constexpr auto ThreadSleepDuration = std::chrono::milliseconds(20);
 
 void AssetManager::StartLoop() {
 
@@ -80,7 +80,17 @@ void AssetManager::Update() {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    SweepDirectory();
+    if(s_WatchDirectory.has_value()) {
+
+        static std::filesystem::file_time_type lastUpdateTime;
+        FileUtils::GetLastWriteTime(s_WatchDirectory.value(), lastUpdateTime);
+
+        if(s_LastFileUpdateTime != lastUpdateTime) {
+            SweepDirectory();
+            s_LastFileUpdateTime = lastUpdateTime;
+        }
+
+    }
 
 }
 
@@ -164,17 +174,53 @@ void AssetManager::SweepDirectory() {
     if(!s_WatchDirectory.has_value())
         return;
 
-    std::vector<std::filesystem::path> uncompressedFiles;
-    std::vector<std::filesystem::path> audioFiles;
+    std::vector<std::filesystem::path> allFiles;
 
-    SearchDirectory(s_WatchDirectory.value(), uncompressedFiles);
+    SearchDirectory(s_WatchDirectory.value(), allFiles); // Search Dir and get all files
 
-    for(auto& file : uncompressedFiles) {
-        FileType fileType = IdentifyFile(file);
+    // Loop through and created any assets that don't exist
+    for(auto& filepath : allFiles) {
 
-        if(fileType == FileType::FileTypeAudio) {
-            audioFiles.push_back(file);
+        auto fileType = IdentifyFile(filepath);
+
+        if(fileType == FileType::FileTypeUnidentified)
+            continue;
+
+        auto it = s_AssetRegistry.find(filepath);
+
+        if(it != s_AssetRegistry.end())
+            continue;
+
+        // Create the asset by type
+        switch(fileType) {
+
+        case FileType::FileTypeAudio:
+            CreateAsset<AudioSource>(filepath);
+            break;
+        case FileType::FileTypeUnidentified:
+        default:
+            break;
+
         }
+    }
+
+    std::vector<std::string> filesMarkedForDeletion;
+
+    // Get all files marked for deletion (aka no longer exist in the dir)
+    for(auto& entry : s_AssetRegistry) {
+        auto it = std::find(allFiles.begin(), allFiles.end(), entry.first);
+
+        if(it == allFiles.end()) {
+            filesMarkedForDeletion.push_back(entry.first);
+        }
+    }
+
+    // Delete the files marked for deletion from the registry
+    for(auto& file : filesMarkedForDeletion) {
+        auto it = s_AssetRegistry.find(file);
+
+        if(it != s_AssetRegistry.end())
+            s_AssetRegistry.erase(it);
     }
 
 }
