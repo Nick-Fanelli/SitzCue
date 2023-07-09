@@ -19,18 +19,17 @@ CueType Cue::IdentifyCueType() const {
 bool Cue::IsValid() const { return true; }
 bool Cue::IsActive() const { return false; }
 
-void Cue::ReportSelfToRuntimeEngine() {
+// ===========================================================================
+// Sound Cue
+// ===========================================================================
 
-    
-
+void SoundCue::SetSoundFilePath(const std::filesystem::path& filepath) {
+    m_SoundFilePath = filepath;
 }
 
-// ===========================================================================
-// SoundCue
-// ===========================================================================
 
 bool SoundCue::IsValid() const {
-    return FileUtils::Exists(SoundFilePath);
+    return FileUtils::Exists(m_SoundFilePath);
 }
 
 bool SoundCue::IsActive() const {

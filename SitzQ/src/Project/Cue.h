@@ -48,10 +48,13 @@ namespace SitzQ {
 
         virtual bool IsActive() const;
 
-    private:
+    };
 
-        void ReportSelfToRuntimeEngine();
+    // Cue Wrapper
 
+    struct CueWrapper {
+        CueType Type;
+        std::shared_ptr<Cue> CuePtr;
     };
 
     // ===========================================================================
@@ -66,20 +69,18 @@ namespace SitzQ {
         SoundCue() = default;
         SoundCue(const SoundCue&) = default;
 
+        const std::filesystem::path& GetSoundFilePath() const { return m_SoundFilePath; }
+        void SetSoundFilePath(const std::filesystem::path& filepath);
+
         void Execute() override;
         void Stop() override;
 
         bool IsValid() const override;
         bool IsActive() const override;
 
-    public:
-        std::filesystem::path SoundFilePath;
+    private:
+        std::filesystem::path m_SoundFilePath;
 
-    };
-
-    struct CueWrapper {
-        CueType Type;
-        std::shared_ptr<Cue> CuePtr;
     };
 
 }

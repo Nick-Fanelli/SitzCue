@@ -136,19 +136,18 @@ void ImGuiDefaults::DrawHiddenOptionalFloat(std::optional<float>& data) {
 
 }
 
-void ImGuiDefaults::FileDrop(const std::string& label, std::filesystem::path& filepath) {
+void ImGuiDefaults::DrawCueLinkedAudioFilepathInput(const std::string& label, CueList& cueList, SoundCue& soundCue) {
 
     SITZCUE_PROFILE_FUNCTION();
 
-    ImGui::PushID(&filepath);
+    ImGui::PushID("##DrawCueLInkedAudioFilepathInput");         ImGui::PushID(&soundCue);
 
     static std::string dataCache = std::string();
-    dataCache = filepath;
+    dataCache = soundCue.GetSoundFilePath();
 
     bool exists = true;
 
-    // File Validation
-    if(!FileUtils::Exists(filepath)) {
+    if(!FileUtils::Exists(dataCache)) {
         exists = false;
         ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f });
     }
@@ -159,24 +158,68 @@ void ImGuiDefaults::FileDrop(const std::string& label, std::filesystem::path& fi
         ImGui::PopStyleColor();
 
     if(ImGui::IsItemDeactivatedAfterEdit()) {
-        CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, std::filesystem::path(dataCache)});
+        CommandStack::ExecuteCommand(new ChangeSoundFilepathCommand(cueList, soundCue.UUID, dataCache));
+        Log::Trace("Changing Sound Cue Filepath");
     }
 
     if(ImGui::BeginDragDropTarget()) {
-
         if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_AUDIO_FILEPATH")) {
 
             std::filesystem::path* pathPtr = static_cast<std::filesystem::path*>(payload->Data);
+            CommandStack::ExecuteCommand(new ChangeSoundFilepathCommand(cueList, soundCue.UUID, *pathPtr));
 
-            CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, *pathPtr});
 
+            Log::Debug("Change the cue");
         }
-
     }
 
-    ImGui::PopID();
+
+    ImGui::PopID();                                             ImGui::PopID();
 
 }
+
+
+// void ImGuiDefaults::FileDrop(const std::string& label, std::filesystem::path& filepath) {
+
+//     SITZCUE_PROFILE_FUNCTION();
+
+//     ImGui::PushID(&filepath);
+
+//     static std::string dataCache = std::string();
+//     dataCache = filepath;
+
+//     bool exists = true;
+
+//     // File Validation
+//     if(!FileUtils::Exists(filepath)) {
+//         exists = false;
+//         ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f });
+//     }
+
+//     ImGui::InputText(label.c_str(), &dataCache);
+
+//     if(!exists)
+//         ImGui::PopStyleColor();
+
+//     if(ImGui::IsItemDeactivatedAfterEdit()) {
+//         CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, std::filesystem::path(dataCache)});
+//     }
+
+//     if(ImGui::BeginDragDropTarget()) {
+
+//         if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_AUDIO_FILEPATH")) {
+
+//             std::filesystem::path* pathPtr = static_cast<std::filesystem::path*>(payload->Data);
+
+//             CommandStack::ExecuteCommand(new UpdateGenericDataCommand<std::filesystem::path>{filepath, filepath, *pathPtr});
+
+//         }
+
+//     }
+
+//     ImGui::PopID();
+
+// }
 
 bool ImGuiDefaults::DrawPropertiesHeader(const std::string& label) {
 

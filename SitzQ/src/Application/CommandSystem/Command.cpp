@@ -69,5 +69,31 @@ void MoveCueCommand::Execute() {
 }
 
 void MoveCueCommand::Undo() {
+    // TODO: Implement
+}
 
+// ================================================================================================
+// ChangeSoundFilepathCommand
+// ================================================================================================
+void ChangeSoundFilepathCommand::Execute() {
+    auto cue = m_CueList.GetCue(m_TargetCue);
+
+    if(cue->IdentifyCueType() == CueType::CueTypeSound) {
+        SoundCue* cuePtr = dynamic_cast<SoundCue*>(cue.get());
+        m_OldFilepath = cuePtr->GetSoundFilePath();
+        cuePtr->SetSoundFilePath(m_NewFilepath);
+    } else {
+        Log::Error("Could not adapt cue type to SoundCue in ChangeFilepathCommand");
+    }
+}
+
+void ChangeSoundFilepathCommand::Undo() {
+    auto cue = m_CueList.GetCue(m_TargetCue);
+
+    if(cue->IdentifyCueType() == CueType::CueTypeSound) {
+        SoundCue* cuePtr = dynamic_cast<SoundCue*>(cue.get());
+        cuePtr->SetSoundFilePath(m_OldFilepath);
+    } else {
+        Log::Error("Could not adapt cue type to SoundCue in ChangeFilepathCommand");
+    }
 }

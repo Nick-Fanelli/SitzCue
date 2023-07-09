@@ -162,8 +162,8 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
     if (ImGui::BeginDragDropTarget()) {
 
-        if(ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
-            || ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+        if(ImGui::AcceptDragDropPayload(ImGuiDefaults::DragDropType::Cue, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
+            || ImGui::AcceptDragDropPayload(ImGuiDefaults::DragDropType::CueTemplate, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
 
             const ImVec2 cursorPosition = ImGui::GetCursorPos();
             const ImVec2 startingPosition = ImVec2{ ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + cursorPosition.y };
@@ -174,7 +174,7 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
         }
 
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ImGuiDefaults::DragDropType::Cue, ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
 
             UUID payloadUUID = *static_cast<UUID*>(payload->Data);
 
@@ -184,7 +184,7 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
 
         }
 
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ImGuiDefaults::DragDropType::CueTemplate, ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
             HandleCueTemplateCueExecution(cueList, *static_cast<int*>(payload->Data), cue.UUID);
         }
 
@@ -192,7 +192,7 @@ void CueListWindow::DrawCue(CueList& cueList, const std::vector<Cue*>& cueCache,
     }
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE", (void*) &cue.UUID, sizeof(UUID));
+        ImGui::SetDragDropPayload(ImGuiDefaults::DragDropType::Cue, (void*) &cue.UUID, sizeof(UUID));
 
         if(cue.CueNumber.has_value()) {
             ImGui::Text("%g - %s", *cue.CueNumber, cue.CueName.c_str());
@@ -239,7 +239,7 @@ static void DrawTemplateButton(const std::string& buttonLabel, const std::string
     ImGui::PopStyleVar();
 
     if(ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("DND_CUE_TEMPLATE", payload, sizeof(int));
+        ImGui::SetDragDropPayload(ImGuiDefaults::DragDropType::CueTemplate, payload, sizeof(int));
         ImGui::Text("%s", fullName.c_str());
         ImGui::EndDragDropSource();
     }
@@ -332,7 +332,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
     if(ImGui::BeginDragDropTarget()) {
 
-        if(ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+        if(ImGui::AcceptDragDropPayload(ImGuiDefaults::DragDropType::CueTemplate, ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
 
             const ImVec2 cursorPosition = ImGui::GetCursorPos();
             const ImVec2 startingPosition = ImVec2{ ImGui::GetWindowPos().x, ImGui::GetWindowPos().y + cursorPosition.y - overflowSize.y - 5.0f };
@@ -343,7 +343,7 @@ void CueListWindow::OnUpdate(CueList& cueList) {
 
         }
 
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_CUE_TEMPLATE", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(ImGuiDefaults::DragDropType::CueTemplate, ImGuiDragDropFlags_AcceptNoDrawDefaultRect)) {
             HandleCueTemplateCueExecution(cueList, *static_cast<int*>(payload->Data));
         }
 

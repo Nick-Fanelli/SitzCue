@@ -21,7 +21,7 @@ void CuePropertiesWindow::OnUpdate(CueList& cueList, const std::vector<UUID>& se
         auto cue = cueList.GetCue(selectedCues[0]);
 
         if(cue != nullptr) {
-            DrawCueHeader(*cue);
+            DrawCueHeader(cueList, *cue);
         }
     }
 
@@ -29,7 +29,7 @@ void CuePropertiesWindow::OnUpdate(CueList& cueList, const std::vector<UUID>& se
 
 }
 
-void CuePropertiesWindow::DrawCueHeader(Cue& cue) {
+void CuePropertiesWindow::DrawCueHeader(CueList& cueList, Cue& cue) {
 
     SITZCUE_PROFILE_FUNCTION();
 
@@ -51,7 +51,11 @@ void CuePropertiesWindow::DrawCueHeader(Cue& cue) {
         SoundCue* soundCue = dynamic_cast<SoundCue*>(&cue);
         if(ImGuiDefaults::DrawPropertiesHeader("\uf028  Sound")) {
 
-            ImGuiDefaults::FileDrop("Sound File Path", soundCue->SoundFilePath);
+            SITZCUE_PROFILE_SCOPE("CuePropertiesWindow::DrawCueHeader -> Cache File Path");
+            
+            ImGuiDefaults::DrawCueLinkedAudioFilepathInput("Sound Filepath", cueList, *soundCue);
+
+            // ImGuiDefaults::FileDrop("Sound File Path", cachedFilepath);
 
             ImGui::TreePop();
         }

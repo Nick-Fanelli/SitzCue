@@ -126,4 +126,23 @@ namespace SitzQ {
         UUID m_CueToFollow;
 
     };
+
+
+    class ChangeSoundFilepathCommand : public Command {
+
+    public:
+        ChangeSoundFilepathCommand(CueList& cueList, UUID targetCue, const std::filesystem::path& newFilepath) 
+            : m_CueList(cueList), m_TargetCue(targetCue), m_NewFilepath(newFilepath) {}
+
+        void Execute() override;
+        void Undo() override;
+
+    private: 
+        CueList& m_CueList;
+        UUID m_TargetCue;
+        std::filesystem::path m_NewFilepath;
+
+        std::filesystem::path m_OldFilepath;
+
+    };
 }

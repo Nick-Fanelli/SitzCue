@@ -45,7 +45,7 @@ Node convert<Cue*>::encode(const Cue* constCue) {
     if(dynamic_cast<SoundCue*>(cue)) {
         SoundCue* soundCue = dynamic_cast<SoundCue*>(cue);
 
-        node["Sound File Path"] = soundCue->SoundFilePath;
+        node["Sound File Path"] = soundCue->GetSoundFilePath();
     }
 
     return node;
@@ -81,7 +81,7 @@ bool convert<SoundCue>::decode(const Node& node, SoundCue& cue) {
         cue.CueNumber = { node["Cue Number"].as<float>() };
 
     if(node["Sound File Path"]) {
-        cue.SoundFilePath = node["Sound File Path"].as<std::filesystem::path>();
+        cue.SetSoundFilePath(node["Sound File Path"].as<std::filesystem::path>());
     }
         
 
