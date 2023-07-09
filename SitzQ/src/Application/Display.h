@@ -12,9 +12,12 @@ namespace SitzQ {
         Display() = default;
         Display(const Display&) = delete;
 
-        void CreateDisplay();
-        void StartApplicationLoop(Application* application);
+        void CreateDisplay(); // Create the display
+        void StartApplicationLoop(Application* application); // Start main loop
 
+        /**
+         * Get the window size as an ImVec2
+        */
         void GetImGuiSize(ImVec2* outVec2);
 
         const GLFWwindow* GetWindowPtr() const { return m_Window; }

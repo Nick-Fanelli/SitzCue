@@ -6,7 +6,6 @@
 #include "Popup.h"
 #include "ImGuiDefaults.h"
 
-#include "Window/Window.h"
 #include "CommandSystem/CommandStack.h"
 
 using namespace SitzQ;
@@ -73,8 +72,8 @@ void ImGuiLayer::OnCreate() {
 
     s_MenuBar = MenuBar(m_Application);
 
-    m_WindowManager = WindowManager(m_Application);
-    m_WindowManager.SetScene<LanderScene>();
+    m_SceneManager = SceneManager(m_Application);
+    m_SceneManager.SetScene<LanderScene>();
 }
 
 static void DrawDockspace() {
@@ -151,7 +150,7 @@ void ImGuiLayer::Begin() {
 
     }
 
-    m_WindowManager.OnUpdate();
+    m_SceneManager.OnUpdate();
 
     Popup::Update(); // Update Popup System
 }
@@ -185,7 +184,7 @@ void ImGuiLayer::OnDestroy() {
     
     SITZCUE_PROFILE_FUNCTION();
 
-    m_WindowManager.OnDestroy();
+    m_SceneManager.OnDestroy();
 
     SaveIniData();
 }

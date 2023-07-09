@@ -12,11 +12,12 @@ void Display::CreateDisplay() {
     SITZCUE_PROFILE_FUNCTION();
 
     Log::Trace("Initializing GLFW");
-    if(!glfwInit()) {
+    if(!glfwInit()) { // Initialize GLFW
         Log::Error("Failed to initialize GLFW!\n\tStatus: Returning");
         return;
     }
 
+    // Setup GLFW window hints to be compat with all OS
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -24,10 +25,20 @@ void Display::CreateDisplay() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
+    // Create the window to the window ptr
     m_Window = glfwCreateWindow(s_DisplayWidth, s_DisplayHeight, "SitzQ", nullptr, nullptr);
+
+    if(m_Window == nullptr) { // Check to see if the window exists
+        glfwTerminate();
+        Log::Error("Could not create the GLFW Window");
+        return;
+    }
+
     glfwSwapInterval(true); // Enable V-Sync
 
     int width, height;
+
+    // Set window size to 16x9 ratio
 
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
@@ -40,33 +51,26 @@ void Display::CreateDisplay() {
 
     glfwSetWindowSize(m_Window, newWidth, newHeight);
 
-    if(m_Window == nullptr) {
-        glfwTerminate();
-        Log::Error("Could not create the GLFW Window");
-        return;
-    }
-
-     int screenWidth, screenHeight;
+    int screenWidth, screenHeight;
 
     glfwGetFramebufferSize(m_Window, &screenWidth, &screenHeight);
     glfwMakeContextCurrent(m_Window);
 
-    // Handle Input
-
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     Log::Trace("Loading GLAD");
-    if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+    if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) { // Initialize GLAD
         std::cout << "GLAD FAILED" << std::endl;
         Log::Error("Failed to initialize GLAD");
         return;
     }
 
+    // Define the viewport
     glViewport(0, 0, screenWidth, screenHeight);
 
-    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
 
-    glEnable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE);
     glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_BLEND);

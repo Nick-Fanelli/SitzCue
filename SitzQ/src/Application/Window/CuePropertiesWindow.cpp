@@ -1,5 +1,6 @@
-#include "CuePropertiesWindow.h"
+#include "Window.h"
 
+#include "Application/Application.h"
 #include "Application/ImGuiDefaults.h"
 #include "Project/CueList.h"
 

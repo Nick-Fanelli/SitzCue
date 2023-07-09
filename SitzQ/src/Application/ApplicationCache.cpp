@@ -24,14 +24,17 @@ bool ApplicationCache::Remove(const std::string& key) {
     return removedElements > 0;
 }
 
+// Pull the application cache files data into memory
 void ApplicationCache::Pull() {
-    s_CacheValues.clear();
+    s_CacheValues.clear(); // Clear the current cached values
 
+    // Stream in the file
     std::ifstream in(PlatformDetection::GetApplicationCacheFilePath());
     std::stringstream stream;
     stream << in.rdbuf();
     in.close();
 
+    // Convert the YAML file to an unordered map of std::string, std::string to be read later
     YAML::Node node = YAML::Load(stream.str());
     YAML::convert<std::unordered_map<std::string, std::string>>::decode(node, s_CacheValues);
 }

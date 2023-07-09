@@ -2,114 +2,76 @@
 
 #include "sitzqpch.h"
 
-#include "Application/StatusBar.h"
+#include "Project/Cue.h"
 
 namespace SitzQ {
 
     // ===================================================================================================================
-    // Window
+    // Abstract Window
     // ===================================================================================================================
-
     class Window {
 
     public:
         Window() = default;
 
-        virtual void OnUpdate();
     };
 
-    class Application;
-    class WindowManager;
-    class CueListWindow;
-    class CuePropertiesWindow; 
-    class AssetBrowserWindow;
 
     // ===================================================================================================================
-    // Scene
+    // Cue Properties Window
     // ===================================================================================================================
-
-    class Scene {
+    class CuePropertiesWindow : public Window {
 
     public:
-        Scene(WindowManager* windowManagerPtr) : m_WindowManagerPtr(windowManagerPtr) {}
+        CuePropertiesWindow() = default;
 
-        virtual void OnCreate();
-        virtual void OnUpdate();
-        virtual void OnDestroy();
-
-    protected:
-        WindowManager* m_WindowManagerPtr;
+        void OnUpdate(CueList& cueList, const std::vector<UUID>& selectedCues);
+        void DrawCueHeader(Cue& cue);
 
     };
 
-    // ===================================================================================================================
-    // Lander Scene
-    // ===================================================================================================================
 
-    class LanderScene : public Scene {
+    // ===================================================================================================================
+    // Cue List Window
+    // ===================================================================================================================
+    class CueListWindow : public Window {
 
     public:
-        LanderScene(WindowManager* windowManagerPtr) : Scene(windowManagerPtr) {}
+        CueListWindow() = default;
 
-        void OnCreate() override;
-        void OnUpdate() override;
-        void OnDestroy() override;
+        void OnUpdate(CueList& cueList);
 
-    };
-
-    // ===================================================================================================================
-    // Editor Scene
-    // ===================================================================================================================
-
-    class EditorScene : public Scene {
-
-    public:
-        EditorScene(WindowManager* windowManagerPtr) : Scene(windowManagerPtr) {}
-
-        void OnCreate() override;
-        void OnUpdate() override;
-        void OnDestroy() override;
+        const std::vector<UUID>& GetSelectedCues() const { return m_SelectedCues; }
+        std::vector<UUID>& GetSelectedCues() { return m_SelectedCues; }
 
     private:
-        StatusBar* m_StatusBarPtr = nullptr;
-        CueListWindow* m_CueListWindowPtr = nullptr;
-        AssetBrowserWindow* m_AssetBrowserWindow = nullptr;
+        void HandleOnCueClick(const std::vector<Cue*>& cueCache, UUID cue);
+        void DrawCue(CueList& cueList, const std::vector<Cue*>& cues, int n);
+        void DrawNewCueTemplateButtons(CueList& cueList);
 
+    private:
+        CuePropertiesWindow m_CuePropertiesWindow;
+
+        std::vector<UUID> m_SelectedCues;
     };
 
     // ===================================================================================================================
-    // Window Manager
+    // Asset Browser Window
     // ===================================================================================================================
-
-    class WindowManager {
-
+    class Application;
+    class AssetBrowserWindow {
+        
     public:
-
-        WindowManager() = default;
-        WindowManager(Application* applicationPtr) : m_ApplicationPtr(applicationPtr) {}
-
-        template<typename T>
-        void SetScene() {
-            if(m_ActiveScene != nullptr) {
-                Scene* prevScene = m_ActiveScene;
-                m_ActiveScene = nullptr;
-                prevScene->OnDestroy();
-                delete prevScene;
-            }
-
-            Scene* newScene = new T(this);
-            newScene->OnCreate();
-            m_ActiveScene = newScene;
-        }
+        AssetBrowserWindow(Application* applicationPtr);
+        ~AssetBrowserWindow();
 
         void OnUpdate();
-        void OnDestroy();
-
-        Application* GetApplicationPtr() { return m_ApplicationPtr; }
 
     private:
-        Application* m_ApplicationPtr = nullptr;
-        Scene* m_ActiveScene = nullptr;
+        void UpdateLocalAssetCache();
+
+    private:
+        Application* m_ApplicationPtr;
 
     };
 

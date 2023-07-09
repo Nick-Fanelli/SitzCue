@@ -2,7 +2,7 @@
 
 #include "sitzqpch.h"
 
-#include "Window/Window.h"
+#include "Scene/Scene.h"
 
 namespace SitzQ {
 
@@ -21,8 +21,8 @@ namespace SitzQ {
 
         void OnDestroy();
 
-        const WindowManager& GetWindowManager() const { return m_WindowManager; }
-        WindowManager& GetWindowManager() { return m_WindowManager; }
+        const SceneManager& GetSceneManager() const { return m_SceneManager; }
+        SceneManager& GetSceneManager() { return m_SceneManager; }
 
         static ImFont* GetBoldFont() { return s_BoldFont; }
 
@@ -30,7 +30,7 @@ namespace SitzQ {
         static inline ImFont* s_BoldFont = nullptr;
 
         Application* m_Application;
-        WindowManager m_WindowManager;
+        SceneManager m_SceneManager;
 
         void ApplyColorTheme();
 
