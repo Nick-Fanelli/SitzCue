@@ -88,6 +88,22 @@ namespace SitzQ {
                 oss << "[thread " << std::this_thread::get_id() << "] ";
         }
 
+        template<typename T>
+        void Trace(const T& data) {
+
+            if(s_LogLevel < LogLevelTrace)
+                return;
+
+            std::ostringstream oss;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[trace] " << data;
+
+            std::cout << oss.str() << "\n";
+        }
+
         template<typename... Args>
         void Trace(const std::string& format, Args... args) {
 
@@ -106,6 +122,23 @@ namespace SitzQ {
             std::cout << oss.str() << "\n";
         }
 
+        template<typename T>
+        void Info(const T& data) {
+            if(s_LogLevel < LogLevelInfo)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_BLUE_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[info] " << ANSI_BLUE << data;
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
+        } 
+
         template<typename... Args>
         void Info(const std::string& format, Args... args) {
 
@@ -122,6 +155,24 @@ namespace SitzQ {
             oss << "[info] " << ANSI_BLUE;
 
             FormatString(oss, format, args...);
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
+        }
+
+        template<typename T>
+        void Warn(const T& data) {
+
+            if(s_LogLevel < LogLevelWarn)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_YELLOW_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[WARN] " << ANSI_YELLOW << data;
 
             std::cout << oss.str() << ANSI_RESET << "\n";
         }
@@ -146,6 +197,24 @@ namespace SitzQ {
             std::cout << oss.str() << ANSI_RESET << "\n";
         }
 
+        template<typename T>
+        void Error(const T& data) {
+
+            if(s_LogLevel < LogLevelError)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_RED_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[ERROR] " << ANSI_RED << data;
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
+        }
+
         template<typename... Args>
         void Error(const std::string& format, Args... args) {
 
@@ -162,6 +231,24 @@ namespace SitzQ {
             oss << "[ERROR] " << ANSI_RED;
 
             FormatString(oss, format, args...);
+
+            std::cout << oss.str() << ANSI_RESET << "\n";
+        }
+
+        template<typename T>
+        void Debug(const T& data) {
+
+            if(s_LogLevel < LogLevelDebug)
+                return;
+
+            std::ostringstream oss;
+
+            oss << ANSI_GREEN_BOLD;
+
+            GetTimeStamp(oss);
+            GetThread(oss);
+
+            oss << "[DEBUG] " << ANSI_GREEN << data;
 
             std::cout << oss.str() << ANSI_RESET << "\n";
         }

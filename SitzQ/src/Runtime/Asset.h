@@ -100,6 +100,10 @@ namespace SitzQ {
         
     };
 
+    struct AssetDirectoryChangeEventData {
+
+    };
+
     class AssetManager {
 
     public: 
